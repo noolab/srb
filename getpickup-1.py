@@ -35,19 +35,19 @@ def getpickup(event,context):
 	        <ServiceHeader>
 	            <MessageTime>2013-08-03T11:28:56.000-08:00</MessageTime>
 	            <MessageReference>1234567890123456789012345678901</MessageReference>
-	  	    <SiteID>SRBFrance</SiteID> 
-	  	    <Password>jXxlVhceKE</Password> 
+	  	    <SiteID></SiteID> 
+	  	    <Password></Password> 
 	        </ServiceHeader>
 	    </Request>
 	    <RegionCode>EU</RegionCode>
 	    <Requestor>
 	        <AccountType>D</AccountType>
-	        <AccountNumber>223932540</AccountNumber>
+	        <AccountNumber></AccountNumber>
 	        <RequestorContact>
 	            <PersonName>No Name</PersonName>
-	            <Phone>+3373435520</Phone>
+	            <Phone></Phone>
 	        </RequestorContact>
-	        <CompanyName>SHOPRUNBACK</CompanyName>
+	        <CompanyName></CompanyName>
 	    </Requestor>
 	   <Place>
 		<LocationType>C</LocationType>        

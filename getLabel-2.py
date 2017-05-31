@@ -51,8 +51,8 @@ def getLabel(event,context):
 	 <ServiceHeader>
 	  <MessageTime>2002-08-20T11:28:56.000-08:00</MessageTime> 
 	  <MessageReference>1234567890123456789012345678901</MessageReference> 
-	  <SiteID>SRBFrance</SiteID> 
-	  <Password>jXxlVhceKE</Password>
+	  <SiteID></SiteID> 
+	  <Password></Password>
 	  </ServiceHeader>
 	  </Request>
 	  <RegionCode>EU</RegionCode> 
@@ -60,9 +60,9 @@ def getLabel(event,context):
 	  <LanguageCode>en</LanguageCode> 
 	  <PiecesEnabled>Y</PiecesEnabled> 
 	 <Billing>
-	  <ShipperAccountNumber>223932540</ShipperAccountNumber> 
+	  <ShipperAccountNumber></ShipperAccountNumber> 
 	  <ShippingPaymentType>S</ShippingPaymentType> 
-	  <BillingAccountNumber>223932540</BillingAccountNumber> 
+	  <BillingAccountNumber></BillingAccountNumber> 
 	  <DutyPaymentType>R</DutyPaymentType> 
 	  </Billing>
 	 <Consignee>
