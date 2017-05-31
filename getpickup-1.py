@@ -6,9 +6,6 @@ import time
 
 
 
-
-
-
 def getpickup(event,context):
 	# date = datetime.datetime.now()
 	datenow=str(datetime.datetime.now())
