@@ -3,6 +3,12 @@ import xml.etree.ElementTree as ET
 import datetime
 import re
 import time
+
+
+
+
+
+
 def getpickup(event,context):
 	# date = datetime.datetime.now()
 	datenow=str(datetime.datetime.now())
