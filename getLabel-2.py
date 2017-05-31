@@ -11,32 +11,72 @@ from boto.s3.connection import S3Connection
 def getLabel(event,context):
 	date = datetime.datetime.now()
 	datenow=re.sub(r'\s.*','',str(date))
+
 	shipmentdate=str(event["shipment_date"])
+	if shipmentdate=="":
+		return "shipmentdate is missing..."
+
+
 	destination_shipmentId=str(event["destination"]["shipment_id"])
+	if destination_shipmentId=="":
+		return "destination_shipmentId is missing..."
+
 	destination_company=str(event["destination"]["company"])
+
+	if destination_company=="":
+		return "CompanyName is missing..."
+
 	destination_line1=str(event["destination"]["line1"])
 	destination_line2=str(event["destination"]["line2"])
+
+	if destination_line1=="" and destination_line2=="":
+		return "One of the address in destination must be completed..."
+
+	destination_line1=destination_line1+" "+destination_line2
+	destination_city=str(event["destination"]["city"])
+	destination_state=str(event["destination"]["state"])
+
 	destination_zipcode=str(event["destination"]["zipcode"])
+
 	destination_countryCode=str(event["destination"]["country_code"])
+	if destination_countryCode=="":
+		return "destination_countryCode is mandatory"
+
 	destination_country=str(event["destination"]["country"])
+	if destination_country=="":
+		return "destination_country_name is mandatory"
+
 	destination_name=str(event["destination"]["name"])
+	if destination_name=="":
+		return "destination_name is mandatory"
+
+	destination_phone=str(event["destination"]["phone"])
+	if destination_phone=="":
+		return "destination_phone is mandatory"
+
 	destination_firstname=str(event["destination"]["first_name"])
 	destination_lastname=str(event["destination"]["last_name"])
-	destination_firstname_lastname=str(destination_firstname)+" "+str(destination_lastname)
-	destination_phone=str(event["destination"]["phone"])
+	
 	destination_email=str(event["destination"]["email"])
-	destination_city=str(event["destination"]["city"])
 
-	parcel_weight_in_grams=float(event["parcel"]["weight_in_grams"])/1000
-	parcel_weight_in_kg=str(parcel_weight_in_grams)
+
+	parcel_weight_in_grams=str(event["parcel"]["weight_in_grams"])
 	parcel_width_in_cm=str(event["parcel"]["width_in_cm"])
 	parcel_height_in_cm=str(event["parcel"]["height_in_cm"])
 	parcel_length_in_cm=str(event["parcel"]["length_in_cm"])
+
 	content= str(event["contents"])
+	origin_firstname=str(event["origin"]["first_name"])
+	origin_lastname=str(event["origin"]["last_name"])
 	origin_company=str(event["origin"]["company"])
 	origin_city=str(event["origin"]["city"])
 	origin_line1=str(event["origin"]["line1"])
 	origin_line2=str(event["origin"]["line2"])+""
+
+	if origin_line1=="" and origin_line2=="":
+		return "origin_line1_address is mandatory"
+	origin_line1=origin_line1+" "+origin_line2
+
 	origin_country=str(event["origin"]["country"])
 	origin_zipcode=str(event["origin"]["zipcode"])+""
 	origin_countrycode=str(event["origin"]["country_code"])
@@ -51,8 +91,8 @@ def getLabel(event,context):
 	 <ServiceHeader>
 	  <MessageTime>2002-08-20T11:28:56.000-08:00</MessageTime> 
 	  <MessageReference>1234567890123456789012345678901</MessageReference> 
-	  <SiteID></SiteID> 
-	  <Password></Password>
+	  <SiteID>SRBFrance</SiteID> 
+	  <Password>jXxlVhceKE</Password>
 	  </ServiceHeader>
 	  </Request>
 	  <RegionCode>EU</RegionCode> 
@@ -60,74 +100,51 @@ def getLabel(event,context):
 	  <LanguageCode>en</LanguageCode> 
 	  <PiecesEnabled>Y</PiecesEnabled> 
 	 <Billing>
-	  <ShipperAccountNumber></ShipperAccountNumber> 
+	  <ShipperAccountNumber>223932540</ShipperAccountNumber> 
 	  <ShippingPaymentType>S</ShippingPaymentType> 
-	  <BillingAccountNumber></BillingAccountNumber> 
+	  <BillingAccountNumber>223932540</BillingAccountNumber> 
 	  <DutyPaymentType>R</DutyPaymentType> 
 	  </Billing>
 	 <Consignee>
 	  <CompanyName>"""+destination_company+"""</CompanyName> 
 	  <AddressLine>"""+destination_line1+"""</AddressLine> 
-	  <AddressLine>"""+destination_line2+"""</AddressLine> 
 	  <City>"""+destination_city+"""</City> 
-	  <Division></Division> 
+	  <Division>"""+destination_state+"""</Division> 
 	  <PostalCode>"""+destination_zipcode+"""</PostalCode> 
 	  <CountryCode>"""+destination_countryCode+"""</CountryCode> 
 	  <CountryName>"""+destination_country+"""</CountryName> 
 	 <Contact>
-	  <PersonName>"""+destination_firstname_lastname+"""</PersonName> 
+	  <PersonName>"""+destination_firstname+" "+destination_lastname+"""</PersonName> 
 	  <PhoneNumber>"""+destination_phone+"""</PhoneNumber>
-	  <PhoneExtension></PhoneExtension> 
-	  <FaxNumber></FaxNumber> 
-	  <Telex></Telex>
-	  <Email>"""+destination_email+"""</Email> 
-	  </Contact>
+	  <Email>"""+destination_email+"""</Email>
+	  <MobilePhoneNumber>"""+destination_phone+"""</MobilePhoneNumber> 
+	</Contact>
 	  </Consignee>
 	 <Commodity>
 	  <CommodityCode>"""+destination_shipmentId+"""</CommodityCode> 
-	  <CommodityName>cn</CommodityName> 
 	  </Commodity>
-	 <Dutiable>
-	  <DeclaredValue>0</DeclaredValue> 
-	  <DeclaredCurrency>EUR</DeclaredCurrency> 
-	  <ScheduleB>3002905110</ScheduleB> 
-	  <ExportLicense>D123456</ExportLicense> 
-	  <ShipperEIN>112233445566</ShipperEIN> 
-	  <ShipperIDType>S</ShipperIDType> 
-	  <ImportLicense>ImportLic</ImportLicense> 
-	  <ConsigneeEIN>ConEIN2123</ConsigneeEIN> 
-	  <TermsOfTrade>DTP</TermsOfTrade> 
-	  </Dutiable>
 	 <ShipmentDetails>
 	  <NumberOfPieces>1</NumberOfPieces> 
 	 <Pieces>
 	 <Piece>
 	  <PieceID>1</PieceID> 
 	  <PackageType>YP</PackageType> 
-	  <Weight>"""+parcel_weight_in_kg+"""</Weight> 
-	  <DimWeight>0.0</DimWeight>
+	  <Weight>"""+parcel_weight_in_grams+"""</Weight> 
 	  <Width>"""+parcel_width_in_cm+"""</Width> 
-	  <Height>"""+parcel_height_in_cm+"""</Height>
-	  <Depth>"""+parcel_length_in_cm+"""</Depth>
+	  <Height>"""+parcel_height_in_cm+"""</Height> 
+	  <Depth>"""+parcel_length_in_cm+"""</Depth> 
 	  </Piece>
 	  </Pieces>
-	  <Weight>"""+parcel_weight_in_kg+"""</Weight> 
+	  <Weight>"""+parcel_weight_in_grams+"""</Weight> 
 	  <WeightUnit>K</WeightUnit> 
 	  <GlobalProductCode>D</GlobalProductCode> 
-	  <LocalProductCode>U</LocalProductCode> 
-	  <Date>"""+shipmentdate+"""</Date> 
-	  <Contents>"""+content+"""</Contents> 
-	  <DoorTo>DD</DoorTo> 
+	  <Date>"""+shipmentdate+"""</Date>  
 	  <DimensionUnit>C</DimensionUnit> 
-	 <InsuredAmount>00.00</InsuredAmount>  
-	 <PackageType>EE</PackageType> 
-	  <IsDutiable>N</IsDutiable> 
 	  <CurrencyCode>EUR</CurrencyCode> 
 	  </ShipmentDetails>
 	 <Shipper>
 	  <ShipperID>12345</ShipperID> 
 	  <CompanyName>"""+origin_company+"""</CompanyName> 
-	  <RegisteredAccount>123456789</RegisteredAccount> 
 	  <AddressLine>"""+origin_line1+"""</AddressLine> 
 	  <AddressLine>"""+origin_line2+"""</AddressLine> 
 	  <City>"""+origin_city+"""</City> 
@@ -136,29 +153,28 @@ def getLabel(event,context):
 	  <CountryCode>"""+origin_countrycode+"""</CountryCode> 
 	  <CountryName>"""+origin_country+"""</CountryName> 
 	 <Contact>
-	  <PersonName>enquiry sing</PersonName> 
-	  <PhoneNumber>"""+origin_phone+"""</PhoneNumber>
-	  <PhoneExtension></PhoneExtension> 
-	  <FaxNumber></FaxNumber> 
-	  <Telex></Telex>
+	  <PersonName>"""+origin_firstname+" "+origin_lastname+"""</PersonName>
+	  <PhoneNumber>"""+origin_phone+"""</PhoneNumber> 
 	  <Email>"""+origin_email+"""</Email> 
 	  </Contact>
 	  </Shipper>
+	  <SpecialService>
+  	<SpecialServiceType>PT</SpecialServiceType>
+  	</SpecialService> 
 	 <Place>
-	  <ResidenceOrBusiness>B</ResidenceOrBusiness> 
+	  <ResidenceOrBusiness>R</ResidenceOrBusiness> 
 	  <CompanyName>"""+origin_company+"""</CompanyName> 
-	  <AddressLine>"""+origin_line1+"""</AddressLine> 
-	  <AddressLine>"""+origin_line2+"""</AddressLine> 
+	  <AddressLine>"""+origin_line1+"""</AddressLine>
 	  <City>"""+origin_city+"""</City> 
 	  <CountryCode>"""+origin_countrycode+"""</CountryCode> 
-	  <DivisionCode>"""+origin_state+"""</DivisionCode> 
-	  <Division>FR</Division> 
+	  <Division>"""+origin_state+"""</Division> 
 	  <PostalCode>"""+origin_zipcode+"""</PostalCode> 
 	  <PackageLocation>"""+origin_packagelocation+"""</PackageLocation> 
 	  </Place>
 	  <EProcShip>N</EProcShip> 
-  	<LabelImageFormat>PDF</LabelImageFormat> 
+  	<LabelImageFormat>PDF</LabelImageFormat>
 	</req:ShipmentRequest>"""
+	print xml
 	c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
 	b = c.get_bucket("srbstickers", validate=False)
 	print b
@@ -189,16 +205,16 @@ def getLabel(event,context):
 		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
 	#-------------
-	shipmentId="0"
 	allroot = ET.fromstring(resp)
+	shipmentId="0"
 	for getchild in allroot.findall('AirwayBillNumber'):
 		if len(getchild)<0:
 			shipmentId= ''
 		else:
 			shipmentId=getchild.text
+
 	if shipmentId=="0":
 		return resp
-
 	data={
 	  "origin": event["origin"],
 	  "destination": event["destination"],
@@ -206,6 +222,7 @@ def getLabel(event,context):
 	  "shipment_id": shipmentId,
 	  "label_url": link_pdf
 	}
+
 	return data
 # print getLabel('12','22')
 

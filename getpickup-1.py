@@ -3,9 +3,6 @@ import xml.etree.ElementTree as ET
 import datetime
 import re
 import time
-
-
-
 def getpickup(event,context):
 	# date = datetime.datetime.now()
 	datenow=str(datetime.datetime.now())
@@ -25,8 +22,31 @@ def getpickup(event,context):
 	city=event["place"]["city"]
 	package_location=event["place"]["package_location"]
 	numberOfPiece=str(event["shipment_details"]["number_of_pieces"])
-	weight=float(event["shipment_details"]["weight_in_grams"])/1000
-	weight_kg=str(weight)
+	weight=str(event["shipment_details"]["weight"])
+
+	if weight=="":
+		return "weight is required"
+
+	if event["place"]["line1"]=="":
+		return "Address is required"
+
+	if package_location=="":
+		return "package_location is required"
+
+	if city=="":
+		return "city is required"
+
+	if country_code=="":
+		return "country_code is required"
+
+	if pickup_date=="":
+		return "pickup_date is required"
+
+	if readyByTime=="":
+		return "readyByTime is required"
+
+	if close_time=="":
+		return "close_time is required"
 
 
 	xml = """<?xml version="1.0" encoding="UTF-8"?>
@@ -35,19 +55,19 @@ def getpickup(event,context):
 	        <ServiceHeader>
 	            <MessageTime>2013-08-03T11:28:56.000-08:00</MessageTime>
 	            <MessageReference>1234567890123456789012345678901</MessageReference>
-	  	    <SiteID></SiteID> 
-	  	    <Password></Password> 
+	  	    <SiteID>SRBFrance</SiteID> 
+	  	    <Password>jXxlVhceKE</Password> 
 	        </ServiceHeader>
 	    </Request>
 	    <RegionCode>EU</RegionCode>
 	    <Requestor>
 	        <AccountType>D</AccountType>
-	        <AccountNumber></AccountNumber>
+	        <AccountNumber>223932540</AccountNumber>
 	        <RequestorContact>
 	            <PersonName>No Name</PersonName>
-	            <Phone></Phone>
+	            <Phone>+3373435520</Phone>
 	        </RequestorContact>
-	        <CompanyName></CompanyName>
+	        <CompanyName>SHOPRUNBACK</CompanyName>
 	    </Requestor>
 	   <Place>
 		<LocationType>C</LocationType>        
@@ -62,8 +82,7 @@ def getpickup(event,context):
 	    <Pickup>
 	        <PickupDate>"""+pickup_date+"""</PickupDate>
 	        <ReadyByTime>"""+readyByTime+"""</ReadyByTime>
-	        <CloseTime>"""+close_time+"""</CloseTime>
-	        <SpecialInstructions>"""+special_instruction+"""</SpecialInstructions> 
+	        <CloseTime>"""+close_time+"""</CloseTime> 
 	     </Pickup>
 	    <PickupContact>
 	        <PersonName>"""+event["requestor"]["name"]+"""</PersonName>
@@ -71,17 +90,18 @@ def getpickup(event,context):
 	    </PickupContact>
 	   <ShipmentDetails>
 	        <AccountType>D</AccountType>
-	        <AccountNumber>123456789</AccountNumber>
+	        <AccountNumber>223932540</AccountNumber>
 	        <NumberOfPieces>"""+numberOfPiece+"""</NumberOfPieces>
-	        <Weight>"""+weight_kg+"""</Weight>
+	        <Weight>"""+weight+"""</Weight>
 	        <WeightUnit>K</WeightUnit>
 	        <GlobalProductCode>D</GlobalProductCode>
 	        <DoorTo>DD</DoorTo>
 	        <Pieces>
 	        </Pieces>
-	        <SpecialService>I</SpecialService>
+	        <SpecialService>YV</SpecialService>
 	    </ShipmentDetails>
 	</req:BookPURequest>"""
+	#print xml
 	headers = {'Content-Type': 'application/xml'} # set what your server accepts
 	resp=requests.post('https://xmlpitest-ea.dhl.com/XMLShippingServlet', data=xml, headers=headers).text
 	root = ET.fromstring(resp)
@@ -98,10 +118,5 @@ def getpickup(event,context):
 		]
 	except:
 		return resp
-		# data={"messageError":"pickup_id not found! Please check your input again"}
+		#data={"messageError":"pickup_id not found! Please check your input again"}
 	return data
-# getpickup('a','b')
-
-
-
-	
