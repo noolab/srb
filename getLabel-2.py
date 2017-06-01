@@ -12,6 +12,9 @@ def getLabel(event,context):
 	date = datetime.datetime.now()
 	datenow=re.sub(r'\s.*','',str(date))
 
+
+	if "shipment_date" not in event:
+		return "shipmentdate is missing..."
 	shipmentdate=str(event["shipment_date"])
 	if shipmentdate=="":
 		return "shipmentdate is missing..."
@@ -92,8 +95,8 @@ def getLabel(event,context):
 	 <ServiceHeader>
 	  <MessageTime>2002-08-20T11:28:56.000-08:00</MessageTime> 
 	  <MessageReference>1234567890123456789012345678901</MessageReference> 
-	  <SiteID>SRBFrance</SiteID> 
-	  <Password>jXxlVhceKE</Password>
+	  <SiteID></SiteID> 
+	  <Password>PASSWORD</Password>
 	  </ServiceHeader>
 	  </Request>
 	  <RegionCode>EU</RegionCode> 
