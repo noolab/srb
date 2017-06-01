@@ -61,6 +61,7 @@ def getLabel(event,context):
 
 
 	parcel_weight_in_grams=str(event["parcel"]["weight_in_grams"])
+	parcel_weight_in_grams=float(parcel_weight_in_grams)/1000
 	parcel_width_in_cm=str(event["parcel"]["width_in_cm"])
 	parcel_height_in_cm=str(event["parcel"]["height_in_cm"])
 	parcel_length_in_cm=str(event["parcel"]["length_in_cm"])
