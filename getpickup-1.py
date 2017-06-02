@@ -56,8 +56,8 @@ def getpickup(event,context):
 	        <ServiceHeader>
 	            <MessageTime>2013-08-03T11:28:56.000-08:00</MessageTime>
 	            <MessageReference>1234567890123456789012345678901</MessageReference>
-	  	    <SiteID></SiteID> 
-	  	    <Password></Password> 
+	  	    <SiteID>"""+os.environ["DHL_USERID"]+"""</SiteID> 
+	  	    <Password>"""+os.environ["DHL_PWD"]+"""</Password> 
 	        </ServiceHeader>
 	    </Request>
 	    <RegionCode>EU</RegionCode>
