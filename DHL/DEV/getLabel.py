@@ -40,20 +40,24 @@ def getLabel(event,context):
 	destination_line1=str(event["destination"]["line1"])
 	destination_line2=str(event["destination"]["line2"])
 
-	if destination_line1=="" and destination_line2=="":
-		return "One of the address in destination must be completed..."
+	# if destination_line1=="" and destination_line2=="":
+	# 	return "One of the address in destination must be completed..."
 
 	destination_line1=destination_line1+" "+destination_line2
 	if "city" not in event["destination"]:
-		return "city in  destination  is missing..."
-	destination_city=str(event["destination"]["city"])
+		destination_city=""
+	else:
+		destination_city=str(event["destination"]["city"])
+
 	if "state" not in event["destination"]:
-		return "state in  destination  is missing..."
-	destination_state=str(event["destination"]["state"])
+		destination_state=""
+	else:
+		destination_state=str(event["destination"]["state"])
 
 	if "zipcode" not in event["destination"]:
-		return "zipcode in  destination  is missing..."
-	destination_zipcode=str(event["destination"]["zipcode"])
+		destination_zipcode=""
+	else:
+		destination_zipcode=str(event["destination"]["zipcode"])
 
 	if "country_code" not in event["destination"]:
 		return "destination_countryCode  is missing..."
@@ -67,15 +71,16 @@ def getLabel(event,context):
 	if destination_country=="":
 		return "destination_country_name is mandatory"
 	if "name" not in event["destination"]:
-		return "destination_name is missing.."
-	destination_name=str(event["destination"]["name"])
-	if destination_name=="":
-		return "destination_name is mandatory"
+		destination_name=""
+	else:
+		destination_name=str(event["destination"]["name"])
+	
 	if "phone" not in event["destination"]:
-		return "destination_phone is missing .."
-	destination_phone=str(event["destination"]["phone"])
-	if destination_phone=="":
-		return "destination_phone is mandatory"
+		destination_phone=""
+	else:
+		destination_phone=str(event["destination"]["phone"])
+	# if destination_phone=="":
+	# 	return "destination_phone is mandatory"
 
 	if "first_name" not in event["destination"]:
 		return "destination_firstname is missing ...."
@@ -85,50 +90,67 @@ def getLabel(event,context):
 		return "destination_lastname is missing .."
 	destination_lastname=str(event["destination"]["last_name"])
 	
+	if destination_firstname=="":
+		return "destination_firstname cannot be empty."
+
+	if destination_lastname=="":
+		return "destination_lastname cannot be empty"
+
 	if "email" not in event["destination"]:
-		return "destination_email is missing ..."
-	destination_email=str(event["destination"]["email"])
+		destination_email=""
+	else:
+		destination_email=str(event["destination"]["email"])
 
 	if "weight_in_grams" not in event["parcel"]:
-		return "weight_in_grams is missing ..."
-	parcel_weight_in_grams=str(event["parcel"]["weight_in_grams"])
-	parcel_weight_in_grams=str(float(parcel_weight_in_grams)/1000)
-	if parcel_weight_in_grams <= "0":
 		parcel_weight_in_grams="0.0"
+	else:
+		parcel_weight_in_grams=str(event["parcel"]["weight_in_grams"])
+		parcel_weight_in_grams=str(float(parcel_weight_in_grams)/1000)
+		if parcel_weight_in_grams <= "0":
+			parcel_weight_in_grams="0.0"
 
 	if "width_in_cm" not in event["parcel"]:
-		return "width_in_cm is missing .."
-	parcel_width_in_cm=str(event["parcel"]["width_in_cm"])
-	if parcel_width_in_cm=="0":
-		return "width_in_cm must be more than 0"
+		parcel_width_in_cm=""
+	else:
+		parcel_width_in_cm=str(event["parcel"]["width_in_cm"])
+
+	# if parcel_width_in_cm=="0":
+	# 	return "width_in_cm must be more than 0"
 	if "height_in_cm" not in event["parcel"]:
-		return "height_in_cm is missing .."
-	parcel_height_in_cm=str(event["parcel"]["height_in_cm"])
+		parcel_height_in_cm=""
+	else:
+		parcel_height_in_cm=str(event["parcel"]["height_in_cm"])
 	
 
 	if "length_in_cm" not in event["parcel"]:
-		return "length_in_cm is missing.."
-	parcel_length_in_cm=str(event["parcel"]["length_in_cm"])
-	if parcel_length_in_cm=="0":
-		return "parcel_length_in_cm cannot be 0"
+		parcel_length_in_cm=""
+	else:
+		parcel_length_in_cm=str(event["parcel"]["length_in_cm"])
+
+	# if parcel_length_in_cm=="0":
+	# 	return "parcel_length_in_cm cannot be 0"
 
 	if "contents" not in event:
-		return "content is missing.."
+		content=""
+	else:
+		content= str(event["contents"])
 
-	content= str(event["contents"])
 	if "first_name" not in event["origin"]:
-		return "origin_firstname is missing .."
-	origin_firstname=str(event["origin"]["first_name"])
-	if origin_firstname=="":
-		return "origin_firstname cannot be empty"
+		origin_firstname=""
+	else:
+		origin_firstname=str(event["origin"]["first_name"])
+	# if origin_firstname=="":
+	# 	return "origin_firstname cannot be empty"
 	if "last_name" not in event["origin"]:
-		return "origin_lastname is missing"
-	origin_lastname=str(event["origin"]["last_name"])
-	if origin_lastname=="":
-		return "origin_lastname cannot be empty"
+		last_name=""
+	else:
+		origin_lastname=str(event["origin"]["last_name"])
+	# if origin_lastname=="":
+	# 	return "origin_lastname cannot be empty"
 	if "company" not in event["origin"]:
-		return "origin_company is missing"
-	origin_company=str(event["origin"]["company"])
+		origin_company=""
+	else:
+		origin_company=str(event["origin"]["company"])
 	# if origin_company=="":
 	# 	return "origin_company cannot be empty"
 	if "city" not in event["origin"]:
@@ -143,9 +165,9 @@ def getLabel(event,context):
 	if origin_line1 =="":
 		return "origin_line1 cannot be empty"
 	if "line2" not in event["origin"]:
-		return "origin_line2 is missing"
-
-	origin_line2=str(event["origin"]["line2"])+""
+		origin_line2=""
+	else:
+		origin_line2=str(event["origin"]["line2"])+""
 	# if origin_line2=="":
 	# 	return "origin_line2 cannot be empty"
 	# if origin_line1=="" and origin_line2=="":
@@ -158,9 +180,11 @@ def getLabel(event,context):
 	origin_country=str(event["origin"]["country"])
 	if origin_country=="":
 		return "origin_country cannot be empty"
+
 	if "zipcode" not in event["origin"]:
-		return "origin zipcode is missing "
-	origin_zipcode=str(event["origin"]["zipcode"])+""
+		origin_zipcode=""
+	else:
+		origin_zipcode=str(event["origin"]["zipcode"])+""
 	# if origin_zipcode=="":
 	#  	return "origin_zipcode cannot be empty "
 
@@ -177,23 +201,26 @@ def getLabel(event,context):
 	if origin_name=="":
 		return "origin_name cannot be empty"
 	if "phone" not in event["origin"]:
-		return "origin_phone is missing..."
-	origin_phone=str(event["origin"]["phone"])
-	if origin_phone == "":
-		return "origin_phone cannot be empty"
+		origin_phone=""
+	else:
+		origin_phone=str(event["origin"]["phone"])
+	# if origin_phone == "":
+	# 	return "origin_phone cannot be empty"
 	if "email" not in event["origin"]:
 		return "origin email is missing .."
 	origin_email=str(event["origin"]["email"])
 	# if origin_email =="":
 	# 	return 'origin_email cannot be empty'
 	if "state" not in event["origin"]:
-		return "origin_state is missing.."
-	origin_state=str(event["origin"]["state"])
+		origin_state=""
+	else:
+		origin_state=str(event["origin"]["state"])
 	# if origin_state=="":
 	# 	return "origin_state cannot be empty"
 	if "place_description" not in event["origin"]:
-		return "place_description is missing"
-	origin_packagelocation=str(event["origin"]["place_description"])
+		origin_packagelocation=""
+	else:
+		origin_packagelocation=str(event["origin"]["place_description"])
 	# if origin_packagelocation=='':
 	# 	return "origin_packagelocation cannot be empty"
 	xml="""  <?xml version="1.0" encoding="UTF-8" ?> 
