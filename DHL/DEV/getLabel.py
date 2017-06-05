@@ -17,7 +17,7 @@ def getLabel(event,context):
 
 	if "shipment_date" not in event:
 		return "shipmentdate is missing..."
-		
+
 	shipmentdate=str(event["shipment_date"])
 
 	if shipmentdate=="":
@@ -256,7 +256,7 @@ def getLabel(event,context):
 	  <GlobalProductCode>D</GlobalProductCode> 
 	  <Date>"""+shipmentdate+"""</Date>  
 	  <DimensionUnit>C</DimensionUnit> 
-	  <Content></Content>
+	  <Content>"""+content+"""</Content>
 	  <CurrencyCode>EUR</CurrencyCode> 
 	  </ShipmentDetails>
 	 <Shipper>
