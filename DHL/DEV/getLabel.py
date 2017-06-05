@@ -13,9 +13,13 @@ def getLabel(event,context):
 	date = datetime.datetime.now()
 	datenow=re.sub(r'\s.*','',str(date))
 	messageTime=str(datenow)+"T11:28:56.000-08:00"
+
+
 	if "shipment_date" not in event:
 		return "shipmentdate is missing..."
+
 	shipmentdate=str(event["shipment_date"])
+
 	if shipmentdate=="":
 		return "shipmentdate is missing..."
 
@@ -278,6 +282,7 @@ def getLabel(event,context):
 	  <GlobalProductCode>D</GlobalProductCode> 
 	  <Date>"""+shipmentdate+"""</Date>  
 	  <DimensionUnit>C</DimensionUnit> 
+	  <Content>"""+content+"""</Content>
 	  <CurrencyCode>EUR</CurrencyCode> 
 	  </ShipmentDetails>
 	 <Shipper>
@@ -313,8 +318,8 @@ def getLabel(event,context):
   	<LabelImageFormat>PDF</LabelImageFormat>
 	</req:ShipmentRequest>"""
 	print xml
-	c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
-	b = c.get_bucket("srbstickers", validate=False)
+	c = boto.connect_s3(os.environ["S3_PUB_KEY"], os.environ["S3_PRV_KEY"])
+	b = c.get_bucket(os.environ["S3_BUCKET_NAME"], validate=False)
 	print b
 	headers = {'Content-Type': 'application/xml'} # set what your server accepts
 	resp=requests.post('https://xmlpitest-ea.dhl.com/XMLShippingServlet', data=xml, headers=headers).text
@@ -340,7 +345,7 @@ def getLabel(event,context):
 		k.ContentDisposition="inline"
 		# k.set_contents_from_string(img_data)
 		k.set_contents_from_string(img_data.decode('base64'))
-		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
+		link_pdf=os.environ["S3_URL"]+name_file
 
 	#-------------
 	allroot = ET.fromstring(resp)
