@@ -16,8 +16,12 @@ def getLabel(event,context):
 
 
 	origin_country=str(event["origin"]["country"])
-
-	origin_country == "FR" and ShipperAccountNumber = os.environ["SHIPPER_ACCOUNT_NUMBER_EXPORT"] or ShipperAccountNumber = os.environ["SHIPPER_ACCOUNT_NUMBER_IMPORT"]
+	if origin_country=="FR":
+		shipperAccountNumber= os.environ["SHIPPER_ACCOUNT_NUMBER_EXPORT"]
+	else:
+		shipperAccountNumber=os.environ["SHIPPER_ACCOUNT_NUMBER_IMPORT"]
+		
+	# origin_country == "FR" and ShipperAccountNumber = os.environ["SHIPPER_ACCOUNT_NUMBER_EXPORT"] or ShipperAccountNumber = os.environ["SHIPPER_ACCOUNT_NUMBER_IMPORT"]
 
 	messageTime=str(datenow)+"T11:28:56.000-08:00"
 	messageReference=str(randrange(0,10000000000000000000000000000000))
