@@ -91,37 +91,37 @@ def getLabel(event,context):
   response = requests.post(os.enviro["BPOST_RETURN_LABEL_URI"], data=xml, headers=headers).text
 
 
-  c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
-  b = c.get_bucket("srbstickers", validate=False)
-  print b
+  # c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
+  # b = c.get_bucket("srbstickers", validate=False)
+  # print b
 
-  print "start ET"
-  root = ET.fromstring(resp)
-  data=[]
-  print root
-  for child in root.findall('LabelImage'):
-    pdf=child.find('OutputFormat').text+'.pdf'
-    img_data=child.find('OutputImage').text
-    #print pdf
-    print img_data
-    name_file=str(time.time())+".pdf"
-    k = Key(b)
-    print k
-    k.key = name_file
-    k.contentType="application/pdf"
-    k.ContentDisposition="inline"
-    # k.set_contents_from_string(img_data)
-    k.set_contents_from_string(img_data.decode('base64'))
-    link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
+  # print "start ET"
+  # root = ET.fromstring(response)
+  # data=[]
+  # print root
+  # for child in root.findall('LabelImage'):
+  #   pdf=child.find('OutputFormat').text+'.pdf'
+  #   img_data=child.find('OutputImage').text
+  #   #print pdf
+  #   print img_data
+  #   name_file=str(time.time())+".pdf"
+  #   k = Key(b)
+  #   print k
+  #   k.key = name_file
+  #   k.contentType="application/pdf"
+  #   k.ContentDisposition="inline"
+  #   # k.set_contents_from_string(img_data)
+  #   k.set_contents_from_string(img_data.decode('base64'))
+  #   link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
-  #-------------
-  allroot = ET.fromstring(resp)
-  shipmentId="0"
-  for getchild in allroot.findall('AirwayBillNumber'):
-    if len(getchild)<0:
-      shipmentId= ''
-    else:
-      shipmentId=getchild.text
+  # #-------------
+  # allroot = ET.fromstring(response)
+  # shipmentId="0"
+  # for getchild in allroot.findall('AirwayBillNumber'):
+  #   if len(getchild)<0:
+  #     shipmentId= ''
+  #   else:
+  #     shipmentId=getchild.text
 
   return response
 
