@@ -65,15 +65,15 @@ def getLabel(event,context):
             <v001:Addressee>
                 <v001:Name>""" + event["destination"]["name"] + """</v001:Name>
                 <v001:Streetname>""" + full_destination_address + """</v001:Streetname>
-                <v001:Streetnumber>""" + event["destination"]["Streetnumber"] + " " + """</v001:Streetnumber>
+                <v001:Streetnumber>""" + event["destination"]["street_number"] + " " + """</v001:Streetnumber>
                 <v001:PostalCode>""" + event["destination"]["zipcode"] + """</v001:PostalCode>
                 <v001:MunicipalityName>""" + event["destination"]["city"] + """</v001:MunicipalityName>
                 <v001:CountryISO2Code>""" + event["destination"]["country_code"] + """</v001:CountryISO2Code>
             </v001:Addressee>
             <v001:Sender>
               <v001:Name>""" + event["origin"]["name"] + """</v001:Name>
-              <v001:Streetname>#{_return.address1_from[0..38].downcase.gsub(/[^a-z0-9\s]/i, '')}</v001:Streetname>
-              <v001:Streetnumber> </v001:Streetnumber>
+              <v001:Streetname>""" + full_origin_address + """</v001:Streetname>
+              <v001:Streetnumber>""" + event["origin"]["street_number"] + " " + """</v001:Streetnumber>
               <v001:PostalCode>""" + event["origin"]["zipcode"] + """</v001:PostalCode>
               <v001:MunicipalityName>""" + event["origin"]["city"] + """</v001:MunicipalityName>
               <v001:CountryISO2Code>""" + event["origin"]["country_code"] + """</v001:CountryISO2Code>
@@ -88,7 +88,7 @@ def getLabel(event,context):
   print xml
   headers = {'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
 
-  response = requests.post(os.enviro["BPOST_RETURN_LABEL_URI"], data=xml, headers=headers).text
+  response = requests.post(os.environ["BPOST_RETURN_LABEL_URI"], data=xml, headers=headers).text
 
 
   # c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
