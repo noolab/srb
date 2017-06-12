@@ -1,0 +1,15 @@
+https://blmc71vus7.execute-api.us-east-1.amazonaws.com/v1/
+https://blmc71vus7.execute-api.us-east-1.amazonaws.com/v1/status
+https://blmc71vus7.execute-api.us-east-1.amazonaws.com/v1/label
+https://blmc71vus7.execute-api.us-east-1.amazonaws.com/v1/pickup
+https://blmc71vus7.execute-api.us-east-1.amazonaws.com/v1/type
+https://blmc71vus7.execute-api.us-east-1.amazonaws.com/v1/pickup/slots
+
+
+FOR FRANKFURT REGION
+https://teyow8nw20.execute-api.eu-central-1.amazonaws.com/dhl/
+https://teyow8nw20.execute-api.eu-central-1.amazonaws.com/dhl/status
+https://teyow8nw20.execute-api.eu-central-1.amazonaws.com/dhl/label
+https://teyow8nw20.execute-api.eu-central-1.amazonaws.com/dhl/pickup
+https://teyow8nw20.execute-api.eu-central-1.amazonaws.com/dhl/pickup/slots
+https://teyow8nw20.execute-api.eu-central-1.amazonaws.com/dhl/type
