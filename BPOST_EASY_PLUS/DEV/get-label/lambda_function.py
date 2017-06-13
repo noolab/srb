@@ -9,9 +9,9 @@ import re
 import os
 from random import randrange
 from boto.s3.connection import S3Connection
+import xmltodict
 
 def getLabel(event,context):
-
   # DESTINATION PARAMS
   if "name" not in event["destination"]:
     return "Missing parameter: [destination][name]"
@@ -55,7 +55,7 @@ def getLabel(event,context):
     return "Missing parameter: [return_id]"
 
   # BUILD XML
-  xml="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
+  xml = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
        <soapenv:Header/>
        <soapenv:Body>
           <v001:getReturnLabelRequest>
@@ -85,43 +85,32 @@ def getLabel(event,context):
        </soapenv:Body>
     </soapenv:Envelope>"""
 
-  print xml
   headers = {'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
 
   response = requests.post(os.environ["BPOST_RETURN_LABEL_URI"], data=xml, headers=headers).text
 
+  data = xmltodict.parse(response)
 
-  # c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
-  # b = c.get_bucket("srbstickers", validate=False)
-  # print b
+  c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])
+  bucket = c.get_bucket("srbstickers", validate=False)
+  name_file = str(time.time()) + ".pdf"
+  k = Key(bucket)
+  k.key = name_file
+  k.contentType="application/pdf"
+  k.ContentDisposition="inline"
+  k.set_contents_from_string(data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF'].decode('base64'))
+  shipment_id = data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:Leg3']['msg:ItemInfo']['msg:Code']
 
-  # print "start ET"
-  # root = ET.fromstring(response)
-  # data=[]
-  # print root
-  # for child in root.findall('LabelImage'):
-  #   pdf=child.find('OutputFormat').text+'.pdf'
-  #   img_data=child.find('OutputImage').text
-  #   #print pdf
-  #   print img_data
-  #   name_file=str(time.time())+".pdf"
-  #   k = Key(b)
-  #   print k
-  #   k.key = name_file
-  #   k.contentType="application/pdf"
-  #   k.ContentDisposition="inline"
-  #   # k.set_contents_from_string(img_data)
-  #   k.set_contents_from_string(img_data.decode('base64'))
-  #   link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
+  link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 
-  # #-------------
-  # allroot = ET.fromstring(response)
-  # shipmentId="0"
-  # for getchild in allroot.findall('AirwayBillNumber'):
-  #   if len(getchild)<0:
-  #     shipmentId= ''
-  #   else:
-  #     shipmentId=getchild.text
 
-  return response
+  final_response = {
+    "origin": event["origin"],
+    "destination": event["destination"],
+    "parcel": event["parcel"],
+    "shipment_id": ,
+    "label_url": link_pdf
+  }
+
+  return final_response
 
