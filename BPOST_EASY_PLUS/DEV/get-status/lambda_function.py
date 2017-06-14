@@ -1,116 +1,81 @@
+import json
 import requests
-import boto
 import time
-from boto.s3.key import Key
-import xml.etree.ElementTree as ET
-import base64
-import datetime
-import re
 import os
-from random import randrange
-from boto.s3.connection import S3Connection
-import xmltodict
 
-def getLabel(event,context):
-  # DESTINATION PARAMS
-  if "name" not in event["destination"]:
-    return "Missing parameter: [destination][name]"
+def getStatus(event, context):
+  start = time.time()
+  available = True
+  response_time = 0
 
-  if "line1" not in event["destination"]:
-    return "Missing parameter: [destination][line1]"
+  try:
+      response = requests.post(
+          url = "https://rraw4ebe2c.execute-api.eu-central-1.amazonaws.com/sandbox/label",
+          headers = {
+              "Content-Type": "application/json; charset=utf-8",
+          },
+          data = json.dumps({
+              "destination": {
+                  "state": "IDF",
+                  "country_code": "FR",
+                  "email": "",
+                  "phone": "0688997788",
+                  "company": "Company Destination",
+                  "zipcode": "75001",
+                  "line1": "59 rue des petits champs",
+                  "street_number": "",
+                  "first_name": "Leo",
+                  "city": "Paris",
+                  "shipment_id": "return_id_at_srb",
+                  "last_name": "Martin",
+                  "country": "France",
+                  "name": "Leo Martin",
+                  "line2": ""
+              },
+              "return_id": "9999",
+              "parcel": {
+                  "height_in_cm": 10,
+                  "weight_in_grams": 1950,
+                  "width_in_cm": 10,
+                  "length_in_cm": 10
+              },
+              "contents": "TESTS",
+              "origin": {
+                  "state": "",
+                  "country": "France",
+                  "country_code": "FR",
+                  "phone": "0622889977",
+                  "place_description": "At home",
+                  "company": "Company Origin",
+                  "zipcode": "94000",
+                  "line1": "11 avenue de la habette",
+                  "street_number": "",
+                  "first_name": "Ithyvan",
+                  "city": "CRETEIL",
+                  "last_name": "Schreys",
+                  "email": "eddy@shoprunback.com",
+                  "name": "Ithyvan Schreys",
+                  "line2": ""
+              },
+              "shipment_date": "2017-06-10"
+          })
+      )
+  except requests.exceptions.RequestException:
+      available = False
+      response_time = -1
 
-  full_destination_address = event["destination"]["line1"] + " " + event["destination"]["line2"]
+  if response_time == 0:
+    response_time = time.time() - start
 
-  if "zipcode" not in event["destination"]:
-    return "Missing parameter: [destination][zipcode]"
+  timeout = False
 
-  if "city" not in event["destination"]:
-    return "Missing parameter: [destination][city]"
+  if response_time > 30:
+    timeout = True
 
-  if "country_code" not in event["destination"]:
-    return "Missing parameter: [destination][country_code]"
-
-  # ORIGIN PARAMS
-
-  if "name" not in event["origin"]:
-    return "origin_name is missing.."
-
-  if "line1" not in event["origin"]:
-    return "Missing parameter: [origin][line1]"
-
-  full_origin_address = event["origin"]["line1"] + " " + event["origin"]["line2"]
-
-  if "zipcode" not in event["origin"]:
-    return "Missing parameter: [origin][zipcode]"
-
-  if "city" not in event["origin"]:
-    return "Missing parameter: [origin][city]"
-
-  if "country_code" not in event["origin"]:
-    return "Missing parameter: [origin][country_code]"
-
-  # RETURN INFORMATIONS
-
-  if "return_id" not in event:
-    return "Missing parameter: [return_id]"
-
-  # BUILD XML
-  xml = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
-       <soapenv:Header/>
-       <soapenv:Body>
-          <v001:getReturnLabelRequest>
-            <v001:ContractInfo>
-              <v001:ContractID>""" + os.environ["BPOST_CONTRACT_ID"] + """</v001:ContractID>
-            </v001:ContractInfo>
-            <v001:Addressee>
-                <v001:Name>""" + event["destination"]["name"] + """</v001:Name>
-                <v001:Streetname>""" + full_destination_address + """</v001:Streetname>
-                <v001:Streetnumber>""" + event["destination"]["street_number"] + " " + """</v001:Streetnumber>
-                <v001:PostalCode>""" + event["destination"]["zipcode"] + """</v001:PostalCode>
-                <v001:MunicipalityName>""" + event["destination"]["city"] + """</v001:MunicipalityName>
-                <v001:CountryISO2Code>""" + event["destination"]["country_code"] + """</v001:CountryISO2Code>
-            </v001:Addressee>
-            <v001:Sender>
-              <v001:Name>""" + event["origin"]["name"] + """</v001:Name>
-              <v001:Streetname>""" + full_origin_address + """</v001:Streetname>
-              <v001:Streetnumber>""" + event["origin"]["street_number"] + " " + """</v001:Streetnumber>
-              <v001:PostalCode>""" + event["origin"]["zipcode"] + """</v001:PostalCode>
-              <v001:MunicipalityName>""" + event["origin"]["city"] + """</v001:MunicipalityName>
-              <v001:CountryISO2Code>""" + event["origin"]["country_code"] + """</v001:CountryISO2Code>
-            </v001:Sender>
-            <v001:ReturnInfo>
-              <v001:CustomerReference>""" + event["return_id"] + """</v001:CustomerReference>
-            </v001:ReturnInfo>
-          </v001:getReturnLabelRequest>
-       </soapenv:Body>
-    </soapenv:Envelope>"""
-
-  headers = {'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
-
-  response = requests.post(os.environ["BPOST_RETURN_LABEL_URI"], data=xml, headers=headers).text
-
-  data = xmltodict.parse(response)
-
-  c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])
-  bucket = c.get_bucket("srbstickers", validate=False)
-  name_file = str(time.time()) + ".pdf"
-  k = Key(bucket)
-  k.key = name_file
-  k.contentType="application/pdf"
-  k.ContentDisposition="inline"
-  k.set_contents_from_string(data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF'].decode('base64'))
-  shipment_id = data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:Leg3']['msg:ItemInfo']['msg:Code']
-
-  link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
-
-
-  final_response = {
-    "origin": event["origin"],
-    "destination": event["destination"],
-    "parcel": event["parcel"],
-    "shipment_id": shipment_id,
-    "label_url": link_pdf
+  result = {
+      "available": available,
+      "response_time": response_time,
+      "timeout": timeout,
+      "limit": 30000
   }
-
-  return final_response
-
+  return result
