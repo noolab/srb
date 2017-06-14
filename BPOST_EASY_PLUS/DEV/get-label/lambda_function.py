@@ -108,7 +108,7 @@ def getLabel(event,context):
     "origin": event["origin"],
     "destination": event["destination"],
     "parcel": event["parcel"],
-    "shipment_id": ,
+    "shipment_id": shipment_id,
     "label_url": link_pdf
   }
 

@@ -1,10 +1,7 @@
 import datetime
 import requests
 import re
-import xml.etree.ElementTree as ET
 import time
-import os
-import xmltodict
 
 def getStatus(event,context):
 
