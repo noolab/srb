@@ -9,60 +9,42 @@ def getStatus(event, context):
   response_time = 0
 
   try:
-      response = requests.post(
-          url = "https://rraw4ebe2c.execute-api.eu-central-1.amazonaws.com/sandbox/label",
-          headers = {
-              "Content-Type": "application/json; charset=utf-8",
-          },
-          data = json.dumps({
-              "destination": {
-                  "state": "IDF",
-                  "country_code": "FR",
-                  "email": "",
-                  "phone": "0688997788",
-                  "company": "Company Destination",
-                  "zipcode": "75001",
-                  "line1": "59 rue des petits champs",
-                  "street_number": "",
-                  "first_name": "Leo",
-                  "city": "Paris",
-                  "shipment_id": "return_id_at_srb",
-                  "last_name": "Martin",
-                  "country": "France",
-                  "name": "Leo Martin",
-                  "line2": ""
-              },
-              "return_id": "9999",
-              "parcel": {
-                  "height_in_cm": 10,
-                  "weight_in_grams": 1950,
-                  "width_in_cm": 10,
-                  "length_in_cm": 10
-              },
-              "contents": "TESTS",
-              "origin": {
-                  "state": "",
-                  "country": "France",
-                  "country_code": "FR",
-                  "phone": "0622889977",
-                  "place_description": "At home",
-                  "company": "Company Origin",
-                  "zipcode": "94000",
-                  "line1": "11 avenue de la habette",
-                  "street_number": "",
-                  "first_name": "Ithyvan",
-                  "city": "CRETEIL",
-                  "last_name": "Schreys",
-                  "email": "eddy@shoprunback.com",
-                  "name": "Ithyvan Schreys",
-                  "line2": ""
-              },
-              "shipment_date": "2017-06-10"
-          })
-      )
-  except requests.exceptions.RequestException:
-      available = False
-      response_time = -1
+    xml = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
+       <soapenv:Header/>
+       <soapenv:Body>
+          <v001:getReturnLabelRequest>
+            <v001:ContractInfo>
+              <v001:ContractID>""" + os.environ["BPOST_CONTRACT_ID"] + """</v001:ContractID>
+            </v001:ContractInfo>
+            <v001:Addressee>
+                <v001:Name>Ithyvan SCHREYS</v001:Name>
+                <v001:Streetname>avenue de la habette</v001:Streetname>
+                <v001:Streetnumber>11</v001:Streetnumber>
+                <v001:PostalCode>94000</v001:PostalCode>
+                <v001:MunicipalityName>CRETEIL</v001:MunicipalityName>
+                <v001:CountryISO2Code>FR</v001:CountryISO2Code>
+            </v001:Addressee>
+            <v001:Sender>
+              <v001:Name>Leo MARTIN</v001:Name>
+              <v001:Streetname>59 rue des petits champs</v001:Streetname>
+              <v001:Streetnumber>59</v001:Streetnumber>
+              <v001:PostalCode>75001</v001:PostalCode>
+              <v001:MunicipalityName>PARIS</v001:MunicipalityName>
+              <v001:CountryISO2Code>FR</v001:CountryISO2Code>
+            </v001:Sender>
+            <v001:ReturnInfo>
+              <v001:CustomerReference>123456789</v001:CustomerReference>
+            </v001:ReturnInfo>
+          </v001:getReturnLabelRequest>
+       </soapenv:Body>
+    </soapenv:Envelope>"""
+
+    headers = {'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
+
+    response = requests.post(os.environ["BPOST_RETURN_LABEL_URI"], data=xml, headers=headers).text
+  except:
+    available = False
+    response_time = -1
 
   if response_time == 0:
     response_time = time.time() - start
