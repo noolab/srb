@@ -1,0 +1,14 @@
+packages/setupfiles/__init__.py
+packages/setupfiles/dist.py
+packages/setupfiles/setup.py
+packages/setupfiles/attrs/__init__.py
+packages/setupfiles/attrs/dependency_links.py
+packages/setupfiles/attrs/entry_points.py
+packages/setupfiles/attrs/install_requires.py
+packages/setupfiles/attrs/packages.py
+packages/setupfiles/attrs/py_modules.py
+packages/setupfiles/attrs/scripts.py
+setupfiles.egg-info/PKG-INFO
+setupfiles.egg-info/SOURCES.txt
+setupfiles.egg-info/dependency_links.txt
+setupfiles.egg-info/top_level.txt

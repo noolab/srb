@@ -7,19 +7,27 @@ import base64
 import datetime
 import re
 import os
+from random import randrange
 # import tinys3
 from boto.s3.connection import S3Connection
 def getLabel(event,context):
 	date = datetime.datetime.now()
 	datenow=re.sub(r'\s.*','',str(date))
+
+
+	origin_country=str(event["origin"]["country"])
+	if origin_country=="FR":
+		shipperAccountNumber= os.environ["SHIPPER_ACCOUNT_NUMBER_EXPORT"]
+	else:
+		shipperAccountNumber=os.environ["SHIPPER_ACCOUNT_NUMBER_IMPORT"]
+		
+	# origin_country == "FR" and ShipperAccountNumber = os.environ["SHIPPER_ACCOUNT_NUMBER_EXPORT"] or ShipperAccountNumber = os.environ["SHIPPER_ACCOUNT_NUMBER_IMPORT"]
+
 	messageTime=str(datenow)+"T11:28:56.000-08:00"
-
-
+	messageReference=str(randrange(0,10000000000000000000000000000000))
 	if "shipment_date" not in event:
 		return "shipmentdate is missing..."
-
 	shipmentdate=str(event["shipment_date"])
-
 	if shipmentdate=="":
 		return "shipmentdate is missing..."
 
@@ -78,7 +86,7 @@ def getLabel(event,context):
 		destination_name=""
 	else:
 		destination_name=str(event["destination"]["name"])
-	
+
 	if "phone" not in event["destination"]:
 		destination_phone=""
 	else:
@@ -93,7 +101,7 @@ def getLabel(event,context):
 	if "last_name" not in event["destination"]:
 		return "destination_lastname is missing .."
 	destination_lastname=str(event["destination"]["last_name"])
-	
+
 	if destination_firstname=="":
 		return "destination_firstname cannot be empty."
 
@@ -124,7 +132,7 @@ def getLabel(event,context):
 		parcel_height_in_cm=""
 	else:
 		parcel_height_in_cm=str(event["parcel"]["height_in_cm"])
-	
+
 
 	if "length_in_cm" not in event["parcel"]:
 		parcel_length_in_cm=""
@@ -135,9 +143,9 @@ def getLabel(event,context):
 	# 	return "parcel_length_in_cm cannot be 0"
 
 	if "contents" not in event:
-		content=""
+		contents=""
 	else:
-		content= str(event["contents"])
+		contents= str(event["contents"])
 
 	if "first_name" not in event["origin"]:
 		origin_firstname=""
@@ -181,7 +189,6 @@ def getLabel(event,context):
 	if "country" not in event["origin"]:
 		return "origin_country is missing"
 
-	origin_country=str(event["origin"]["country"])
 	if origin_country=="":
 		return "origin_country cannot be empty"
 
@@ -227,99 +234,99 @@ def getLabel(event,context):
 		origin_packagelocation=str(event["origin"]["place_description"])
 	# if origin_packagelocation=='':
 	# 	return "origin_packagelocation cannot be empty"
-	xml="""  <?xml version="1.0" encoding="UTF-8" ?> 
+	xml="""  <?xml version="1.0" encoding="UTF-8" ?>
 	 <req:ShipmentRequest xmlns:req="http://www.dhl.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dhl.com ship-val-global-req.xsd" schemaVersion="1.0">
 	 <Request>
-	 <ServiceHeader> 
+	 <ServiceHeader>
 	  <MessageTime>"""+messageTime+"""</MessageTime>
-	  <MessageReference>1234567890123456789012345678901</MessageReference>
-	  <SiteID>"""+os.environ["DHL_USERID"]+"""</SiteID> 
+	  <MessageReference>"""+messageReference+"""</MessageReference>
+	  <SiteID>"""+os.environ["DHL_USERID"]+"""</SiteID>
 	  <Password>"""+os.environ["DHL_PWD"]+"""</Password>
 	  </ServiceHeader>
 	  </Request>
-	  <RegionCode>EU</RegionCode> 
-	  <NewShipper>Y</NewShipper> 
-	  <LanguageCode>en</LanguageCode> 
-	  <PiecesEnabled>Y</PiecesEnabled> 
+	  <RegionCode>EU</RegionCode>
+	  <NewShipper>Y</NewShipper>
+	  <LanguageCode>en</LanguageCode>
+	  <PiecesEnabled>Y</PiecesEnabled>
 	 <Billing>
-	  <ShipperAccountNumber>223932540</ShipperAccountNumber> 
-	  <ShippingPaymentType>S</ShippingPaymentType> 
-	  <BillingAccountNumber>223932540</BillingAccountNumber> 
-	  <DutyPaymentType>R</DutyPaymentType> 
+	  <ShipperAccountNumber>"""+shipperAccountNumber+"""</ShipperAccountNumber>
+	  <ShippingPaymentType>S</ShippingPaymentType>
+	  <BillingAccountNumber>"""+shipperAccountNumber+"""</BillingAccountNumber>
+	  <DutyPaymentType>R</DutyPaymentType>
 	  </Billing>
 	 <Consignee>
-	  <CompanyName>"""+destination_company+"""</CompanyName> 
-	  <AddressLine>"""+destination_line1+"""</AddressLine> 
-	  <City>"""+destination_city+"""</City> 
-	  <Division>"""+destination_state+"""</Division> 
-	  <PostalCode>"""+destination_zipcode+"""</PostalCode> 
-	  <CountryCode>"""+destination_countryCode+"""</CountryCode> 
-	  <CountryName>"""+destination_country+"""</CountryName> 
+	  <CompanyName>"""+destination_company+"""</CompanyName>
+	  <AddressLine>"""+destination_line1+"""</AddressLine>
+	  <City>"""+destination_city+"""</City>
+	  <Division>"""+destination_state+"""</Division>
+	  <PostalCode>"""+destination_zipcode+"""</PostalCode>
+	  <CountryCode>"""+destination_countryCode+"""</CountryCode>
+	  <CountryName>"""+destination_country+"""</CountryName>
 	 <Contact>
-	  <PersonName>"""+destination_firstname+" "+destination_lastname+"""</PersonName> 
+	  <PersonName>"""+destination_firstname+" "+destination_lastname+"""</PersonName>
 	  <PhoneNumber>"""+destination_phone+"""</PhoneNumber>
 	  <Email>"""+destination_email+"""</Email>
-	  <MobilePhoneNumber>"""+destination_phone+"""</MobilePhoneNumber> 
+	  <MobilePhoneNumber>"""+destination_phone+"""</MobilePhoneNumber>
 	</Contact>
 	  </Consignee>
 	 <Commodity>
-	  <CommodityCode>"""+destination_shipmentId+"""</CommodityCode> 
+	  <CommodityCode>"""+destination_shipmentId+"""</CommodityCode>
 	  </Commodity>
 	 <ShipmentDetails>
-	  <NumberOfPieces>1</NumberOfPieces> 
+	  <NumberOfPieces>1</NumberOfPieces>
 	 <Pieces>
 	 <Piece>
-	  <PieceID>1</PieceID> 
-	  <PackageType>YP</PackageType> 
-	  <Weight>"""+parcel_weight_in_grams+"""</Weight> 
-	  <Width>"""+parcel_width_in_cm+"""</Width> 
-	  <Height>"""+parcel_height_in_cm+"""</Height> 
-	  <Depth>"""+parcel_length_in_cm+"""</Depth> 
+	  <PieceID>1</PieceID>
+	  <PackageType>YP</PackageType>
+	  <Weight>"""+parcel_weight_in_grams+"""</Weight>
+	  <Width>"""+parcel_width_in_cm+"""</Width>
+	  <Height>"""+parcel_height_in_cm+"""</Height>
+	  <Depth>"""+parcel_length_in_cm+"""</Depth>
 	  </Piece>
 	  </Pieces>
-	  <Weight>"""+parcel_weight_in_grams+"""</Weight> 
-	  <WeightUnit>K</WeightUnit> 
-	  <GlobalProductCode>D</GlobalProductCode> 
-	  <Date>"""+shipmentdate+"""</Date>  
-	  <DimensionUnit>C</DimensionUnit> 
-	  <Content>"""+content+"""</Content>
-	  <CurrencyCode>EUR</CurrencyCode> 
+	  <Weight>"""+parcel_weight_in_grams+"""</Weight>
+	  <WeightUnit>K</WeightUnit>
+	  <GlobalProductCode>D</GlobalProductCode>
+	  <Date>"""+shipmentdate+"""</Date>
+	  <Contents>"""+contents+"""</Contents>
+	  <DimensionUnit>C</DimensionUnit>
+	  <CurrencyCode>EUR</CurrencyCode>
 	  </ShipmentDetails>
 	 <Shipper>
-	  <ShipperID>12345</ShipperID> 
-	  <CompanyName>"""+origin_company+"""</CompanyName> 
-	  <AddressLine>"""+origin_line1+"""</AddressLine> 
-	  <AddressLine>"""+origin_line2+"""</AddressLine> 
-	  <City>"""+origin_city+"""</City> 
-	  <Division></Division> 
-	  <PostalCode>"""+origin_zipcode+"""</PostalCode> 
-	  <CountryCode>"""+origin_countrycode+"""</CountryCode> 
-	  <CountryName>"""+origin_country+"""</CountryName> 
+	  <ShipperID>"""+shipperAccountNumber+"""</ShipperID>
+	  <CompanyName>"""+origin_company+"""</CompanyName>
+	  <AddressLine>"""+origin_line1+"""</AddressLine>
+	  <AddressLine>"""+origin_line2+"""</AddressLine>
+	  <City>"""+origin_city+"""</City>
+	  <Division></Division>
+	  <PostalCode>"""+origin_zipcode+"""</PostalCode>
+	  <CountryCode>"""+origin_countrycode+"""</CountryCode>
+	  <CountryName>"""+origin_country+"""</CountryName>
 	 <Contact>
 	  <PersonName>"""+origin_firstname+" "+origin_lastname+"""</PersonName>
-	  <PhoneNumber>"""+origin_phone+"""</PhoneNumber> 
-	  <Email>"""+origin_email+"""</Email> 
+	  <PhoneNumber>"""+origin_phone+"""</PhoneNumber>
+	  <Email>"""+origin_email+"""</Email>
 	  </Contact>
 	  </Shipper>
 	  <SpecialService>
   	<SpecialServiceType>PT</SpecialServiceType>
-  	</SpecialService> 
+  	</SpecialService>
 	 <Place>
-	  <ResidenceOrBusiness>R</ResidenceOrBusiness> 
-	  <CompanyName>"""+origin_company+"""</CompanyName> 
+	  <ResidenceOrBusiness>R</ResidenceOrBusiness>
+	  <CompanyName>"""+origin_company+"""</CompanyName>
 	  <AddressLine>"""+origin_line1+"""</AddressLine>
-	  <City>"""+origin_city+"""</City> 
-	  <CountryCode>"""+origin_countrycode+"""</CountryCode> 
-	  <Division>"""+origin_state+"""</Division> 
-	  <PostalCode>"""+origin_zipcode+"""</PostalCode> 
-	  <PackageLocation>"""+origin_packagelocation+"""</PackageLocation> 
+	  <City>"""+origin_city+"""</City>
+	  <CountryCode>"""+origin_countrycode+"""</CountryCode>
+	  <Division>"""+origin_state+"""</Division>
+	  <PostalCode>"""+origin_zipcode+"""</PostalCode>
+	  <PackageLocation>"""+origin_packagelocation+"""</PackageLocation>
 	  </Place>
-	  <EProcShip>N</EProcShip> 
+	  <EProcShip>N</EProcShip>
   	<LabelImageFormat>PDF</LabelImageFormat>
 	</req:ShipmentRequest>"""
 	print xml
-	c = boto.connect_s3(os.environ["S3_PUB_KEY"], os.environ["S3_PRV_KEY"])
-	b = c.get_bucket(os.environ["S3_BUCKET_NAME"], validate=False)
+	c = boto.connect_s3("AKIAJKZ7KCBQFGFGD2ZA", "2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61")
+	b = c.get_bucket("srbstickers", validate=False)
 	print b
 	headers = {'Content-Type': 'application/xml'} # set what your server accepts
 	resp=requests.post('https://xmlpitest-ea.dhl.com/XMLShippingServlet', data=xml, headers=headers).text
@@ -327,7 +334,7 @@ def getLabel(event,context):
 	# print resp
 
 	# conn = tinys3.Connection('AKIAJIXKF5KD5RGPMTNQ','riG3NZfR8CpC2monYlvUaBXIFkYfKTw6nD8Q4',tls=True,endpoint='s3.us-east-2.amazonaws.com')
-	
+
 
 	root = ET.fromstring(resp)
 	data=[]
@@ -345,7 +352,7 @@ def getLabel(event,context):
 		k.ContentDisposition="inline"
 		# k.set_contents_from_string(img_data)
 		k.set_contents_from_string(img_data.decode('base64'))
-		link_pdf=os.environ["S3_URL"]+name_file
+		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
 	#-------------
 	allroot = ET.fromstring(resp)
