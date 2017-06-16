@@ -5,8 +5,10 @@
            "company": "withings",
            "street_number": "21 rue du bas",
            "zipcode": "92000",
-           "city": "nanterre"
+           "city": "nanterre",
+           "phone": "0677889988"
            },
    "destination":{"shipment_id": "11111aaaa1111"},
+   "parcel" : {},
    "dropoff_informations":{"dropoff_point_id": "C1193"}
 }

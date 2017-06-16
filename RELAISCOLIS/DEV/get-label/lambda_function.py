@@ -24,19 +24,30 @@ import datetime
 from zeep import Client
 
 def getLabel(event,context):
-    connection_file = open('abc.json', 'r')
-    conn_string = json.load(connection_file)
-    firstName = conn_string['origin']['first_name']
-    lastName = conn_string['origin']['last_name']
-    company = conn_string['origin']['company']
-    streetNumber = conn_string['origin']['street_number']
-    zipCode = conn_string['origin']['zipcode']
-    city = conn_string['origin']['city']
-    dpi = conn_string['dropoff_informations']['dropoff_point_id']
-    shipment_id = conn_string['destination']['shipment_id']
-    return_id = conn_string['return_id']
-    dropoff_point_id = conn_string['dropoff_informations']['dropoff_point_id']
+    # TEST JSON : TO DELETE AFTER IMPLEMENTATION IN LAMBDA
+    # connection_file = open('sample.json', 'r')
+    # conn_string = json.load(connection_file)
+    # firstName = conn_string['origin']['first_name']
+    # lastName = conn_string['origin']['last_name']
+    # company = conn_string['origin']['company']
+    # streetNumber = conn_string['origin']['street_number']
+    # zipCode = conn_string['origin']['zipcode']
+    # city = conn_string['origin']['city']
+    # shipment_id = conn_string['destination']['shipment_id']
+    # return_id = conn_string['return_id']
+    # phoneNumber = conn_string['origin']['phone']
+    # dropoff_point_id = conn_string['dropoff_informations']['dropoff_point_id']
 
+    firstName = event['origin']['first_name']
+    lastName = event['origin']['last_name']
+    company = event['origin']['company']
+    streetNumber = event['origin']['street_number']
+    zipCode = event['origin']['zipcode']
+    city = event['origin']['city']
+    shipment_id = event['destination']['shipment_id']
+    return_id = event['return_id']
+    phone = event['origin']['phone']
+    dropoff_point_id = event['dropoff_informations']['dropoff_point_id']
 
     # REQUEST SOAP ON RELAIS COLIS API
     xml = """<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -51,13 +62,13 @@ def getLabel(event,context):
     <listRetourRequest>
     <RetourRequest>
     <CodeEnseigne>SL</CodeEnseigne>
-    <NumCommande>99999</NumCommande>
-    <NumClient>99999</NumClient>
-    <NomClient>ITHYVAN SCHREYS</NomClient>
-    <NomClient4Lettre>SCHR</NomClient4Lettre>
-    <CodeRelais>C1194</CodeRelais>
-    <Teldomicile>0199334422</Teldomicile>
-    <TelPortable>0677889955</TelPortable>
+    <NumCommande>""" + return_id + """</NumCommande>
+    <NumClient>""" + return_id + """</NumClient>
+    <NomClient>""" + firstName + " " + lastName + """</NomClient>
+    <NomClient4Lettre>""" + lastName[:4] +  """</NomClient4Lettre>
+    <CodeRelais>""" + dropoff_point_id + """</CodeRelais>
+    <Teldomicile>""" + phoneNumber + """</Teldomicile>
+    <TelPortable>""" + phoneNumber + """</TelPortable>
     <ReferenceEnseigne>RefReturnsPolicy</ReferenceEnseigne>
     <TypeMateriel>00</TypeMateriel>
     <ListPrestations></ListPrestations>
@@ -183,11 +194,22 @@ def getLabel(event,context):
     # k.set_contents_from_string(c)
 
     # link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
-
     # print(link_pdf)
 
-    # return link_pdf
-    # TODO : METTRE LE LABEL SUR AWS S3
-    # TODO : METTRE LE LABEL SUR AWS S3
-    # TODO : METTRE LE LABEL SUR AWS S3
+    final_response = {
+        "origin": event["origin"],
+        "destination": event["destination"],
+        "parcel": event["parcel"],
+        "shipment_id": transport_return_number,
+        "label_url": "TODO WITH S3 IMPLEMENTATION"
+      }
 
+    # TEST JSON : TO DELETE AFTER IMPLEMENTATION IN LAMBDA
+    # final_response = {
+    #     "origin": conn_string["origin"],
+    #     "destination": conn_string["destination"],
+    #     "parcel": conn_string["parcel"],
+    #     "shipment_id": transport_return_number,
+    #     "label_url": "TODO WITH S3 IMPLEMENTATION"
+    #   }
+    return final_response
