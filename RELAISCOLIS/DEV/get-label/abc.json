@@ -1,0 +1,12 @@
+{
+  "return_id": "9898",
+  "origin": {"first_name": "Ithyvan",
+           "last_name": "Schreys" ,
+           "company": "withings",
+           "street_number": "21 rue du bas",
+           "zipcode": "92000",
+           "city": "nanterre"
+           },
+   "destination":{"shipment_id": "11111aaaa1111"},
+   "dropoff_informations":{"dropoff_point_id": "C1193"}
+}
