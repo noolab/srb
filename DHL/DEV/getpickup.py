@@ -4,6 +4,10 @@ import datetime
 import re
 import time
 import os
+
+
+DHL_USERID="SRBFrance"
+DHL_PWD="jXxlVhceKE"
 def getpickup(event,context):
 	# date = datetime.datetime.now()
 	datenow=str(datetime.datetime.now())
@@ -129,8 +133,8 @@ def getpickup(event,context):
 	        <ServiceHeader>
 	        <MessageTime>"""+messageTime+"""</MessageTime>
 	        <MessageReference>1234567890123456789012345678901</MessageReference>
-	  	    <SiteID>"""+os.environ["DHL_USERID"]+"""</SiteID> 
-	  	    <Password>"""+os.environ["DHL_PWD"]+"""</Password> 
+	  	    <SiteID>"""+DHL_USERID+"""</SiteID> 
+	  	    <Password>"""+DHL_PWD+"""</Password> 
 	        </ServiceHeader>
 	    </Request>
 	    <RegionCode>EU</RegionCode>
@@ -191,6 +195,36 @@ def getpickup(event,context):
 			}
 		]
 	except:
+
 		return resp
 		#data={"messageError":"pickup_id not found! Please check your input again"}
+	print data
 	return data
+event={
+      "requestor": {
+        "name": "Djibril",
+        "phone": "+855886697345",
+        "company": "Nagadev"
+      },
+      "place": {
+        "line1": "166 Street 118",
+        "line2": "Sangkat Phsar Chaas",
+        "package_location": "Phsaar",
+        "city": "Paris",
+        "post_code": "95380",
+        "country_code": "FR"
+      },
+      "pickup": {
+        "pickup_date": "2017-06-08",
+        "slot_id": "11111",
+        "ready_by_time": "01:00",
+        "close_time": "23:00",
+        "number_of_pieces": 1,
+        "special_instructions": "Be careful its my computer"
+      },
+      "shipment_details": {
+        "number_of_pieces": 1,
+        "weight": 1
+      }
+}
+print getpickup(event,"context")
