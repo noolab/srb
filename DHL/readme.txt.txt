@@ -1,13 +1,19 @@
 New URL of Frankfurt implementation with Framework and Store in S3
 
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/URL/SERVICE
+
+DHL
+
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/price
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/label
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/type
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/status
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/slots
 
 
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhl/
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhl/price
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhl/label
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhl/type
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhl/status
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhl/pickup
-https://syv7b0ska9.execute-api.eu-central-1.amazonaws.com/dhlpickup/slots
-
+RELAISCOLIS
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/dropoffpoints 
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/status
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/type
