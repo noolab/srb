@@ -9,9 +9,15 @@ def getStatus(event, context):
   available = True
   response_time = 0
 
+  # TO ADD TO ENV VARs
+  # COURIIER_APIKEY = 8411eecbb657112d7ff930080adb8d73
+  # COURIIER_BASE_URI = https://dropit.soixanteseize-lab.com/ecommerce/
+
+  response = requests.get("https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (date.today() + relativedelta(days=+1)).strftime('%Y-%m-%d') + "&dateTo=" + (date.today() + relativedelta(days=+8)).strftime('%Y-%m-%d'), headers=headers)
+
   try:
     headers = {'apikey': '8411eecbb657112d7ff930080adb8d73'}
-    response = requests.get("https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=2017-06-15&dateTo=2017-06-22", headers=headers)
+    response = requests.get("https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (date.today() + relativedelta(days=+1)).strftime('%Y-%m-%d') + "&dateTo=" + (date.today() + relativedelta(days=+8)).strftime('%Y-%m-%d'), headers=headers)
   except:
     available = False
     response_time = -1
