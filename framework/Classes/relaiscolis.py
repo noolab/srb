@@ -7,6 +7,7 @@ from BuiltInService import xmltodict
 import xml.etree.ElementTree as ET
 import base64
 import boto
+# from botocore.client import Config
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
 import time
@@ -211,8 +212,9 @@ class relaiscolis(Service):
 		transport_return_number = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['NumRetour']
 		cab_number = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['NumCAB']
 
-		name_file = '/tmp/'+str(time.time()) + ".pdf"
-		c = canvas.Canvas(name_file)
+		name_file = str(time.time()) + ".pdf"
+		pathToFile='/tmp/'+name_file
+		c = canvas.Canvas(pathToFile)
 		c.setLineWidth(.3)
 		c.setFont('Helvetica', 12)
 		c.drawString(70,820,'BORDEREAU A COLLER SUR LE COLIS')
@@ -227,10 +229,10 @@ class relaiscolis(Service):
 		c.rect(140,700,350,60, stroke=1, fill=0)
 		srbLogo = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/srb_logo.jpg') #'Assets/relaiscolis/images/srb_logo.jpg'
 		# srbLogo = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Assets/relaiscolis/images/srb_logo.jpg')
-		# c.drawImage(srbLogo,240,705, width= 130, height= 50,mask='auto')
+		c.drawImage(srbLogo,240,705, width= 130, height= 50,mask='auto')
 		#c.showPage();
-		relaisColisLogo = 'Assets/relaiscolis/images/relais-colis_logo.jpeg'
-		# c.drawImage(relaisColisLogo, 60, 705, width= 45, height= 50)
+		relaisColisLogo = ImageReader("https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/relais-colis_logo.jpeg") #'Assets/relaiscolis/images/relais-colis_logo.jpeg'
+		c.drawImage(relaisColisLogo, 60, 705, width= 45, height= 50,mask='auto')
 
 		c.drawString(45,680, 'EXPEDITEUR :')
 		c.drawString(200,680, firstName + " " + lastName)
@@ -255,8 +257,9 @@ class relaiscolis(Service):
 		c.drawString(200,470,'59 rue des petits champs')
 		c.drawString(200,455,'75001 PARIS')
 		c.rect(30,40,530,60, stroke=1, fill=0)
-		srbLogo = 'srb_logo.jpg'
-		# c.drawImage(srbLogo, 320, 215, width= 130, height= 50)
+		# srbLogo = 'srb_logo.jpg'
+		srbLogo = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/srb_logo.jpg') #'Assets/relaiscolis/images/srb_logo.jpg'
+		c.drawImage(srbLogo, 320, 215, width= 130, height= 50,mask='auto')
 		# LOGO RELAIS COLIS
 		relaisColisLogo = 'relais-colis_logo.jpeg'
 		# c.drawImage(relaisColisLogo, 60, 215, width= 45, height= 50)
@@ -273,12 +276,24 @@ class relaiscolis(Service):
 		c.drawString(160,45,'Cachet commercial du commercant : ' + '...............')
 		c.save()
 
+		c = boto.connect_s3(os.environ["S3_KEY1"], os.environ["S3_KEY2"])
+		b = c.get_bucket("srbstickers", validate=False)
+
+		k = Key(b)
+		k.key = name_file
+		k.contentType="application/pdf"
+		k.ContentDisposition="inline"
+		# k.set_contents_from_string(img_data.decode('base64'))
+		k.set_contents_from_filename(pathToFile)
+		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
+
+
 		data = {
 			"origin": event["origin"],
 			"destination": event["destination"],
 			"parcel": event["parcel"],
 			"shipment_id": transport_return_number,
-			"label_url": "TODO WITH S3 IMPLEMENTATION"
+			"label_url": link_pdf
 		}
 		return data
 
