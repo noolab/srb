@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<req:ShipmentRequest
+  xmlns:req="http://www.dhl.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.dhl.com ship-val-global-req.xsd" schemaVersion="1.0">
+  <Request>
+    <ServiceHeader>
+      <MessageTime>2002-08-20T11:28:56.000-08:00</MessageTime>
+      <MessageReference>1234567890123456789012345678901</MessageReference>
+      <SiteID>IDClient</SiteID>
+      <Password>Password123</Password>
+    </ServiceHeader>
+  </Request>
+  <RegionCode>EU</RegionCode>
+  <NewShipper>N</NewShipper>
+  <LanguageCode>en</LanguageCode>
+  <PiecesEnabled>Y</PiecesEnabled>
+  <Billing>
+    <ShipperAccountNumber>123456789</ShipperAccountNumber>
+    <ShippingPaymentType>S</ShippingPaymentType>
+    <BillingAccountNumber>123456789</BillingAccountNumber>
+    <DutyPaymentType>R</DutyPaymentType>
+  </Billing>
+  <Consignee>
+    <CompanyName>ABM Life Centre</CompanyName>
+    <AddressLine>Central 1</AddressLine>
+    <City>Brussels</City>
+    <Division></Division>
+    <PostalCode>1000</PostalCode>
+    <CountryCode>BE</CountryCode>
+    <CountryName>Belgium</CountryName>
+    <Contact>
+      <PersonName>raobeert bere</PersonName>
+      <PhoneNumber>11234-325423</PhoneNumber>
+      <Email>nl@email.com</Email>
+      <MobilePhoneNumber></MobilePhoneNumber>
+    </Contact>
+  </Consignee>
+  <Commodity>
+    <CommodityCode>cc</CommodityCode>
+  </Commodity>
+  <ShipmentDetails>
+    <NumberOfPieces>1</NumberOfPieces>
+    <Pieces>
+      <Piece>
+        <PieceID>1</PieceID>
+        <PackageType>YP</PackageType>
+        <Weight>35</Weight>
+        <Width>120</Width>
+        <Height>130</Height>
+        <Depth>100</Depth>
+      </Piece>
+    </Pieces>
+    <Weight>55</Weight>
+    <WeightUnit>K</WeightUnit>
+    <GlobalProductCode>D</GlobalProductCode>
+    <Date>2014-07-17</Date>
+    <Contents>For testing purpose only. Please do not ship</Contents>
+    <DoorTo>DD</DoorTo>
+    <DimensionUnit>C</DimensionUnit>
+    <InsuredAmount>00.00</InsuredAmount>
+    <PackageType>EE</PackageType>
+    <IsDutiable>N</IsDutiable>
+    <CurrencyCode>EUR</CurrencyCode>
+  </ShipmentDetails>
+  <Shipper>
+    <ShipperID>12345</ShipperID>
+    <CompanyName>COTE ET CIEL</CompanyName>
+    <AddressLine>84 RUE BEAUBOURG</AddressLine>
+    <AddressLine></AddressLine>
+    <City>PARIS</City>
+    <Division></Division>
+    <PostalCode>75003</PostalCode>
+    <CountryCode>FR</CountryCode>
+    <CountryName>FRANCE</CountryName>
+    <Contact>
+      <PersonName>enquiry sing</PersonName>
+      <PhoneNumber>11234-325423</PhoneNumber>
+      <Email>test@anc.com</Email>
+    </Contact>
+  </Shipper>
+  <SpecialService>
+    <SpecialServiceType>PT</SpecialServiceType>
+  </SpecialService>
+  <Place>
+    <ResidenceOrBusiness>R</ResidenceOrBusiness>
+    <CompanyName>COTE ET CIEL</CompanyName>
+    <AddressLine>84 RUE BEAUBOURG</AddressLine>
+    <City>PARIS</City>
+    <CountryCode>FR</CountryCode>
+    <Division>FR</Division>
+    <PostalCode>75003</PostalCode>
+    <PackageLocation>reception</PackageLocation>
+  </Place>
+  <EProcShip>N</EProcShip>
+  <LabelImageFormat>PDF</LabelImageFormat>
+</req:ShipmentRequest>

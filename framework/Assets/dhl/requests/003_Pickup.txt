@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<req:BookPURequest xsi:schemaLocation="http://www.dhl.com book-pickup-global-req_EA.xsd" schemaVersion="1.0" xmlns:req="http://www.dhl.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Request>
+        <ServiceHeader>
+            <MessageTime>2013-08-03T11:28:56.000-08:00</MessageTime>
+            <MessageReference>1234567890123456789012345678901</MessageReference>
+  	    <SiteID></SiteID> 
+  	    <Password></Password> 
+        </ServiceHeader>
+    </Request>
+    <RegionCode>EU</RegionCode>
+    <Requestor>
+        <AccountType>D</AccountType>
+        <AccountNumber>223932540</AccountNumber>
+        <RequestorContact>
+            <PersonName>Rikhil</PersonName>
+            <Phone>23162</Phone>
+        </RequestorContact>
+        <CompanyName>Saurabh</CompanyName>
+    </Requestor>
+   <Place>
+	<LocationType>B</LocationType>        
+	<CompanyName>Test and Co</CompanyName>        
+	<Address1>123 Test Ave</Address1>       
+        <Address2>Test Bus Park</Address2>        
+	<PackageLocation>Reception</PackageLocation>        
+	<City>PARIS</City>        
+	<CountryCode>FR</CountryCode>        
+	<PostalCode>75018</PostalCode>        
+</Place>
+    <Pickup>
+        <PickupDate>2014-07-17</PickupDate>
+        <ReadyByTime>10:20</ReadyByTime>
+        <CloseTime>17:20</CloseTime>
+        <SpecialInstructions>1 palett of 200 kgs - Vehicule avec hayon</SpecialInstructions> 
+     </Pickup>
+    <PickupContact>
+        <PersonName>Subhayu</PersonName>
+        <Phone>4801313131</Phone>
+    </PickupContact>
+   <ShipmentDetails>
+        <AccountType>D</AccountType>
+        <AccountNumber>123456789</AccountNumber>
+        <NumberOfPieces>1</NumberOfPieces>
+        <Weight>200</Weight>
+        <WeightUnit>K</WeightUnit>
+        <GlobalProductCode>D</GlobalProductCode>
+        <DoorTo>DD</DoorTo>
+        <Pieces>
+        </Pieces>
+        <SpecialService>I</SpecialService>
+    </ShipmentDetails>
+</req:BookPURequest>
