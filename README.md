@@ -27,7 +27,7 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/label
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/status
 
 COURRIER
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/ \n
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/ <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/type \n
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/slots \n
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/status \n
