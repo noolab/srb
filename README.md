@@ -1,33 +1,34 @@
-# srb
-srb
-New URL of Frankfurt implementation with Framework
+# srb <br />
+srb <br />
+New URL of Frankfurt implementation with Framework <br />
 
 
-DHL
+DHL <br />
 
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/price
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/label
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/type
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/status
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/slots
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/ <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/price <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/label <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/type <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/status <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/slots <br />
 
 
-RELAISCOLIS
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/label
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/dropoffpoints 
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/status
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/type
+RELAISCOLIS <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/label <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/dropoffpoints  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/status <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/type <br />
 
-BPOSTEASYPLUS
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/label
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/status
+BPOSTEASYPLUS <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/ <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/label <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/status <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/type <br />
 
-COURRIER
+COURRIER <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/ <br />
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/type \n
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/slots \n
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/status \n
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/type <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/slots <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/status <br />
