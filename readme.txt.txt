@@ -1,4 +1,4 @@
-New URL of Frankfurt implementation with Framework and Store in S3
+New URL of Frankfurt implementation with Framework
 
 
 DHL
@@ -14,12 +14,14 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/slots
 
 RELAISCOLIS
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/label
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/dropoffpoints 
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/status
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/type
 
 BPOSTEASYPLUS
-   already put in framework but has some problem with lxml package
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/label
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/bposteasyplus/status
 
 COURIIER
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/

@@ -10,6 +10,7 @@ from boto.s3.connection import S3Connection
 import time
 from BuiltInService import xmltodict
 import datetime
+from Modules.data_validator import Validator 
 # from lxml import etree
 
 BPOST_EASY_PLUS_URL = os.environ["BPOST_RETURN_LABEL_URI"]
@@ -93,7 +94,7 @@ class bposteasyplus(Service):
 
 
 
-	def label(sef,event):
+	def label(sef,userparamlist):
 		#tree = ET.parse('Assets/bpostEasyPlus/request/xmlrequest.txt')
 		#root = tree.getroot()
 
@@ -101,6 +102,17 @@ class bposteasyplus(Service):
 		# root.find("soapenv:Body/v001:getReturnLabelRequest/v001:ContractInfo/v001:ContractID").text = BPOST_CONTRACT_ID
 		
 		# xmlresult = ET.tostring(root, encoding='ascii', method='xml')
+		event={}
+		event["destination"]["line2"] = ""
+		event["origin"]["line2"] = ""
+		req_list=["destination/line1","origin/line1","destination/street_number","destination/zipcode","destination/city","destination/country_code","origin/street_number",
+		"origin/name","origin/zipcode","origin/city","origin/country_code","return_id"]
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			event=userparamlist
+		else:
+			return checkparamlist["message"]
+
 		full_destination_address = event["destination"]["line1"] + " " + event["destination"]["line2"]
 		full_origin_address = event["origin"]["line1"] + " " + event["origin"]["line2"]
 		xmlresult="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
