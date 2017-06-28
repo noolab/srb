@@ -187,8 +187,8 @@ class bposteasyplus(Service):
 		false=False
 		data={
 			"type": "postal",
-			"postal": false,
-			"pickup": true,
+			"postal": true,
+			"pickup": false,
 			"dropoff": false,
 			"linehaul": false
 		}

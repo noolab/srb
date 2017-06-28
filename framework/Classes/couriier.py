@@ -34,7 +34,11 @@ class couriier(Service):
 
 		try:
 			headersConfig = {'apikey': '8411eecbb657112d7ff930080adb8d73'}
-			response = netw.sendRequest(urlreq, "", "get", headersConfig,"")
+			date = datetime.datetime.now()
+			tmr = date + datetime.timedelta(days=1)
+			eightDay = date + datetime.timedelta(days=8)
+			urlreq="https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
+			response = netw.sendRequestHeaderConfig(urlreq, "", "get", headersConfig)
 		except:
 			available = False
 			response_time = -1
