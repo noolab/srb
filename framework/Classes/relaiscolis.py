@@ -63,7 +63,7 @@ class relaiscolis(Service):
 		# CALL
 		try:
 			# response = requests.get(uri)
-			response = netw.sendRequest(uri,'','get','','')
+			response = netw.sendRequestHeaderConfig(uri,'','get','')
 		except:
 			available = False
 			response_time = -1

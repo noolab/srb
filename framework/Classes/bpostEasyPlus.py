@@ -20,10 +20,10 @@ class bposteasyplus(Service):
 	"""docstring for bposteasyplus"""
 	def root(self, paramlist):
 		true=True
-		# false=False
-		# data={"/": {"get": true},"/type": {"get": true},"/label": {"get": true},"/price": {"get": false},"/status": {"get": true}}
+		false=False
+		data={"/": {"get": true},"/type": {"get": true},"/label": {"get": true},"/price": {"get": false},"/status": {"get": true}}
 
-		# return data
+		return data
 
 	def status(self, paramlist):
 		start = time.time()
@@ -72,7 +72,7 @@ class bposteasyplus(Service):
 
 		headersConfig = {'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
 		try:
-			xmlresponse = netw.sendRequest(BPOST_EASY_PLUS_URL, xmlresult, "post", headersConfig, "xml")
+			xmlresponse = netw.sendRequestHeaderConfig(BPOST_EASY_PLUS_URL, xmlresult, "post", headersConfig)
 		except:
 			available = False
 			response_time = -1
@@ -103,10 +103,13 @@ class bposteasyplus(Service):
 		
 		# xmlresult = ET.tostring(root, encoding='ascii', method='xml')
 		event={}
+		event["destination"] = {}
+		event["origin"] = {}
 		event["destination"]["line2"] = ""
 		event["origin"]["line2"] = ""
 		req_list=["destination/line1","origin/line1","destination/street_number","destination/zipcode","destination/city","destination/country_code","origin/street_number",
 		"origin/name","origin/zipcode","origin/city","origin/country_code","return_id"]
+		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			event=userparamlist

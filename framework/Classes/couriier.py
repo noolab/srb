@@ -66,3 +66,10 @@ class couriier(Service):
 		url="https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
 		response = netw.sendRequestHeaderConfig(url, "", "get", headers)
 		return response.text
+
+	def type(self,paramlist):
+		true=True
+		false=False
+		data={"type": "pickup","postal": false,"pickup": true,"dropoff": false,"linehaul": false}
+
+		return data

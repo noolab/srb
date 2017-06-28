@@ -417,12 +417,13 @@ class dhl(Service):
 	def type(self,paramlist):
 		print ("status function")
 		true=True
+		false=False
 		data={
 			"type": "postal",
-			"postal": true,
+			"postal": false,
 			"pickup": true,
-			"dropoff": true,
-			"linehaul": true
+			"dropoff": false,
+			"linehaul": false
 		}
 		return data
 
