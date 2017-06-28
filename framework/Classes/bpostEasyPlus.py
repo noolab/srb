@@ -182,4 +182,16 @@ class bposteasyplus(Service):
 
 		return final_response
 
+	def type(self,paramlist):
+		true=True
+		false=False
+		data={
+			"type": "postal",
+			"postal": false,
+			"pickup": true,
+			"dropoff": false,
+			"linehaul": false
+		}
+		return data
+
 		
