@@ -256,24 +256,46 @@ class relaiscolis(Service):
 		c.drawString(200,485,'SHOPRUNBACK')
 		c.drawString(200,470,'59 rue des petits champs')
 		c.drawString(200,455,'75001 PARIS')
-		c.rect(30,40,530,60, stroke=1, fill=0)
+
+		c.drawString(45,410,'AGENCE :')
+		c.drawString(200,410,'Relais Colis')
+		c.drawString(200,395,'7 rue de l’Ormeteau')
+		c.drawString(200,380,'ZAC de l’Orme Rond')
+		c.drawString(200,365,'77170 SERVON')
+		c.rect(430,340,70,60, stroke=1, fill=0 ) #petite rectangle P3
+		c.drawString(460,365,'P3')
+
+		c.line(50,320,520,320)
+		c.drawString(40,318,'<')
+		c.drawString(522,318,'>')
+
+		c.drawString(70,300,'BORDEREAU A PRESENTER AU COMMERCANT ET A CONSERVER')
+		c.drawString(70,280,'DATE LIMITE DE DEPOT : ' + date_limite_depot.strftime("%Y-%m-%d"))
+		# c.rect(30,40,530,60, stroke=1, fill=0)
 		# srbLogo = 'srb_logo.jpg'
+
 		srbLogo = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/srb_logo.jpg') #'Assets/relaiscolis/images/srb_logo.jpg'
+		c.rect(140,210,450,60, stroke=1, fill=0)
 		c.drawImage(srbLogo, 320, 215, width= 130, height= 50,mask='auto')
+
 		# LOGO RELAIS COLIS
-		relaisColisLogo = 'relais-colis_logo.jpeg'
-		# c.drawImage(relaisColisLogo, 60, 215, width= 45, height= 50)
+		# relaisColisLogo = 'relais-colis_logo.jpeg'
+		c.drawImage(relaisColisLogo, 60, 215, width= 45, height= 50)
+
 		c.drawString(45,190, 'EXPEDITEUR : ')
 		c.drawString(200,190, firstName + " " + lastName)
 		c.drawString(200,175, 'No Colis Retour : ' + transport_return_number)
+
 		c.drawString(45,140,'DESTINAIRE :')
 		c.drawString(200,140,'SHOPRUNBACK')
 		c.drawString(200,125,'95 rue des petits champs')
 		c.drawString(200,110,'75001 PARIS')
+
 		c.rect(30,40,530,60, stroke=1, fill=0)
 		c.drawString(160,85,'Date remise : ' + '..../..../....')
 		c.drawString(160,65,'Relais Colis No : ' + dropoff_point_id)
 		c.drawString(160,45,'Cachet commercial du commercant : ' + '...............')
+
 		c.save()
 
 		c = boto.connect_s3(os.environ["S3_KEY1"], os.environ["S3_KEY2"])

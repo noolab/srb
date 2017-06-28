@@ -145,8 +145,11 @@ class bposteasyplus(Service):
 		k.key = name_file
 		k.contentType="application/pdf"
 		k.ContentDisposition="inline"
+		# k.set_contents_from_string(data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF'].decode('base64'))
+		img_data=data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF']
+		k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))	
+	
 		try:
-			k.set_contents_from_string(data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF'].decode('base64'))
 			shipment_id = data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:Leg3']['msg:ItemInfo']['msg:Code']
 		except:
 			return xmlresponse

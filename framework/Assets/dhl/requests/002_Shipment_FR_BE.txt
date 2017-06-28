@@ -38,6 +38,9 @@
   <Commodity>
     <CommodityCode>cc</CommodityCode>
   </Commodity>
+  <Reference>
+    <ReferenceID>cc</ReferenceID>
+  </Reference>
   <ShipmentDetails>
     <NumberOfPieces>1</NumberOfPieces>
     <Pieces>

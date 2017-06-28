@@ -309,6 +309,7 @@ class dhl(Service):
 		root.find("Consignee/Contact/MobilePhoneNumber").text = paramlist["destination"]["phone"]
 
 		root.find("Commodity/CommodityCode").text = paramlist["destination"]["shipment_id"]
+		root.find("Reference/ReferenceID").text = paramlist["destination"]["shipment_id"]
 		# root.find("ShipmentDetails/NumberOfPieces").text = destination_shipmentId
 		root.find("ShipmentDetails/Pieces/Piece/Weight").text = str(parcel_weight_in_grams)
 		root.find("ShipmentDetails/Pieces/Piece/Width").text = str(paramlist["parcel"]["width_in_cm"])
