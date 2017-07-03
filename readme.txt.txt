@@ -27,3 +27,5 @@ COURIIER
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/slots
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/status
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/type
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/pickup

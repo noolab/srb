@@ -149,7 +149,7 @@ class dhl(Service):
 			xmlroot = ET.fromstring(xmlresponse)
 		except:
 			available=False
-		response_time=-1
+			response_time=-1
 
 		if response_time==0:
 			response_time=time.time()-start
@@ -245,8 +245,8 @@ class dhl(Service):
 		paramlist["parcel"]["height_in_cm"] = ""
 		paramlist["parcel"]["length_in_cm"] = ""
 		paramlist["contents"] = ""
-		paramlist["origin"]["first_name"] = ""
-		paramlist["origin"]["last_name"] = ""
+		# paramlist["origin"]["first_name"] = ""
+		# paramlist["origin"]["last_name"] = ""
 		paramlist["origin"]["company"] = ""
 		paramlist["origin"]["line2"] = ""
 		paramlist["origin"]["zipcode"] = ""
@@ -256,8 +256,7 @@ class dhl(Service):
 		
 		instance = Validator()
 		req_list=["origin/city","shipment_date","destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
-		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name",
-		"origin/email"]
+		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
@@ -327,7 +326,7 @@ class dhl(Service):
 		root.find("Shipper/PostalCode").text = paramlist["origin"]["zipcode"]
 		root.find("Shipper/CountryCode").text = paramlist["origin"]["country_code"]
 		root.find("Shipper/CountryName").text = paramlist["origin"]["country"]
-		root.find("Shipper/Contact/PersonName").text = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+		# root.find("Shipper/Contact/PersonName").text = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
 		root.find("Shipper/Contact/PhoneNumber").text = paramlist["origin"]["phone"]
 		root.find("Shipper/Contact/Email").text = paramlist["origin"]["email"]
 
@@ -420,8 +419,8 @@ class dhl(Service):
 		false=False
 		data={
 			"type": "postal",
-			"postal": false,
-			"pickup": true,
+			"postal": true,
+			"pickup": false,
 			"dropoff": false,
 			"linehaul": false
 		}

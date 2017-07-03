@@ -1,5 +1,5 @@
 from BuiltInService import requests
-
+import json
 class networking(object):
     """docstring for object_converter"""
 
@@ -39,5 +39,7 @@ class networking(object):
             resp = requests.get(url,headers=headersConfig)
         return resp
 
-
+    def sendPOSTRequestJSON(url,values,requestType,headersConfig):
+        resp = requests.post(url, data=json.dumps(values), headers=headersConfig).text
+        return resp
     # more networking functions can be implemted here...

@@ -7,7 +7,8 @@ from BuiltInService import xmltodict
 import xml.etree.ElementTree as ET
 import base64
 import boto
-# from botocore.client import Config
+from Modules.data_validator import Validator 
+
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
 import time
@@ -137,10 +138,20 @@ class relaiscolis(Service):
 		return data
 
 
-	def label(self,event):
+	def label(self,userparamlist):
 
-		tree = ET.parse('Assets/relaiscolis/request/labelxml.txt')
-		root = tree.getroot()
+		# tree = ET.parse('Assets/relaiscolis/request/labelxml.txt')
+		# root = tree.getroot()
+
+
+		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/zipcode","origin/city"
+		"destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","return_id"]
+		instance = Validator()
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			event=userparamlist
+		else:
+			return checkparamlist["message"]
 
 		firstName = event['origin']['first_name']
 		lastName = event['origin']['last_name']

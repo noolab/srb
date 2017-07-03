@@ -3,6 +3,7 @@ from Classes.relaiscolis import relaiscolis
 from Classes.parcel import parcel
 from Classes.bpostEasyPlus import bposteasyplus
 from Classes.couriier import couriier
+from Classes.royalmail import royalmail
 class ServiceManager(object):
 		
 	def call_service(self, company, service, paramlist):

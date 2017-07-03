@@ -76,9 +76,9 @@
     <CountryCode>FR</CountryCode>
     <CountryName>FRANCE</CountryName>
     <Contact>
-      <PersonName>enquiry sing</PersonName>
-      <PhoneNumber>11234-325423</PhoneNumber>
-      <Email>test@anc.com</Email>
+      <PersonName></PersonName>
+      <PhoneNumber></PhoneNumber>
+      <Email></Email>
     </Contact>
   </Shipper>
   <SpecialService>
