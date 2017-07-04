@@ -32,3 +32,4 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/ <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/type <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/slots <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/status <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/pickup <br />
