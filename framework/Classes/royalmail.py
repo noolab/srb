@@ -180,7 +180,7 @@ class royalmail(Service):
 		            <v2:shippingDate>"""+paramlist["shipment_date"]+"""</v2:shippingDate>
 	               <v2:recipientContact>
 	                  <v2:name>"""+paramlist["destination"]["name"]+"""</v2:name>
-	                  <v2:complementaryName>Egypt Post</v2:complementaryName>
+	                  <v2:complementaryName></v2:complementaryName>
 	                  <v2:telephoneNumber>
 	                     <countryCode>0044</countryCode>
 	                     <telephoneNumber>"""+paramlist["destination"]["phone"]+"""</telephoneNumber>
@@ -352,14 +352,14 @@ class royalmail(Service):
 		         <v2:outputFormat>PDF</v2:outputFormat>
 		         <v2:localisedAddress>
 		            <v2:recipientContact>
-		               <v2:name>ddddddd</v2:name>
-		               <v2:complementaryName>dddddddddd</v2:complementaryName>
+		               <v2:name>"""+paramlist["destination"]["name"]+"""</v2:name>
+		               <v2:complementaryName></v2:complementaryName>
 		            </v2:recipientContact>
 		            <v2:recipientAddress>
-		           	<addressLine1> 1 dddd</addressLine1>
-		               <addressLine2>ddd</addressLine2>
+		           	<addressLine1>"""+paramlist["destination"]["line1"]+"""</addressLine1>
+		               <addressLine2>"""+paramlist["destination"]["line2"]+"""</addressLine2>
 		               <postTown>ddd</postTown>
-		               <postcode>245678</postcode>
+		               <postcode>"""+paramlist["destination"]["zipcode"]+"""</postcode>
 		            </v2:recipientAddress>
 		         </v2:localisedAddress>
 		      </v2:printLabelRequest>
