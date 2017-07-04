@@ -33,3 +33,9 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/type <br /
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/slots <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/status <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/couriier/pickup <br />
+
+ROYALMAIL  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail   <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail/label   <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail/type  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail/status <br/>
