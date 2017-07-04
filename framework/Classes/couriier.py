@@ -1,6 +1,7 @@
 from Classes.AbstractService import Service
 from Modules.data_converter import data_converter as converter
 from Modules.network import networking as netw
+from Modules.data_validator import Validator 
 import os
 import xml.etree.ElementTree as ET
 import time
@@ -80,36 +81,23 @@ class couriier(Service):
 		return data
 
 
-	def pickup(self,paramlist):
+	def pickup(self,userparamlist):
 		print("pickup fucntion")
 		url = "https://dropit.soixanteseize-lab.com/ecommerce/orders"
 		headers={"apiKey": "8411eecbb657112d7ff930080adb8d73","Content-Type": "application/json"}
-		data={  
-		   "datas":[  
-		      	{  
-		         	"offerIdTarifs":"NPP-CLASSIC",
-		         	"pickupName":"Test Mission",
-		         	"pickupLatitude":"55.685800",
-		         	"pickupLongitude":"12.584826",
-		         	"pickupAddress":"21 rue des filles du calvaire",
-		         	"pickupAddress2":"Digicode test",
-			        "pickupZip":"75003",
-			        "pickupCity":"Paris",
-			        "pickupTel":"0671844487",
-			        "recipientName":"Test Campaign",
-			        "recipientLatitude":"48.86302",
-			        "recipientLongitude":"2.366132",
-			        "recipientAddress":"9 rue du faubourg saint Denis",
-			        "recipientAddress2":"Digicode test",
-			        "recipientZip":"75010",
-			        "recipientCity":"Paris",
-			        "recipientTel":"0671844487",
-			        "deliveryType":"BAL",
-			        "pickupTimeManagement":"2017-07-05 15:00:00"
-		    	}
-		   ]
-		}
-		 # "datas": "[{\"offerIdTarifs\": \"NPP-CLASSIC\",\"pickupName\": "+paramlist["requestor"]["name"]+",\"pickupLatitude\": "+str(paramlist["place"]["latitude"])+",\"pickupLongitude\": "+str(paramlist["place"]["longitude"])+",\"pickupAddress\": "+paramlist["place"]["line1"]+",\"pickupAddress2\": "+paramlist["place"]["line2"]+",\"pickupZip\": "+paramlist["place"]["post_code"]+",\"pickupCity\": "+paramlist["place"]["city"]+",\"pickupTel\": "+paramlist["requestor"]["phone"]+",\"recipientName\": "+paramlist["destination"]["name"]+",\"recipientLatitude\": "+str(paramlist["destination"]["latitude"])+",\"recipientLongitude\": "+str(paramlist["destination"]["longitude"])+",\"recipientAddress\": "+paramlist["destination"]["line1"]+",\"recipientAddress2\": "+paramlist["destination"]["line2"]+",\"recipientZip\": "+paramlist["destination"]["zipcode"]+",\"recipientCity\": "+paramlist["destination"]["city"]+",\"recipientTel\": "+paramlist["destination"]["phone"]+",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": "+paramlist["pickup"]["pickup_date"]+"}]"
+		paramlist = {}
+		paramlist["requestor"] = {}
+		paramlist["plcae"] = {}
+		paramlist["plcae"]["line2"] = ""
+		paramlist["destination"] = {}
+		paramlist["destination"]["line2"] = ""
+		req_list=["requestor/name","place/latitude","place/longitude","place/line1","place/post_code","place/city","requestor/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/pickup_date"]
+		instance = Validator()
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			paramlist=userparamlist
+		else:
+			return checkparamlist["message"]
 		data_sender=json.dumps({
             "datas": "[{\"offerIdTarifs\": \"NPP-CLASSIC\",\"pickupName\": \""+paramlist["requestor"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["place"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["place"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["place"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["place"]["line2"]+"\",\"pickupZip\": \""+paramlist["place"]["post_code"]+"\",\"pickupCity\": \""+paramlist["place"]["city"]+"\",\"pickupTel\": \""+paramlist["requestor"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
         })

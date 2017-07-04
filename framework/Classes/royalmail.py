@@ -109,11 +109,30 @@ class royalmail(Service):
 
 		return [passwordDigest,encodedNonce,creationDate]
 
-	def label(self,paramlist):
+	def label(self,userparamlist):
 		auth=self.getAuth()
 		auth_pwd= auth[0].decode("utf-8")
 		auth_nonce= auth[1].decode("utf-8")
 		auth_created= str(auth[2])  #.decode('utf-8')
+
+		paramlist={}
+		paramlist["origin"]={}
+		paramlist["origin"]["line2"]=""
+		paramlist["destination"]={}
+		paramlist["destination"]["line2"]=""
+		paramlist["destination"]["email"]=""
+		paramlist["parcel"]={}
+		paramlist["parcel"]["weight_in_grams"]=""
+		paramlist["parcel"]["length_in_cm"]=""
+		paramlist["parcel"]["width_in_cm"] = ""
+		paramlist["parcel"]["height_in_cm"] =""
+		req_list=["destination/line1","origin/line1","shipment_date","destination/name","destination/phone","destination/zipcode","destination/country_code"]
+		instance = Validator()
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			paramlist=userparamlist
+		else:
+			return checkparamlist["message"]
 
 		payload = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:v2="http://www.royalmailgroup.com/api/ship/V2" xmlns:v1="http://www.royalmailgroup.com/integration/core/V1">
 		   <soapenv:Header>
@@ -158,29 +177,29 @@ class royalmail(Service):
 		                  <code>E</code>
 		               </serviceFormatCode>
 		            </v2:serviceFormat>
-		            <v2:shippingDate>2017-07-04</v2:shippingDate>
-		            <v2:recipientContact>
-		               <v2:name>John Smith</v2:name>
-		               <v2:complementaryName>Egypt Post</v2:complementaryName>
-		               <v2:telephoneNumber>
-		                  <countryCode>0044</countryCode>
-		                  <telephoneNumber>07801123456</telephoneNumber>
-		               </v2:telephoneNumber>
-		               <v2:electronicAddress>
-		                  <electronicAddress>tom.smith@royalmail.com</electronicAddress>
-		               </v2:electronicAddress>
-		            </v2:recipientContact>
-		            <v2:recipientAddress>
-		               <addressLine1>1 The Pyramids</addressLine1>
-		               <addressLine2>Valley of the Kings</addressLine2>
-		               <postTown>Cairo</postTown>
-		               <postcode>245678</postcode>
-		               <country>
-		                  <countryCode>
-		                     <code>EG</code>
-		                  </countryCode>
-		               </country>
-		            </v2:recipientAddress>
+		            <v2:shippingDate>"""+paramlist["shipment_date"]+"""</v2:shippingDate>
+	               <v2:recipientContact>
+	                  <v2:name>"""+paramlist["destination"]["name"]+"""</v2:name>
+	                  <v2:complementaryName>Egypt Post</v2:complementaryName>
+	                  <v2:telephoneNumber>
+	                     <countryCode>0044</countryCode>
+	                     <telephoneNumber>"""+paramlist["destination"]["phone"]+"""</telephoneNumber>
+	                  </v2:telephoneNumber>
+	                  <v2:electronicAddress>
+	                     <electronicAddress>"""+paramlist["destination"]["email"]+"""</electronicAddress>
+	                  </v2:electronicAddress>
+	               </v2:recipientContact>
+	               <v2:recipientAddress>
+	                  <addressLine1>"""+paramlist["destination"]["line1"]+"""</addressLine1>
+	                  <addressLine2>"""+paramlist["destination"]["line2"]+"""</addressLine2>
+	                  <postTown>Cairo</postTown>
+	                  <postcode>"""+paramlist["destination"]["zipcode"]+"""</postcode>
+	                  <country>
+	                     <countryCode>
+	                        <code>"""+paramlist["destination"]["country_code"]+"""</code>
+	                     </countryCode>
+	                  </country>
+	               </v2:recipientAddress>
 		            <v2:customerReference>CustSuppRef1</v2:customerReference>
 		            <v2:senderReference>SenderReference1</v2:senderReference>
 		            <v2:internationalInfo>
@@ -192,7 +211,7 @@ class royalmail(Service):
 		                              <code>g</code>
 		                           </unitOfMeasureCode>
 		                        </unitOfMeasure>
-		                        <value>503</value>
+		                        <value>"""+str(paramlist["parcel"]["weight_in_grams"])+"""</value>
 		                     </v2:weight>
 		                     <v2:length>
 		                        <unitOfMeasure>
@@ -200,7 +219,7 @@ class royalmail(Service):
 		                              <code>g</code>
 		                           </unitOfMeasureCode>
 		                        </unitOfMeasure>
-		                        <value>1</value>
+		                        <value>"""+str(paramlist["parcel"]["length_in_cm"])+"""</value>
 		                     </v2:length>
 		                     <v2:height>
 		                        <unitOfMeasure>
@@ -208,7 +227,7 @@ class royalmail(Service):
 		                              <code>cm</code>
 		                           </unitOfMeasureCode>
 		                        </unitOfMeasure>
-		                        <value>1</value>
+		                        <value>"""+str(paramlist["parcel"]["height_in_cm"])+"""</value>
 		                     </v2:height>
 		                     <v2:width>
 		                        <unitOfMeasure>
@@ -216,7 +235,7 @@ class royalmail(Service):
 		                              <code>cm</code>
 		                           </unitOfMeasureCode>
 		                        </unitOfMeasure>
-		                        <value>1</value>
+		                        <value>"""+str(paramlist["parcel"]["width_in_cm"])+"""</value>
 		                     </v2:width>
 		                     <v2:purposeOfShipment>
 		                        <code>31</code>
@@ -368,7 +387,7 @@ class royalmail(Service):
 		try:
 			img_data=dataresult['SOAP-ENV:Envelope']['SOAP-ENV:Body']['printLabelResponse']['label']
 		except:
-			return dataresult
+			return responsePrint
 
 		k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))	
 		
