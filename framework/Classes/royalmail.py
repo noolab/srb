@@ -21,7 +21,13 @@ import random
 import http.client
 # import requests
 conn = http.client.HTTPSConnection("api.royalmail.net")
-ROYALMAIL_URL='https://api.royalmail.net/shipping/v2'
+ROYALMAIL_URL= os.environ["ROYALMAIL_URL"]
+ROYALMAIL_AUTH_PWD = os.environ["ROYALMAIL_AUTH_PWD"]
+ROYALMAIL_USERNAME =	os.environ["ROYALMAIL_USERNAME"]
+ROYALMAIL_APPID = os.environ["ROYALMAIL_APPID"]
+ROYALMAIL_TRANSACTIONID = os.environ["ROYALMAIL_TRANSACTIONID"]
+ROYALMAIL_CLIENT_ID = os.environ["ROYALMAIL_CLIENT_ID"]
+ROYALMAIL_SECRET_ID = os.environ["ROYALMAIL_SECRET_ID"]
 class royalmail(Service):
 
 	def root(self,paramlist):
@@ -89,7 +95,7 @@ class royalmail(Service):
 		return result
 
 	def getAuth(self):
-		password = 'Password2014!'
+		password = ROYALMAIL_AUTH_PWD
 		creationDate =  time.strftime('%Y-%m-%dT%H:%M:%SZ', time.localtime(time.time()))
 		
 		nonce =  str(random.randint(0,9999999999))+''
@@ -138,7 +144,7 @@ class royalmail(Service):
 		   <soapenv:Header>
 		<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
 		                   <wsse:UsernameToken>
-		                      <wsse:Username>pete@cbfulfilment.co.ukAPI</wsse:Username>
+		                      <wsse:Username>"""+ROYALMAIL_USERNAME+"""</wsse:Username>
 		                      <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">""" + auth_pwd + """</wsse:Password>
 		                      <wsse:Nonce EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary">""" + auth_nonce+ """</wsse:Nonce>
 		                      <wsu:Created>""" +auth_created+ """</wsu:Created>
@@ -150,31 +156,31 @@ class royalmail(Service):
 		         <v2:integrationHeader>
 		            <v1:version>2</v1:version>
 		            <v1:identification>
-		               <v1:applicationId>RMG-API-G-01</v1:applicationId>
-		               <v1:transactionId>00228383</v1:transactionId>
+		               <v1:applicationId>"""+ROYALMAIL_APPID+"""</v1:applicationId>
+		               <v1:transactionId>"""+ROYALMAIL_TRANSACTIONID+"""</v1:transactionId>
 		            </v1:identification>
 		         </v2:integrationHeader>
 		         <v2:requestedShipment>
 		            <!--Optional:-->
 		            <v2:shipmentType>
-		               <code>Delivery</code>
+		               <code>Return</code>
 		            </v2:shipmentType>
 		            <!--Optional:-->
 		            <v2:serviceOccurrence>1</v2:serviceOccurrence>
 		            <!--Optional:-->
 		            <v2:serviceType>
-		               <code>I</code>
+		               <code>R</code>
 		            </v2:serviceType>
 		            <!--Optional:-->
 		            <v2:serviceOffering>
 		               <serviceOfferingCode>
-		                  <code>OLA</code>
+		                  <code>TSS</code>
 		               </serviceOfferingCode>
 		            </v2:serviceOffering>
 		            <!--Optional:-->
 		            <v2:serviceFormat>
-		               <serviceFormatCode>
-		                  <code>E</code>
+		            	<serviceFormatCode>
+		            		<code>E</code>
 		               </serviceFormatCode>
 		            </v2:serviceFormat>
 		            <v2:shippingDate>"""+paramlist["shipment_date"]+"""</v2:shippingDate>
@@ -311,8 +317,8 @@ class royalmail(Service):
 		</soapenv:Envelope>"""
 
 		headersConfig = {
-		    'x-ibm-client-id': "411e31ec-80c1-4798-a5d3-3214fb0b8e91",
-		    'x-ibm-client-secret': "B5tG1bR3lS7mD4jY3fK8tT0fI3eU0wQ5tK4rW8hO4uG2kE7pH4",
+		    'x-ibm-client-id': ROYALMAIL_CLIENT_ID,
+		    'x-ibm-client-secret': ROYALMAIL_SECRET_ID,
 		    'soapaction': "createShipment",
 		    'content-type': "text/xml",
 		    'accept': "application/xml"
@@ -367,8 +373,8 @@ class royalmail(Service):
 		</soapenv:Envelope>
 		"""
 		headersConfig2 = {
-		    'x-ibm-client-id': "411e31ec-80c1-4798-a5d3-3214fb0b8e91",
-		    'x-ibm-client-secret': "B5tG1bR3lS7mD4jY3fK8tT0fI3eU0wQ5tK4rW8hO4uG2kE7pH4",
+		    'x-ibm-client-id': ROYALMAIL_CLIENT_ID,
+		    'x-ibm-client-secret': ROYALMAIL_SECRET_ID,
 		    'soapaction': "printLabel",
 		    'content-type': "text/xml",
 		    'accept': "application/xml"

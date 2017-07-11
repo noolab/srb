@@ -9,6 +9,9 @@ import datetime
 import json
 import re
 
+COURIIER_PICKUP_URL=os.environ["COURIIER_PICKUP_URL"]
+COURIIER_HEADERS_APIKEY =  os.environ["COURIIER_HEADERS_APIKEY"]
+COURIIER_URL_REQ = os.environ["COURIIER_URL_REQ"]
 class couriier(Service):
 
 	def root(self,paramlist):
@@ -35,11 +38,11 @@ class couriier(Service):
 		response_time = 0
 
 		try:
-			headersConfig = {'apikey': '8411eecbb657112d7ff930080adb8d73'}
+			headersConfig = {'apikey': COURIIER_HEADERS_APIKEY}
 			date = datetime.datetime.now()
 			tmr = date + datetime.timedelta(days=1)
 			eightDay = date + datetime.timedelta(days=8)
-			urlreq="https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
+			urlreq=COURIIER_URL_REQ + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
 			response = netw.sendRequestHeaderConfig(urlreq, "", "get", headersConfig)
 		except:
 			available = False
@@ -63,13 +66,13 @@ class couriier(Service):
 		return result
 
 	def slots(self ,paramlist):
-		headers = {'apikey': '8411eecbb657112d7ff930080adb8d73'}
+		headers = {'apikey': COURIIER_HEADERS_APIKEY}
 		# today = datetime.date.today()
 		# url="https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (today + relativedelta(days=+1)).strftime('%Y-%m-%d') + "&dateTo=" + (today + relativedelta(days=+8)).strftime('%Y-%m-%d')
 		date = datetime.datetime.now()
 		tmr = date + datetime.timedelta(days=1)
 		eightDay = date + datetime.timedelta(days=8)
-		url="https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
+		url=COURIIER_URL_REQ + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
 		response = netw.sendRequestHeaderConfig(url, "", "get", headers)
 		return json.loads(response.text)
 
@@ -83,8 +86,8 @@ class couriier(Service):
 
 	def pickup(self,userparamlist):
 		print("pickup fucntion")
-		url = "https://dropit.soixanteseize-lab.com/ecommerce/orders"
-		headers={"apiKey": "8411eecbb657112d7ff930080adb8d73","Content-Type": "application/json"}
+		url = COURIIER_PICKUP_URL
+		headers={"apiKey": COURIIER_HEADERS_APIKEY,"Content-Type": "application/json"}
 		paramlist = {}
 		paramlist["requestor"] = {}
 		paramlist["plcae"] = {}

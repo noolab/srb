@@ -25,7 +25,10 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
-RELAISCOLIS_URL="http://www.relaiscolis.com/WSRetourSwap/WSRetourV2.asmx?WSDL"
+RELAISCOLIS_URL= os.environ["RELAISCOLIS_URL"]
+RELAISCOLIS_USERNAME = os.environ["RELAISCOLIS_USERNAME"]
+RELAISCOLIS_PWD = os.environ["RELAISCOLIS_PWD"]
+RELAISCOLIS_URL_STATUS_DROPOFF = os.environ["RELAISCOLIS_URL_STATUS_DROPOFF"]
 class relaiscolis(Service):
 
 	def root(self,paramlist):
@@ -57,7 +60,7 @@ class relaiscolis(Service):
 		lat = '48.8640556'
 		lng = '2.3478669'
 		# CREATE URI
-		uri = "http://apir.viamichelin.com/apir/1/FindPOI.xml?db=169676&center=" + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
+		uri = RELAISCOLIS_URL_STATUS_DROPOFF + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
 		start = time.time()
 		available = True
 		response_time = 0
@@ -89,7 +92,7 @@ class relaiscolis(Service):
 		lng = paramlist["longitude"]
 		lat = paramlist["latitude"]
 		# CREATE URI
-		uri = "http://apir.viamichelin.com/apir/1/FindPOI.xml?db=169676&center=" + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
+		uri = RELAISCOLIS_URL_STATUS_DROPOFF + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
 			# CALL
 
 		# response = requests.get(uri)
@@ -144,8 +147,7 @@ class relaiscolis(Service):
 		# root = tree.getroot()
 
 
-		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/zipcode","origin/city"
-		"destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","return_id"]
+		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/zipcode","origin/city","destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","return_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -189,8 +191,8 @@ class relaiscolis(Service):
 		xml = """<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
 	    <soap:Header>
 	    <ServiceAuthHeader xmlns="http://www.relaiscolis.com/WSRetourV2/">
-	    <UserName>wsretsl15</UserName>
-	    <Password>rwsl2015</Password>
+	    <UserName>"""+RELAISCOLIS_USERNAME+"""</UserName>
+	    <Password>"""+RELAISCOLIS_PWD+"""</Password>
 	    </ServiceAuthHeader>
 	    </soap:Header>
 	    <soap:Body>
