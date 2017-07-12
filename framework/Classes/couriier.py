@@ -26,6 +26,9 @@ class couriier(Service):
 			"pickup/slots": {
 				"get": true
 			},
+			"pickup": {
+				"get": true
+			},
 			"status": {
 				"get": true
 			}
@@ -78,7 +81,7 @@ class couriier(Service):
 		FMT = '%H:%M:%S'
 		data =[]
 		for l in data_json:
-			start_time =l["slot"]["formatted_slot_from"]
+			start_time =l["formatted_date"]+" "+l["slot"]["formatted_slot_from"]
 			s2 = l["slot"]["formatted_slot_to"]
 			s1 = l["slot"]["formatted_slot_from"]
 			duration = datetime.datetime.strptime(s2, FMT) - datetime.datetime.strptime(s1, FMT)

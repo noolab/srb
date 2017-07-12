@@ -39,10 +39,7 @@ class royalmail(Service):
 			"type":{
 				"get":true
 			},
-			"pickup/slots":{
-				"get":true
-			},
-			"price":{
+			"label":{
 				"get":true
 			},
 			"status":{

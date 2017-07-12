@@ -37,7 +37,13 @@ class dhl(Service):
 			"pickup/slots":{
 				"get":true
 			},
+			"pickup":{
+				"get":true
+			},
 			"price":{
+				"get":true
+			},
+			"label":{
 				"get":true
 			},
 			"status":{
