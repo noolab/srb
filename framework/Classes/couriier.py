@@ -65,7 +65,7 @@ class couriier(Service):
 
 		return result
 
-	def slots(self ,paramlist):
+	def pickupslots(self ,paramlist):
 		headers = {'apikey': COURIIER_HEADERS_APIKEY}
 		# today = datetime.date.today()
 		# url="https://dropit.soixanteseize-lab.com/ecommerce/shifts?dateFrom=" + (today + relativedelta(days=+1)).strftime('%Y-%m-%d') + "&dateTo=" + (today + relativedelta(days=+8)).strftime('%Y-%m-%d')
@@ -74,7 +74,50 @@ class couriier(Service):
 		eightDay = date + datetime.timedelta(days=8)
 		url=COURIIER_URL_REQ + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
 		response = netw.sendRequestHeaderConfig(url, "", "get", headers)
-		return json.loads(response.text)
+		data_json = json.loads(response.text)
+		FMT = '%H:%M:%S'
+		data =[]
+		for l in data_json:
+			start_time =l["slot"]["formatted_slot_from"]
+			s2 = l["slot"]["formatted_slot_to"]
+			s1 = l["slot"]["formatted_slot_from"]
+			duration = datetime.datetime.strptime(s2, FMT) - datetime.datetime.strptime(s1, FMT)
+			duration=int(duration.seconds/60 )
+			dt={
+				"formatted_date":l["formatted_date"],
+				"slot":{
+					"start_time":start_time,
+					"duration":duration,
+					"availability":-1
+				}
+			}
+
+			data.append(dt)
+
+		count =1
+		result = []
+		for l in data:
+			if count ==1:
+				dt={
+					"date":l["formatted_date"],
+					"slots":[l["slot"]]
+				}
+				result.append(dt)
+				count =count+1
+			for res in result:
+				if l["formatted_date"] == res["date"]:
+					print ("same date sir--------->")
+					newslot = l["slot"]
+					res["slots"].append(newslot)
+				else:
+					if not any(res['date'] == l["formatted_date"] for res in result):
+						print("diff sir")
+						dt={
+							"date":l["formatted_date"],
+							"slots":[l["slot"]]
+						}
+						result.append(dt)
+		return result
 
 	def type(self,paramlist):
 		true=True
