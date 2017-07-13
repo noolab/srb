@@ -88,6 +88,7 @@ class couriier(Service):
 			duration=int(duration.seconds/60 )
 			dt={
 				"formatted_date":l["formatted_date"],
+				"id":l["id"],
 				"slot":{
 					"start_time":start_time,
 					"duration":duration,
@@ -103,6 +104,7 @@ class couriier(Service):
 			if count ==1:
 				dt={
 					"date":l["formatted_date"],
+					"id":l["id"],
 					"slots":[l["slot"]]
 				}
 				result.append(dt)
@@ -117,10 +119,13 @@ class couriier(Service):
 						print("diff sir")
 						dt={
 							"date":l["formatted_date"],
+							"id":l["id"],
 							"slots":[l["slot"]]
 						}
 						result.append(dt)
-		return result
+
+		final_data_reuslt =sorted(result, key=lambda x: x['date'], reverse=False)
+		return final_data_reuslt
 
 	def type(self,paramlist):
 		true=True
@@ -148,7 +153,7 @@ class couriier(Service):
 		else:
 			return checkparamlist["message"]
 		data_sender=json.dumps({
-            "datas": "[{\"offerIdTarifs\": \"NPP-CLASSIC\",\"pickupName\": \""+paramlist["requestor"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["place"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["place"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["place"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["place"]["line2"]+"\",\"pickupZip\": \""+paramlist["place"]["post_code"]+"\",\"pickupCity\": \""+paramlist["place"]["city"]+"\",\"pickupTel\": \""+paramlist["requestor"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
+            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["requestor"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["place"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["place"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["place"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["place"]["line2"]+"\",\"pickupZip\": \""+paramlist["place"]["post_code"]+"\",\"pickupCity\": \""+paramlist["place"]["city"]+"\",\"pickupTel\": \""+paramlist["requestor"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
         })
         # data_sender = json.dumps(data)
 		response = netw.sendRequestHeaderConfig(url, data_sender, "post", headers)
