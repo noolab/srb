@@ -88,8 +88,8 @@ class couriier(Service):
 			duration=int(duration.seconds/60 )
 			dt={
 				"formatted_date":l["formatted_date"],
-				"id":l["id"],
 				"slot":{
+					"id":l["id"],
 					"start_time":start_time,
 					"duration":duration,
 					"availability":-1
@@ -104,7 +104,6 @@ class couriier(Service):
 			if count ==1:
 				dt={
 					"date":l["formatted_date"],
-					"id":l["id"],
 					"slots":[l["slot"]]
 				}
 				result.append(dt)
@@ -119,7 +118,6 @@ class couriier(Service):
 						print("diff sir")
 						dt={
 							"date":l["formatted_date"],
-							"id":l["id"],
 							"slots":[l["slot"]]
 						}
 						result.append(dt)
