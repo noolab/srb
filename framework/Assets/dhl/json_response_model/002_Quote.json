@@ -1,0 +1,4 @@
+{"PickupDate":"GetQuoteResponse/Response/ServiceHeader/MessageTime",
+					"ProductShortName":"GetQuoteResponse/BkgDetails/QtdShp/ProductShortName",
+					"BookingTime":"GetQuoteResponse/BkgDetails/QtdShp/BookingTime",
+				}

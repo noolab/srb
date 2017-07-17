@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><res:BookPUResponse xmlns:res='http://www.dhl.com' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation= 'http://www.dhl.com pickup-res.xsd'>
+    <Response>
+        <ServiceHeader>
+            <MessageTime>2017-05-25T11:37:22+01:00</MessageTime>
+            <MessageReference>1234567890123456789012345678901</MessageReference>
+            <SiteID>SRBFrance</SiteID>
+        </ServiceHeader>
+    </Response>
+    <RegionCode>EU</RegionCode>
+    <Note>
+        <ActionNote>Success</ActionNote>
+    </Note>
+    <ConfirmationNumber>747</ConfirmationNumber>
+    <ReadyByTime>19:00</ReadyByTime>
+    <CallInTime>19:00</CallInTime></res:BookPUResponse>

@@ -1,0 +1,14 @@
+[
+	{
+		"name":"name",
+		"status":"required"
+	},
+	{
+		"name":"phone",
+		"status":"required"
+	},
+	{
+		"name":"company",
+		"status":"optional"
+	}
+]

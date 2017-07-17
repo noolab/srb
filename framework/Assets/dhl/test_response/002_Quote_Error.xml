@@ -1,0 +1,21 @@
+
+<?xml version="1.0" encoding="UTF-8"?><res:ErrorResponse xmlns:res='http://www.dhl.com' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation= 'http://www.dhl.com err-res.xsd'>
+    <Response>
+        <ServiceHeader>
+            <MessageTime>2017-05-25T11:40:19+01:00</MessageTime>
+            <MessageReference>1234567890123456789012345678901</MessageReference>
+            <SiteID>SRBFrance</SiteID>
+            <Password>SRBFrance</Password>
+        </ServiceHeader>
+        <Status>
+            <ActionStatus>Error</ActionStatus>
+            <Condition>
+                <ConditionCode>111</ConditionCode>
+                <ConditionData>Error in parsing request XML:Error:
+                    Datatype error: In element &apos;Date&apos; : Value
+                    &apos;2015-6-3&apos; is not legal value for current
+                    datatype. &apos;2015-6-3&apos; has wrong format. at
+                    line 19, column 28</ConditionData>
+            </Condition>
+        </Status>
+    </Response></res:ErrorResponse>

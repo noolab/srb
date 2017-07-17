@@ -1,0 +1,27 @@
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Header>
+		<ServiceAuthHeader xmlns="http://www.relaiscolis.com/WSRetourV2/">
+			<UserName>wsretsl15</UserName>
+			<Password>rwsl2015</Password>
+		</ServiceAuthHeader>
+	</soap:Header>
+	<soap:Body>
+		<EnregistrerRetours xmlns="http://www.relaiscolis.com/WSRetourV2/">
+			<listRetourRequest>
+				<RetourRequest>
+					<CodeEnseigne>SL</CodeEnseigne>
+					<NumCommande></NumCommande>
+					<NumClient></NumClient>
+					<NomClient></NomClient>
+					<NomClient4Lettre></NomClient4Lettre>
+					<CodeRelais></CodeRelais>
+					<Teldomicile></Teldomicile>
+					<TelPortable></TelPortable>
+					<ReferenceEnseigne>RefReturnsPolicy</ReferenceEnseigne>
+					<TypeMateriel>00</TypeMateriel>
+					<ListPrestations></ListPrestations>
+				</RetourRequest>
+			</listRetourRequest>
+		</EnregistrerRetours>
+	</soap:Body>
+</soap:Envelope>

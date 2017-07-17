@@ -1,0 +1,1 @@
+These xml files represent response data from HTTP request.
