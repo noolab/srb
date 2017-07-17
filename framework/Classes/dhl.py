@@ -261,7 +261,7 @@ class dhl(Service):
 		paramlist["origin"]["place_description"] =""
 		
 		instance = Validator()
-		req_list=["origin/city","shipment_date","destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
+		req_list=["shipment_date","destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
 		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
