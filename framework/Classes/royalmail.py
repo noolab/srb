@@ -120,8 +120,10 @@ class royalmail(Service):
 
 		paramlist={}
 		paramlist["origin"]={}
+		paramlist["origin"]["line1"]=""
 		paramlist["origin"]["line2"]=""
 		paramlist["destination"]={}
+		paramlist["destination"]["line1"]=""
 		paramlist["destination"]["line2"]=""
 		paramlist["destination"]["email"]=""
 		paramlist["parcel"]={}
@@ -129,7 +131,7 @@ class royalmail(Service):
 		paramlist["parcel"]["length_in_cm"]=""
 		paramlist["parcel"]["width_in_cm"] = ""
 		paramlist["parcel"]["height_in_cm"] =""
-		req_list=["destination/line1","origin/line1","shipment_date","destination/name","destination/phone","destination/zipcode","destination/country_code"]
+		req_list=["shipment_date","destination/name","destination/phone","destination/zipcode","destination/country_code"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -186,8 +188,8 @@ class royalmail(Service):
                  </v2:electronicAddress>
               </v2:recipientContact>
               <v2:recipientAddress>  
-                  <addressLine1>"""+paramlist["destination"]["line1"]+"""</addressLine1>
-                 <addressLine2>"""+paramlist["destination"]["line2"]+"""</addressLine2>
+                  <addressLine1>Clientbase Fulfilment</addressLine1>
+                 <addressLine2>Woodview Road</addressLine2>
                  <postTown>"""+paramlist["destination"]["city"]+"""</postTown>
                  <postcode>"""+paramlist["destination"]["zipcode"]+"""</postcode>
                  <country>
