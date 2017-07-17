@@ -125,6 +125,10 @@ class royalmail(Service):
 		paramlist["destination"]={}
 		paramlist["destination"]["line1"]=""
 		paramlist["destination"]["line2"]=""
+		paramlist["destination"]["first_name"]=""
+		paramlist["destination"]["last_name"]=""
+		paramlist["destination"]["street_number"]=""
+		paramlist["destination"]["country"]=""
 		paramlist["destination"]["email"]=""
 		paramlist["parcel"]={}
 		paramlist["parcel"]["weight_in_grams"]=""
@@ -177,24 +181,24 @@ class royalmail(Service):
                  <serviceFormatCode/>
               </v2:serviceFormat>
               <v2:shippingDate>"""+paramlist["shipment_date"]+"""</v2:shippingDate>
-              <v2:recipientContact>
-                 <v2:name>"""+paramlist["destination"]["name"]+"""</v2:name>
+               <v2:recipientContact>
+                 <v2:name>Client Base fulfilment ltd</v2:name>
                  <v2:telephoneNumber>
                     <countryCode>0044</countryCode>
                     <telephoneNumber>07801123456</telephoneNumber>
                  </v2:telephoneNumber>
                  <v2:electronicAddress>
-                    <electronicAddress>"""+paramlist["destination"]["email"]+"""</electronicAddress>
+                    <electronicAddress>tom.smith@royalmail.com</electronicAddress>
                  </v2:electronicAddress>
               </v2:recipientContact>
               <v2:recipientAddress>  
                   <addressLine1>Clientbase Fulfilment</addressLine1>
                  <addressLine2>Woodview Road</addressLine2>
-                 <postTown>"""+paramlist["destination"]["city"]+"""</postTown>
-                 <postcode>"""+paramlist["destination"]["zipcode"]+"""</postcode>
+                 <postTown>PAIGNTON</postTown>
+                 <postcode>TQ4 7SR</postcode>
                  <country>
                     <countryCode>
-                       <code>"""+paramlist["destination"]["country_code"]+"""</code>
+                       <code>GB</code>
                     </countryCode>
                  </country>
              </v2:recipientAddress>
@@ -260,14 +264,14 @@ class royalmail(Service):
 		         <v2:outputFormat>PDF</v2:outputFormat>
 		         <v2:localisedAddress>
 		            <v2:recipientContact>
-		               <v2:name>"""+paramlist["destination"]["name"]+"""</v2:name>
+		               <v2:name>Client Base fulfilment ltd</v2:name>
 		               <v2:complementaryName></v2:complementaryName>
 		            </v2:recipientContact>
 		            <v2:recipientAddress>
-		           	<addressLine1>"""+paramlist["destination"]["line1"]+"""</addressLine1>
-		               <addressLine2>"""+paramlist["destination"]["line2"]+"""</addressLine2>
-		               <postTown>ddd</postTown>
-		               <postcode>"""+paramlist["destination"]["zipcode"]+"""</postcode>
+		           	<addressLine1>Clientbase Fulfilment</addressLine1>
+		               <addressLine2>Woodview Road</addressLine2>
+		               <postTown>PAIGNTON</postTown>
+		               <postcode>TQ4 7SR</postcode>
 		            </v2:recipientAddress>
 		         </v2:localisedAddress>
 		      </v2:printLabelRequest>
@@ -304,7 +308,23 @@ class royalmail(Service):
 
 		final_response = {
 			"origin": paramlist["origin"],
-			"destination": paramlist["destination"],
+			"destination": {
+			    "name": "Client Base fulfilment ltd",
+			    "shipment_id": "return_id_at_srb",
+			    "first_name": paramlist["destination"]["first_name"],
+			    "last_name": paramlist["destination"]["last_name"],
+			    "company": "Company Destination",
+			    "street_number": paramlist["destination"]["street_number"],
+			    "line1": "Clientbase Fulfilment",
+			    "line2": "Woodview Road",
+			    "state": "",
+			    "zipcode": "TQ4 7SR",
+			    "country": "",
+			    "country_code": "GB",
+			    "phone": "07801123456",
+			    "email": "tom.smith@royalmail.com",
+			    "city": "PAIGNTON"
+			},
 			"parcel": paramlist["parcel"],
 			"shipment_id": shipmentNumber,
 			"label_url": link_pdf
