@@ -122,6 +122,11 @@ class royalmail(Service):
 		paramlist["origin"]={}
 		paramlist["origin"]["line1"]=""
 		paramlist["origin"]["line2"]=""
+		paramlist["origin"]["zipcode"]=""
+		paramlist["origin"]["country_code"]=""
+		paramlist["origin"]["country"]=""
+		paramlist["origin"]["city"]=""
+		paramlist["origin"]["state"]=""
 		paramlist["destination"]={}
 		paramlist["destination"]["line1"]=""
 		paramlist["destination"]["line2"]=""
@@ -217,6 +222,26 @@ class royalmail(Service):
         </v2:items>
         <v2:customerReference>CustSuppRef1</v2:customerReference>
               <v2:senderReference>SenderReference1</v2:senderReference>
+
+              <v2:importerAddress>
+				<addressLine1>"""+paramlist["origin"]["line1"]+"""</addressLine1>
+				<addressLine2>"""+paramlist["origin"]["line2"]+"""</addressLine2>
+				<stateOrProvince>
+					<stateOrProvinceCode>
+						<code>"""+paramlist["origin"]["state"]+"""</code>
+						<name>string</name>
+					</stateOrProvinceCode>
+				</stateOrProvince>
+				<postTown>"""+paramlist["origin"]["city"]+"""</postTown>
+				<postcode>"""+paramlist["origin"]["zipcode"]+"""</postcode>
+				<country>
+					<countryCode>
+						<code>"""+paramlist["origin"]["country_code"]+"""</code>
+						<name>"""+paramlist["origin"]["country"]+"""</name>
+					</countryCode>
+				</country>
+			</v2:importerAddress>
+
            </v2:requestedShipment>
         </v2:createShipmentRequest>
 		   </soapenv:Body>
