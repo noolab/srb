@@ -390,8 +390,8 @@ class royalmail(Service):
 		  </soapenv:Envelope>"""
 
 		headersConfig = {
-			'x-ibm-client-id': "411e31ec-80c1-4798-a5d3-3214fb0b8e91",
-		   	'x-ibm-client-secret': "B5tG1bR3lS7mD4jY3fK8tT0fI3eU0wQ5tK4rW8hO4uG2kE7pH4",
+			'x-ibm-client-id': ROYALMAIL_CLIENT_ID,
+		   	'x-ibm-client-secret': ROYALMAIL_SECRET_ID,
 		   	'soapaction': "urn:getSingleItemHistory",
 		   	'content-type': "text/xml",
 		   	'accept': "application/xml"
