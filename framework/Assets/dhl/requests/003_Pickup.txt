@@ -41,6 +41,7 @@
    <ShipmentDetails>
         <AccountType>D</AccountType>
         <AccountNumber>123456789</AccountNumber>
+        <AWBNumber>8921288736</AWBNumber>
         <NumberOfPieces>1</NumberOfPieces>
         <Weight>200</Weight>
         <WeightUnit>K</WeightUnit>

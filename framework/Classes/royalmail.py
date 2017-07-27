@@ -28,6 +28,7 @@ ROYALMAIL_APPID = os.environ["ROYALMAIL_APPID"]
 ROYALMAIL_TRANSACTIONID = os.environ["ROYALMAIL_TRANSACTIONID"]
 ROYALMAIL_CLIENT_ID = os.environ["ROYALMAIL_CLIENT_ID"]
 ROYALMAIL_SECRET_ID = os.environ["ROYALMAIL_SECRET_ID"]
+ROYALMAIL_URL_TRACKING = os.environ["ROYALMAIL_URL_TRACKING"]
 class royalmail(Service):
 
 	def root(self,paramlist):
@@ -281,8 +282,8 @@ class royalmail(Service):
 		                <v2:integrationHeader>
 		            <v1:version>2</v1:version>
 		            <v1:identification>
-		               <v1:applicationId>RMG-API-G-01</v1:applicationId>
-		               <v1:transactionId>00228383</v1:transactionId>
+		               <v1:applicationId>"""+ROYALMAIL_APPID+"""</v1:applicationId>
+		               <v1:transactionId>"""+ROYALMAIL_TRANSACTIONID+"""</v1:transactionId>
 		            </v1:identification>
 		         </v2:integrationHeader>
 		         <v2:shipmentNumber>"""+shipmentNumber+"""</v2:shipmentNumber>
@@ -357,3 +358,73 @@ class royalmail(Service):
 		
 
 		return final_response
+
+
+
+	def tracking(self,paramlist):
+		print("tracking getSingleItemHistoryRequest get from xml sample")
+		# auth=self.getAuth()
+		# auth_pwd= auth[0].decode("utf-8")
+		# auth_nonce=auth[1].decode("utf-8")
+		# auth_created= auth[2]
+		
+		trackingNumber = str(paramlist)#'FL067074022GB'
+		# return trackingNumber
+		payload="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://www.royalmailgroup.com/api/track/V1" xmlns:v11="http://www.royalmailgroup.com/integration/core/V1">
+		  <soapenv:Header/>
+		  <soapenv:Body>
+		  <v1:getSingleItemHistoryRequest>
+
+		          <v1:integrationHeader>
+		            <v11:dateTime>2014-01-06T02:49:45</v11:dateTime>
+		            <v11:version>1.0</v11:version> 
+		     
+		            <v11:identification>
+		              <v11:applicationId>"""+ROYALMAIL_APPID+"""</v11:applicationId>
+		              <v11:transactionId>"""+ROYALMAIL_TRANSACTIONID+"""</v11:transactionId>
+		            </v11:identification>
+		          </v1:integrationHeader>
+		          <v1:trackingNumber>"""+trackingNumber+"""</v1:trackingNumber>
+		        </v1:getSingleItemHistoryRequest>
+		  </soapenv:Body>
+		  </soapenv:Envelope>"""
+
+		headersConfig = {
+			'x-ibm-client-id': "411e31ec-80c1-4798-a5d3-3214fb0b8e91",
+		   	'x-ibm-client-secret': "B5tG1bR3lS7mD4jY3fK8tT0fI3eU0wQ5tK4rW8hO4uG2kE7pH4",
+		   	'soapaction': "urn:getSingleItemHistory",
+		   	'content-type': "text/xml",
+		   	'accept': "application/xml"
+		}
+		print("=====================")
+		print (payload)
+		#response = netw.sendRequestHeaderConfig(ROYALMAIL_URL, payload, "post", headersConfig)
+		try:
+			response=requests.post(ROYALMAIL_URL_TRACKING, data=payload, headers=headersConfig).text
+			data = xmltodict.parse(response)
+		except:
+			return response
+
+		# return payload
+		try:
+			allres = data["soapenv:Envelope"]["soapenv:Body"]["NS1:getSingleItemHistoryResponse"]["NS1:trackDetail"]
+		except:
+			return response
+
+		final_data=[]
+		dt ={
+			"steps": []
+		}
+
+		for l in allres:
+			trackDate = l["NS1:trackDate"]
+			location =l["NS1:trackPoint"]
+			status = l["NS1:header"]
+			obj={
+				"status": status,
+				"location": location
+			}
+			dt["steps"].append(obj)
+		
+		final_data.append(dt)
+		return final_data

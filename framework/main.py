@@ -49,6 +49,9 @@ def lamda_function(event, context):
 	paramlist=json.loads(event["body"])
 	if company!="" and service=="":
 		service="root"
+	elif "tracking" in service:
+		service=resource[2]
+		paramlist=event["id"] #resource[3]
 	return myservice.call_service(company, service, paramlist)
 if __name__=="__main__":
 	app.run()

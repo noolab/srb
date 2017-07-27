@@ -39,3 +39,9 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail   <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail/label   <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail/type  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/royalmail/status <br/>
+
+HERMES  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes   <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/type   <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/status  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/label   <br/>

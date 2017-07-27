@@ -30,6 +30,8 @@ class networking(object):
         elif requestType=="postcontent":
             headers = {'Content-Type': 'text/xml'}
             resp = requests.post(url,data=values,headers=headers)
+        elif requestType =="postgetcontent":
+            resp = requests.post(url,data=values,headers=headers)
         return resp
 
     def sendRequestHeaderConfig(url,values,requestType,headersConfig):
