@@ -12,6 +12,7 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/type <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/status <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/slots <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/tracking/{AWBNumber} <br />
 
 
 RELAISCOLIS <br />

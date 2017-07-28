@@ -1,5 +1,6 @@
 from Classes.AbstractService import Service
 from BuiltInService import requests
+from BuiltInService import xmltodict
 # from BuiltInService 
 # from ..BuiltInService 
 import re
@@ -432,6 +433,37 @@ class dhl(Service):
 		}
 		return data
 
+	def tracking(self,paramlist):
+		date = datetime.datetime.now()
+		datenow=re.sub(r'\s.*','',str(date))
+		tree = ET.parse('Assets/dhl/requests/tracking.txt')
+		root = tree.getroot()
+
+		root.find("Request/ServiceHeader/SiteID").text = os.environ["DHL_USERID"]
+		root.find("Request/ServiceHeader/Password").text = os.environ["DHL_PWD"]
+		root.find("AWBNumber").text = str(paramlist)
+
+		# trackingNumber =str(paramlist)
+
+		xmlresult = ET.tostring(root, encoding='ascii', method='xml')
+		xmlresponse = netw.sendRequest(DHL_URL, xmlresult, "post", "xml", "xml")
+		# xmlroot = ET.fromstring(xmlresponse)
+
+		data = xmltodict.parse(xmlresponse)
+		try:
+			status = data["req:TrackingResponse"]["AWBInfo"]["Status"]["ActionStatus"]
+			location =data["req:TrackingResponse"]["AWBInfo"]["ShipmentInfo"]["DestinationServiceArea"]["Description"]
+		except:
+			return xmlresponse
+
+
+		final_data=[{
+	    	"steps": [{
+	        	"status": status,
+	        	"location": location
+	      	}]
+	  	}]
+		return final_data
 
 
 # ============== README ================

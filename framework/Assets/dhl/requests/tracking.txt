@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<req:KnownTrackingRequest xsi:schemaLocation="http://www.dhl.com book-pickup-global-req_EA.xsd"  xmlns:req="http://www.dhl.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ 	<Request>
+	    <ServiceHeader>
+	        <MessageTime>2017-07-19T11:28:56.000-08:00</MessageTime>
+	        <MessageReference>1234567890123456789012345678901</MessageReference>
+	    <SiteID></SiteID> 
+	    <Password></Password> 
+	    </ServiceHeader>
+	</Request>
+	<LanguageCode>en</LanguageCode>
+	<AWBNumber>3618411160</AWBNumber> 
+	<LevelOfDetails>ALL_CHECK_POINTS</LevelOfDetails>
+	<TrackBy>FOCUS</TrackBy>
+	<PiecesEnabled>S</PiecesEnabled>
+	<CountryCode>FR</CountryCode>  
+</req:KnownTrackingRequest>
