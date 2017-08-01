@@ -89,17 +89,63 @@ class hermes(Service):
 		paramlist = {}
 		paramlist["partnerid"] = os.environ["HERMES_PATHNERID"]
 		paramlist["password"] = os.environ["HERMES_PASSWORD"]
-		
-		req_list=["country","firstname","lastname","additionalinfo","street","housenumber","zipcode","city","kdrefno"]
+
+		#default value
+		paramlist["destination"]={}
+		paramlist["destination"]["name"]=""
+		paramlist["destination"]["first_name"]=""
+		paramlist["destination"]["last_name"]=""
+		paramlist["destination"]["phone"] = ""
+		paramlist["destination"]["email"]=""
+		paramlist["destination"]["company"] =""
+		paramlist["destination"]["street_number"] =""
+		paramlist["destination"]["line1"] =""
+		paramlist["destination"]["line2"] =""
+		paramlist["destination"]["state"] =""
+		paramlist["destination"]["zipcode"]=""
+		paramlist["destination"]["country"] =""
+		paramlist["destination"]["country_code"] = ""
+		paramlist["destination"]["city"] =""
+		paramlist["origin"]={}
+		paramlist["origin"]["name"] =""
+		paramlist["origin"]["phone"] =""
+		paramlist["origin"]["email"] =""
+		paramlist["origin"]["company"] =""
+		paramlist["origin"]["line1"] =""
+		paramlist["origin"]["line2"] =""
+		paramlist["origin"]["state"] =""
+		paramlist["origin"]["country_code"] =""
+		paramlist["origin"]["place_description"] =""
+		paramlist["parcel"]={}
+		paramlist["parcel"]["length_in_cm"] =""
+		paramlist["parcel"]["width_in_cm"] =""
+		paramlist["parcel"]["height_in_cm"] =""
+		paramlist["parcel"]["weight_in_grams"] =""
+
+
+		req_list=["origin/country","origin/first_name","origin/last_name","origin/street_number","origin/zipcode","origin/city"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			data_param ={
+				"partnerid":os.environ["HERMES_PATHNERID"],
+				"password":os.environ["HERMES_PASSWORD"],
+				"country":paramlist["origin"]["country"],
+				"firstname":paramlist["origin"]["first_name"],
+				"lastname":paramlist["origin"]["last_name"],
+				"additionalinfo":"",
+				"street":paramlist["origin"]["street_number"],
+				"housenumber":"empty",
+				"zipcode":paramlist["origin"]["zipcode"],
+				"city":paramlist["origin"]["city"],
+				"kdrefno":""
+			}
 		else:
 			return checkparamlist["message"]
 		
 		# headers={"Content-Type": "application/json"}
-		responsePrint = netw.sendRequest(HERMES_URL_LABEL, paramlist, "postgetcontent", "json", "")
+		responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
 		# responsePrint=requests.post(HERMES_URL_LABEL, data=paramlist)
 		img_data = str(responsePrint.content)
 		print(img_data)
@@ -117,10 +163,10 @@ class hermes(Service):
 		k.set_contents_from_filename('/tmp/'+name_file)
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 		final_response = {
-			# "origin": event["origin"],
-			# "destination": event["destination"],
-			# "parcel": event["parcel"],
-			# "shipment_id": shipment_id,
+			"origin": paramlist["origin"],
+			"destination": paramlist["destination"],
+			"parcel": paramlist["parcel"],
+			"shipment_id": "shipment_id",
 			"label_url": link_pdf
 		}
 

@@ -12,7 +12,7 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/type <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/status <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/slots <br />
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/pickup/tracking/{AWBNumber} <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/tracking/{AWBNumber} <br />
 
 
 RELAISCOLIS <br />
@@ -47,3 +47,6 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes   <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/type   <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/status  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/label   <br/>
+
+ENVIALIA  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/pickup/slots <br/>

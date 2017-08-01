@@ -451,18 +451,22 @@ class dhl(Service):
 
 		data = xmltodict.parse(xmlresponse)
 		try:
-			status = data["req:TrackingResponse"]["AWBInfo"]["Status"]["ActionStatus"]
-			location =data["req:TrackingResponse"]["AWBInfo"]["ShipmentInfo"]["DestinationServiceArea"]["Description"]
+			allstep = data["req:TrackingResponse"]["AWBInfo"]["ShipmentInfo"]
 		except:
 			return xmlresponse
 
 
-		final_data=[{
-	    	"steps": [{
-	        	"status": status,
-	        	"location": location
-	      	}]
-	  	}]
+		final_data=[]
+		dt ={
+			"steps": []
+		}
+		for l in allstep["ShipmentEvent"]:
+			res={
+	        	"status": l["ServiceEvent"]["Description"],
+	        	"location": l["ServiceArea"]["Description"]
+	      	}
+			dt['steps'].append(res)
+		final_data.append(dt)
 		return final_data
 
 

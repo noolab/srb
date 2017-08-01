@@ -17,7 +17,7 @@ import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
 ENVIALIA_URL=""
-class envialia(self):
+class envialia(Service):
 	"""docstring for envialia"""
 	def root(self,userparamlist):
 		return {}
@@ -137,3 +137,39 @@ class envialia(self):
 				</WebServService___GrabaRecogida2>
 			</soap:Body>
 		</soap:Envelope>"""
+
+
+	def pickupslots(self, paramlist):
+		print ("pickupslots from envialia")
+		date = datetime.datetime.now()
+		alldays=[]
+		for l in range(7):
+			date += datetime.timedelta(days=1)
+			if date.isoweekday()==6:
+				date += datetime.timedelta(days=2)
+				print ("saturday +2: "+str(date))
+			elif date.isoweekday()==7:
+				date += datetime.timedelta(days=1)
+				print ("sunday +1: "+str(date))
+			else:
+				print ("no check")
+			newdate=re.sub(r'\s.*',' ',str(date))
+			fullstartdate1=str(newdate)+" 10:00:00:000Z"
+			fullstartdate2=str(newdate)+" 14:00:00:000Z"
+			data={
+		        "date": str(date),
+		        "slots": [
+			        {
+						"start_time": fullstartdate1,
+				        "duration": "120",
+				        "availability": -1
+					},
+					{
+						"start_time": fullstartdate2,
+				        "duration": "120",
+				        "availability": -1
+					}
+				]
+			}
+			alldays.append(data)
+		return alldays

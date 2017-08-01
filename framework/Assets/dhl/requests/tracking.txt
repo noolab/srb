@@ -12,6 +12,6 @@
 	<AWBNumber>3618411160</AWBNumber> 
 	<LevelOfDetails>ALL_CHECK_POINTS</LevelOfDetails>
 	<TrackBy>FOCUS</TrackBy>
-	<PiecesEnabled>S</PiecesEnabled>
+	<PiecesEnabled>B</PiecesEnabled>
 	<CountryCode>FR</CountryCode>  
 </req:KnownTrackingRequest>
