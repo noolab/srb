@@ -144,11 +144,10 @@ class hermes(Service):
 		else:
 			return checkparamlist["message"]
 		
-		# headers={"Content-Type": "application/json"}
+		
 		responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
-		# responsePrint=requests.post(HERMES_URL_LABEL, data=paramlist)
-		img_data = str(responsePrint.content)
-		print(img_data)
+		# data = (responsePrint.content).decode('utf-8')
+		# return data
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])#boto.connect_s3('AKIAJKZ7KCBQFGFGD2ZA', '2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61')
 		bucket = c.get_bucket("srbstickers", validate=False)
 		name_file = str(time.time()) + ".pdf"
@@ -159,8 +158,11 @@ class hermes(Service):
 
 		with open('/tmp/'+name_file, 'wb') as f:
 	 		f.write(responsePrint.content)
+		pathtofile= '/tmp/'+name_file
+		fileC=open(pathtofile,'rb')
+		k.set_contents_from_filename(pathtofile)
+
 		
-		k.set_contents_from_filename('/tmp/'+name_file)
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 		final_response = {
 			"origin": paramlist["origin"],

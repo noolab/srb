@@ -116,3 +116,4 @@ def getLabel(event,context):
     c.save()
 
 
+getLabel('a','a')

@@ -6,6 +6,9 @@ from Classes.couriier import couriier
 from Classes.royalmail import royalmail
 from Classes.hermes import hermes
 from Classes.envialia import envialia
+from Classes.pvs import pvs
+from Classes.swisspost import swisspost
+from Classes.ups import ups
 class ServiceManager(object):
 		
 	def call_service(self, company, service, paramlist):
