@@ -31,7 +31,42 @@ import textwrap
 class pvs(Service):
 
 	def root(self,paramlist):
-		return {}
+		true=True
+		data={
+			"/":{
+				"get":true
+			},
+			"type":{
+				"get":true
+			},
+			"label":{
+				"get":true
+			},
+			"status":{
+				"get":true
+			}
+		}
+		return data
+	def type(self,paramlist):
+		true=True
+		false=False
+		data={
+			"type": "postal",
+			"postal": true,
+			"pickup": false,
+			"dropoff": false,
+			"linehaul": false
+		}
+		return data
+
+	def status(self,paramlist):
+		result = {
+		    "available": True,
+		    "response_time": 2.438041210174560,
+		    "timeout": False,
+		    "limit": 30000
+		}
+		return result
 	
 	def label(self,paramlist):
 		name_file = str(time.time()) + ".pdf"
