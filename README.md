@@ -52,14 +52,14 @@ ENVIALIA  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/pickup/slots <br/>
 
 SWISSPOST  <br/>
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/type
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/status
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/label
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/<br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/type<br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/status<br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/label<br/>
 
 PVS  <br/>
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/label
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/<br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/label<br/>
 
 UPS  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/ <br/>
