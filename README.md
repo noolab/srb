@@ -50,3 +50,19 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/label   <br/
 
 ENVIALIA  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/pickup/slots <br/>
+
+SWISSPOST  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/type
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/status
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/label
+
+PVS  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/label
+
+UPS  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/ <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/type <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/status <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/label <br/>

@@ -15,8 +15,19 @@ import base64
 import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
+import hashlib
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
+# cloudinary.config( 
+#   cloud_name = "dozjp3am8", 
+#   api_key = "714151172147688", 
+#   api_secret = "fJBHf8VSu3q2-rkgcE7M9K92too" 
+# )
 HERMES_URL_LABEL = os.environ["HERMES_URL_LABEL"]
 HERMES_URL_STATUS = os.environ["HERMES_URL_STATUS"]
+
+
 class hermes(Service):
 	"""docstring for hermes"""
 	def root(self,userparamlist):
@@ -145,9 +156,9 @@ class hermes(Service):
 			return checkparamlist["message"]
 		
 		
-		responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
-		# data = (responsePrint.content).decode('utf-8')
-		# return data
+		# responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
+		# data =cloudinary.uploader.upload(responsePrint.content)
+		# link_pdf = data["url"]
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])#boto.connect_s3('AKIAJKZ7KCBQFGFGD2ZA', '2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61')
 		bucket = c.get_bucket("srbstickers", validate=False)
 		name_file = str(time.time()) + ".pdf"

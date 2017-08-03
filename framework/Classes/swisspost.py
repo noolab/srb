@@ -31,26 +31,86 @@ from reportlab.lib.utils import ImageReader
 # from PIL import ImageDraw
 # from PIL import ImageDraw2
 # from PIL import Image
-
+SWISSPOST_URL = os.environ["SWISSPOST_STATUS_URL"]
 class swisspost(Service):
 
 	def root(self,paramlist):
-		return {}
+		true=True
+		data={
+			"/":{
+				"get":true
+			},
+			"type":{
+				"get":true
+			},
+			"label":{
+				"get":true
+			},
+			"status":{
+				"get":true
+			}
+		}
+		return data
 
-	def label(self,paramlist):
-		
-		data = {
-	      "return_id" : "4444" ,
-	      "origin": {"first_name": "Walter",
-	               "last_name": "Wechlin" ,
-	               "street_number": "25",
-	               "line1": "avenue du temple",
-	               "zipcode": "10012",
-	               "city": "lausanne",
-	               "country_code": "CH"
-	               },
-	       "destination":{"company": "WITHINGS"}
-	    }
+	def type(self,paramlist):
+		true=True
+		false=False
+		data={
+			"type": "postal",
+			"postal": true,
+			"pickup": false,
+			"dropoff": false,
+			"linehaul": false
+		}
+		return data
+
+	def status(self,paramlist):
+		start=time.time()
+		available=True
+		response_time=0
+		try:
+			xmlresponse=netw.sendRequest(SWISSPOST_URL,"","get","","")
+			# xmlresponse= requests.get(UPS_STATUS_URL)
+		except:
+			available=False
+			response_time=-1
+
+		if response_time==0:
+			response_time=time.time()-start
+
+		timeout=False
+
+		if response_time>30:
+			timeout=True
+
+		result = {
+		    "available": True,
+		    "response_time": 2.438041210174560,
+		    "timeout": False,
+		    "limit": 30000
+		}
+		return result
+
+	def label(self,userparamlist):
+		req_list=["return_id","origin/first_name","origin/last_name","origin/city","origin/street_number","origin/line1","origin/zipcode","origin/country_code","destination/company",]
+		instance = Validator()
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			data=userparamlist
+		else:
+			return checkparamlist["message"]
+		# data = {
+	 #      "return_id" : paramlist["return_id"] ,
+	 #      "origin": {"first_name": paramlist["origin"]["first_name"],
+	 #               "last_name": paramlist["origin"]["last_name"] ,
+	 #               "street_number": paramlist["origin"]["street_number"],
+	 #               "line1": paramlist["origin"]["line1"],
+	 #               "zipcode": paramlist["origin"]["zipcode"],
+	 #               "city": paramlist["origin"]["city"],
+	 #               "country_code": paramlist["origin"]["country_code"]
+	 #               },
+	 #       "destination":{"company": paramlist["destination"]["company"]}
+	 #    }
 
 		return_id = data['return_id']
 		firstName = data['origin']['first_name']
@@ -116,11 +176,11 @@ class swisspost(Service):
 		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
 
-		data = {
-			"origin": paramlist["origin"],
-			"destination": paramlist["destination"],
-			"parcel": paramlist["parcel"],
+		data_final = {
+			"origin": data["origin"],
+			"destination": data["destination"],
+			"parcel": data["parcel"],
 			"shipment_id": "transport_return_number",
 			"label_url": link_pdf
 		}
-		return data
+		return data_final

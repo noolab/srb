@@ -32,7 +32,7 @@ class pvs(Service):
 
 	def root(self,paramlist):
 		return {}
-
+	
 	def label(self,paramlist):
 		name_file = str(time.time()) + ".pdf"
 		pathToFile='/tmp/'+name_file
