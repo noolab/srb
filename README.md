@@ -59,6 +59,8 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/label<br/
 
 PVS  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/<br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/status <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/type <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/label<br/>
 
 UPS  <br/>
