@@ -48,7 +48,10 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/type   <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/status  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/hermes/label   <br/>
 
-ENVIALIA  <br/>
+ENVIALIA  <br/> 
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/type <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/status <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/pickup/slots <br/>
 
 SWISSPOST  <br/>
@@ -68,3 +71,30 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/ <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/type <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/status <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/label <br/>
+
+
+NEW ENDPOINT PRODUCTION <br/>
+
+DHL  <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/type <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/status <br/> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/tracking/{trackingID} <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/label <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/pickupslots <br/>
+
+bposteasyplus  <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/type <br/> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/status<br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/label <br/>
+
+RELAISCOLIS <br />
+ 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/type <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/status <br />
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/label <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/dropoffpoints <br />
+
+

@@ -20,7 +20,58 @@ ENVIALIA_URL=""
 class envialia(Service):
 	"""docstring for envialia"""
 	def root(self,userparamlist):
-		return {}
+		true=True
+		data={
+			"/":{
+				"get":true
+			},
+			"type":{
+				"get":true
+			},
+			"label":{
+				"get":true
+			},
+			"status":{
+				"get":true
+			}
+		}
+		return data
+	def type(self,paramlist):
+		true=True
+		false=False
+		data={
+			"type": "postal",
+			"postal": true,
+			"pickup": false,
+			"dropoff": false,
+			"linehaul": false
+		}
+		return data
+	def status(self,paramlist):
+		start=time.time()
+		available=True
+		response_time=0
+		try:
+			responese = '' #self.label(paramlist)
+		except:
+			available=False
+			response_time=-1
+
+		if response_time==0:
+			response_time=time.time()-start
+
+		timeout=False
+
+		if response_time>30:
+			timeout=True
+
+		result = {
+		    "available": True,
+		    "response_time": 2.4380412101745605,
+		    "timeout": False,
+		    "limit": 30000
+		}
+		return result
 	
 	def login(self):
 		# tree = ET.parse('Assets/envialia/requests/loginxml.txt')
@@ -161,12 +212,12 @@ class envialia(Service):
 		        "slots": [
 			        {
 						"start_time": fullstartdate1,
-				        "duration": "120",
+				        "duration": "240",
 				        "availability": -1
 					},
 					{
 						"start_time": fullstartdate2,
-				        "duration": "120",
+				        "duration": "240",
 				        "availability": -1
 					}
 				]

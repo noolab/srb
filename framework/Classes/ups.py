@@ -134,6 +134,7 @@ class ups(Service):
 		return final_data
 	
 	def label(self,userparamlist):
+		paramlist = {}
 		paramlist["origin"] ={}
 		paramlist["origin"]["phone"]=""
 
@@ -284,13 +285,18 @@ class ups(Service):
 		k.key = name_file
 		k.contentType="application/pdf"
 		k.ContentDisposition="inline"
-		k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))	
-		
+		# k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))
+		imgpic =str(time.time()) + ".png"
+		with open('/tmp/'+imgpic, 'wb') as f:
+	 		f.write(base64.b64decode(img_data.encode('ascii')))
+	 		# f.write(base64.b64decode(img_data))
+		filedir = '/tmp/'+imgpic
+		k.set_contents_from_filename(filedir)
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 		data = {
-			"origin": userparamlist["origin"],
-			"destination": userparamlist["destination"],
-			"parcel": userparamlist["parcel"],
+			"origin": paramlist["origin"],
+			"destination": paramlist["destination"],
+			"parcel": paramlist["parcel"],
 			"shipment_id": shipment_id,
 			"label_url": link_pdf
 		}

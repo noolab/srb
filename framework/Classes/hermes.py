@@ -156,7 +156,7 @@ class hermes(Service):
 			return checkparamlist["message"]
 		
 		
-		# responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
+		responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
 		# data =cloudinary.uploader.upload(responsePrint.content)
 		# link_pdf = data["url"]
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])#boto.connect_s3('AKIAJKZ7KCBQFGFGD2ZA', '2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61')
@@ -169,8 +169,8 @@ class hermes(Service):
 
 		with open('/tmp/'+name_file, 'wb') as f:
 	 		f.write(responsePrint.content)
+	 	
 		pathtofile= '/tmp/'+name_file
-		fileC=open(pathtofile,'rb')
 		k.set_contents_from_filename(pathtofile)
 
 		

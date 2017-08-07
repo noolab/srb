@@ -60,13 +60,36 @@ class pvs(Service):
 		return data
 
 	def status(self,paramlist):
+		start=time.time()
+		available=True
+		response_time=0
+		try:
+			paramlist={
+				"origin":"",
+				"destination":"",
+				"parcel":""
+			}
+			responese = self.label(paramlist)
+		except:
+			available=False
+			response_time=-1
+
+		if response_time==0:
+			response_time=time.time()-start
+
+		timeout=False
+
+		if response_time>30:
+			timeout=True
+
 		result = {
-		    "available": True,
-		    "response_time": 2.438041210174560,
-		    "timeout": False,
+		    "available": available,
+		    "response_time": response_time,
+		    "timeout": timeout,
 		    "limit": 30000
 		}
 		return result
+	
 	
 	def label(self,paramlist):
 		name_file = str(time.time()) + ".pdf"
@@ -182,3 +205,4 @@ class pvs(Service):
 		}
 		return data
 
+	

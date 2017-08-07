@@ -69,8 +69,21 @@ class swisspost(Service):
 		available=True
 		response_time=0
 		try:
-			xmlresponse=netw.sendRequest(SWISSPOST_URL,"","get","","")
-			# xmlresponse= requests.get(UPS_STATUS_URL)
+			# xmlresponse=netw.sendRequest(SWISSPOST_URL,"","get","","")
+			paramlist = {
+		      "return_id" : "4444" ,
+		      "origin": {"first_name": "Walter",
+		               "last_name": "Wechlin" ,
+		               "street_number": "25",
+		               "line1": "avenue du temple",
+		               "zipcode": "10012",
+		               "city": "lausanne",
+		               "country_code": "CH"
+		               },
+		       "destination":{"company": "WITHINGS"},
+		       "parcel":{}
+		    }
+			xmlresponse= self.label(paramlist)
 		except:
 			available=False
 			response_time=-1
