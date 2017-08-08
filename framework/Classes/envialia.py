@@ -16,7 +16,7 @@ import base64
 import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
-ENVIALIA_URL=""
+ENVIALIA_URL= os.environ["ENVIALIA_URL"]
 class envialia(Service):
 	"""docstring for envialia"""
 	def root(self,userparamlist):
@@ -41,8 +41,8 @@ class envialia(Service):
 		false=False
 		data={
 			"type": "postal",
-			"postal": true,
-			"pickup": false,
+			"pickup": true,
+			"label": true,
 			"dropoff": false,
 			"linehaul": false
 		}
@@ -52,7 +52,7 @@ class envialia(Service):
 		available=True
 		response_time=0
 		try:
-			responese = '' #self.label(paramlist)
+			responese = netw.sendRequestHeaderConfig(ENVIALIA_URL,'','get','') #self.label(paramlist)
 		except:
 			available=False
 			response_time=-1
@@ -66,9 +66,9 @@ class envialia(Service):
 			timeout=True
 
 		result = {
-		    "available": True,
-		    "response_time": 2.4380412101745605,
-		    "timeout": False,
+		    "available": available,
+		    "response_time": response_time,
+		    "timeout": timeout,
 		    "limit": 30000
 		}
 		return result

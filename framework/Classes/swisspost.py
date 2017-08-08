@@ -97,9 +97,9 @@ class swisspost(Service):
 			timeout=True
 
 		result = {
-		    "available": True,
-		    "response_time": 2.438041210174560,
-		    "timeout": False,
+		    "available": available,
+		    "response_time": response_time,
+		    "timeout": timeout,
 		    "limit": 30000
 		}
 		return result
