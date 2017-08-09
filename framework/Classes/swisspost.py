@@ -151,7 +151,7 @@ class swisspost(Service):
 		c.drawString(540,-77, zipCode + " " + city )
 		c.drawString(540,-92, countryCode )
 		# GASbarcode = 'GASbarcode.png'
-		GASbarcode = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/GAS-barcode.png')
+		GASbarcode = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/GASbarcode.jpg')
 		try:
 			c.drawImage(GASbarcode,687,-320, width=86, height=50)
 		except:
@@ -167,7 +167,7 @@ class swisspost(Service):
 
 		c.setFont('Helvetica', 12)
 		# SwissPost = 'Swiss_Post.png'
-		SwissPost = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/Swiss_Post.png')
+		SwissPost = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/Swiss_Post.jpg')
 		c.drawImage(SwissPost,115,770, width=105, height=27)
 
 		c.setFont('Helvetica', 18)
