@@ -157,8 +157,9 @@ class hermes(Service):
 		
 		
 		responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
-		# data =cloudinary.uploader.upload(responsePrint.content)
-		# link_pdf = data["url"]
+		d = responsePrint.headers['content-disposition']
+		shipmentId = re.sub(r'\s+|\.pdf|.*?\=','',str(d))
+
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])#boto.connect_s3('AKIAJKZ7KCBQFGFGD2ZA', '2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61')
 		bucket = c.get_bucket("srbstickers", validate=False)
 		name_file = str(time.time()) + ".pdf"
@@ -179,7 +180,7 @@ class hermes(Service):
 			"origin": paramlist["origin"],
 			"destination": paramlist["destination"],
 			"parcel": paramlist["parcel"],
-			"shipment_id": "shipment_id",
+			"shipment_id": shipmentId,
 			"label_url": link_pdf
 		}
 
