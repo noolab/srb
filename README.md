@@ -53,6 +53,7 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/type <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/status <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/pickup/slots <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/envialia/pickup  <br/>
 
 SWISSPOST  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/swisspost/<br/>
