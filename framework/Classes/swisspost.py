@@ -130,6 +130,7 @@ class swisspost(Service):
 		lastName = data['origin']['last_name']
 		streetNumber = data['origin']['street_number']
 		line1 = data['origin']['line1']
+		line1 = line1[:18]
 		zipCode = data['origin']['zipcode']
 		city = data['origin']['city']
 		countryCode = data['origin']['country_code']
@@ -168,9 +169,9 @@ class swisspost(Service):
 		c.setFont('Helvetica', 12)
 		# SwissPost = 'Swiss_Post.png'
 		SwissPost = ImageReader('https://s3.eu-central-1.amazonaws.com/shoprunbackframework/images/Swiss_Post.jpg')
-		c.drawImage(SwissPost,115,770, width=105, height=27)
+		c.drawImage(SwissPost,115,775, width=105, height=27)
 
-		c.setFont('Helvetica', 18)
+		c.setFont('Helvetica', 17)
 		c.drawString(32,680,"99.60.121419."+returnIdCondition)
 
 		barcode = code128.Code128("9960121419"+returnIdCondition ,barWidth=0.5*mm,barHeight=25*mm)

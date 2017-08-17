@@ -98,6 +98,7 @@ class hermes(Service):
 
 	def label(self,userparamlist):
 		paramlist = {}
+		paramlist["return_id"] = ""
 		paramlist["partnerid"] = os.environ["HERMES_PATHNERID"]
 		paramlist["password"] = os.environ["HERMES_PASSWORD"]
 
@@ -132,13 +133,15 @@ class hermes(Service):
 		paramlist["parcel"]["width_in_cm"] =""
 		paramlist["parcel"]["height_in_cm"] =""
 		paramlist["parcel"]["weight_in_grams"] =""
+		paramlist["return_id"]= ""
 
-
-		req_list=["origin/country","origin/first_name","origin/last_name","origin/street_number","origin/zipcode","origin/city"]
+		req_list=["origin/country","origin/first_name","origin/last_name","origin/street_number","origin/line1","origin/zipcode","origin/city"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			# if not paramlist["return_id"]:
+			# 	paramlist["return_id"] = ""
 			data_param ={
 				"partnerid":os.environ["HERMES_PATHNERID"],
 				"password":os.environ["HERMES_PASSWORD"],
@@ -146,11 +149,11 @@ class hermes(Service):
 				"firstname":paramlist["origin"]["first_name"],
 				"lastname":paramlist["origin"]["last_name"],
 				"additionalinfo":"",
-				"street":paramlist["origin"]["street_number"],
-				"housenumber":"empty",
+				"street":paramlist["origin"]["line1"],
+				"housenumber":paramlist["origin"]["street_number"],
 				"zipcode":paramlist["origin"]["zipcode"],
 				"city":paramlist["origin"]["city"],
-				"kdrefno":""
+				"kdrefno":paramlist["return_id"]
 			}
 		else:
 			return checkparamlist["message"]
@@ -160,7 +163,7 @@ class hermes(Service):
 		d = responsePrint.headers['content-disposition']
 		shipmentId = re.sub(r'\s+|\.pdf|.*?\=','',str(d))
 
-		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])#boto.connect_s3('AKIAJKZ7KCBQFGFGD2ZA', '2HM3b8GPRMQFb4B86pokgXpk6A6bESo7R3NRRw61')
+		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])
 		bucket = c.get_bucket("srbstickers", validate=False)
 		name_file = str(time.time()) + ".pdf"
 		k = Key(bucket)
@@ -181,6 +184,7 @@ class hermes(Service):
 			"destination": paramlist["destination"],
 			"parcel": paramlist["parcel"],
 			"shipment_id": shipmentId,
+			"return_id":paramlist["return_id"],
 			"label_url": link_pdf
 		}
 

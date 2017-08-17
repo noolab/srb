@@ -103,7 +103,7 @@ class envialia(Service):
 	def pickup(self,userparamlist):
 		paramlist = {}
 		paramlist["requestor"] = {}
-		paramlist["requestor"]["phone"] = {}
+		paramlist["requestor"]["phone"] = ""
 		paramlist["destination"] = {}
 		paramlist["destination"]["name"] = ""
 		paramlist["destination"]["street_number"] = ""
@@ -118,6 +118,10 @@ class envialia(Service):
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			if "destination" in paramlist:
+				print ("destnation")
+			else:
+				paramlist["destination"]= ""
 		else:
 			return checkparamlist["message"]
 
@@ -151,12 +155,9 @@ class envialia(Service):
 					<strPobDes>Madrid</strPobDes>
 					<strCPDes>28821</strCPDes>
 					<strTlfDes>+34914573361</strTlfDes>
-					<strObs>observed</strObs>
 					<strCodCli>"""+str(ENVIALIA_CODECLI)+"""</strCodCli>
 					<strCodTipoServ>E24</strCodTipoServ>
-					<strRef>nice</strRef>
-					<strObsDes>nice test</strObsDes>
-					<strObsDes>nice test</strObsDes>
+					
 				</WebServService___GrabaRecogida2>
 			</soap:Body>
 		</soap:Envelope>"""
@@ -166,14 +167,24 @@ class envialia(Service):
 			pickup_id = data["SOAP-ENV:Envelope"]["SOAP-ENV:Body"]["v1:WebServService___GrabaRecogida2Response"]["v1:strCodOut"]
 		except:
 			return xmlresponse
-		final_data={
-			"requestor":paramlist["requestor"],
-			"place":paramlist["place"],
-			"pickup":paramlist["pickup"],
-			"shipment_details":paramlist["shipment_details"],
-			"destination":paramlist["destination"],
-			"pickup_id":pickup_id
-		}
+		if paramlist["destination"]:
+			final_data={
+				"requestor":paramlist["requestor"],
+				"place":paramlist["place"],
+				"pickup":paramlist["pickup"],
+				"shipment_details":paramlist["shipment_details"],
+				"destination":paramlist["destination"],
+				"pickup_id":pickup_id
+			}
+		else:
+			final_data={
+				"requestor":paramlist["requestor"],
+				"place":paramlist["place"],
+				"pickup":paramlist["pickup"],
+				"shipment_details":paramlist["shipment_details"],
+				"pickup_id":pickup_id
+			}
+
 		return final_data
 
 	def pickupslots(self, paramlist):
