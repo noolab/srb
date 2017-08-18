@@ -113,7 +113,7 @@ class envialia(Service):
 		paramlist["destination"]["zipcode"] = ""
 		paramlist["destination"]["phone"] = ""
 
-		req_list=["pickup/pickup_date","pickup/number_of_pieces","requestor/name","place/street_number","place/city","place/post_code"]
+		req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/street_number","place/city","place/post_code"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -146,7 +146,7 @@ class envialia(Service):
 					<dtFecRec>"""+pickup_date+"""</dtFecRec>
 					<intBul>"""+str(paramlist["pickup"]["number_of_pieces"])+"""</intBul>
 					<strNomOri>"""+paramlist["requestor"]["name"]+"""</strNomOri>
-					<strDirOri>"""+str(paramlist["place"]["street_number"])+"""</strDirOri>
+					<strDirOri>"""+str(paramlist["place"]["street_number"])+str(paramlist["place"]["line1"])+"""</strDirOri>
 					<strPobOri>"""+paramlist["place"]["city"]+"""</strPobOri>
 					<strCPOri>"""+str(paramlist["place"]["post_code"])+"""</strCPOri>
 					<strTlfOri>"""+str(paramlist["requestor"]["phone"])+"""</strTlfOri>

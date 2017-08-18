@@ -147,7 +147,7 @@ class relaiscolis(Service):
 		# root = tree.getroot()
 
 
-		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/zipcode","origin/city","destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","return_id"]
+		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/line1","origin/zipcode","origin/city","destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","return_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -158,7 +158,7 @@ class relaiscolis(Service):
 		firstName = event['origin']['first_name']
 		lastName = event['origin']['last_name']
 		company = event['origin']['company']
-		streetNumber = event['origin']['street_number']
+		streetNumber = str(event['origin']['street_number']) + str(event["origin"]["line1"])
 		zipCode = event['origin']['zipcode']
 		city = event['origin']['city']
 		shipment_id = event['destination']['shipment_id']
