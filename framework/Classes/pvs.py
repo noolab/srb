@@ -40,7 +40,7 @@ class pvs(Service):
 				"get":true
 			},
 			"label":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -60,6 +60,8 @@ class pvs(Service):
 		return data
 
 	def status(self,paramlist):
+		allresponseTime=[]
+		paramlist=""
 		start=time.time()
 		available=True
 		response_time=0
@@ -82,9 +84,32 @@ class pvs(Service):
 		if response_time>30:
 			timeout=True
 
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
-		    "response_time": response_time,
+		    "response_time": final_responseTime,
 		    "timeout": timeout,
 		    "limit": 30000
 		}
@@ -200,7 +225,7 @@ class pvs(Service):
 			"origin": paramlist["origin"],
 			"destination": paramlist["destination"],
 			"parcel": paramlist["parcel"],
-			"shipment_id": "transport_return_number",
+			"carrier_shipment_id": "transport_return_number",
 			"label_url": link_pdf
 		}
 		return data

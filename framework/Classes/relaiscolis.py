@@ -51,12 +51,15 @@ class relaiscolis(Service):
 	        	"get": true
 	      	},
 	      	"/label": {
-	        	"get": true
+	        	"post": true
 	      	}
 		}
 		return result
 
 	def status(self,paramlist):
+		allresponseTime=[]
+		paramlist=""
+
 		lat = '48.8640556'
 		lng = '2.3478669'
 		# CREATE URI
@@ -78,10 +81,76 @@ class relaiscolis(Service):
 		timeout = False
 		if response_time > 30:
 	  		timeout = True
+	  	#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
 
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		#call dropoffpoint
+		response_time_3=0
+		start_3 = time.time()
+		try:
+			rootdata= self.dropoffpoint(paramlist)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+
+		#label
+		response_time_4=0
+		start_4 = time.time()
+		try:
+			dataparam={
+			  "return_id": "9898",
+			  "origin": {
+					"first_name": "Test",
+			    "last_name": "Test" ,
+			    "company": "withings",
+					"line1":"22",
+			    "street_number": "21 rue du bas",
+			    "zipcode": "92000",
+			    "city": "nanterre",
+			    "phone": "0677889988"
+			  },
+			   "destination":{
+					 "shipment_id": "11111111"
+				 },
+			   "parcel" : {
+					 
+				 },
+			   "dropoff_informations":{
+					 "dropoff_point_id": "C1193"
+				 }
+			}
+			rootdata= self.label(dataparam)
+		except:
+			response_time_4=-1
+		if response_time_4 == 0:
+			response_time_4 = time.time() - start_4
+		allresponseTime.append(response_time_4)		
+
+		final_responseTime=min(allresponseTime)
 		result={
 	  		"available": available,
-	  		"response_time": response_time,
+	  		"response_time": final_responseTime,
 	  		"timeout": timeout,
 	  		"limit": 30000
 	  	}
@@ -146,23 +215,27 @@ class relaiscolis(Service):
 		# tree = ET.parse('Assets/relaiscolis/request/labelxml.txt')
 		# root = tree.getroot()
 
-
-		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/line1","origin/zipcode","origin/city","destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","return_id"]
+		
+		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/line1","origin/zipcode","origin/city","destination/shipment_id","origin/phone","dropoff_informations/dropoff_point_id","shipment_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			event=userparamlist
+			if "street_number" not in event["origin"]:
+				event["origin"]["street_number"]=""
+			if "street_name" not in event["origin"]:
+				event["origin"]["street_name"]=""
 		else:
 			return checkparamlist["message"]
 
 		firstName = event['origin']['first_name']
 		lastName = event['origin']['last_name']
 		company = event['origin']['company']
-		streetNumber = str(event['origin']['street_number']) + str(event["origin"]["line1"])
+		streetNumber = str(event['origin']['street_number']) +str(event["origin"]["street_name"])  #+ str(event["origin"]["line1"])
 		zipCode = event['origin']['zipcode']
 		city = event['origin']['city']
 		shipment_id = event['destination']['shipment_id']
-		return_id = event['return_id']
+		shipment_id = event['shipment_id']
 		phone = event['origin']['phone']
 		dropoff_point_id = event['dropoff_informations']['dropoff_point_id']
 
@@ -178,7 +251,7 @@ class relaiscolis(Service):
 				name4letters=lastName+'0'
 		#root.find("soap:Envelope/soap:Body/EnregistrerRetours/listRetourRequest/RetourRequest/NomClient4Lettre").text = name4letters
 
-		numid=str(return_id)
+		numid=str(shipment_id)
 		#root.find("soap:Envelope/soap:Body/EnregistrerRetours/listRetourRequest/RetourRequest/NumCommande").text = str(numid)
 		#root.find("soap:Envelope/soap:Body/EnregistrerRetours/listRetourRequest/RetourRequest/NumClient").text = str(numid)
 
@@ -252,7 +325,7 @@ class relaiscolis(Service):
 		c.drawString(200,665, 'Marchand : ' + company)
 		c.drawString(200,650, streetNumber)
 		c.drawString(200,635, zipCode + ", " + city)
-		c.drawString(200,620, 'No Retour : ' + return_id)
+		c.drawString(200,620, 'No Retour : ' + shipment_id)
 		c.drawString(200,605, 'No Colis Retour : ' + transport_return_number)
 		# GENERATION CAB
 		img_data = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['CAB']
@@ -327,7 +400,7 @@ class relaiscolis(Service):
 			"origin": event["origin"],
 			"destination": event["destination"],
 			"parcel": event["parcel"],
-			"shipment_id": transport_return_number,
+			"carrier_shipment_id": transport_return_number,
 			"label_url": link_pdf
 		}
 		return data

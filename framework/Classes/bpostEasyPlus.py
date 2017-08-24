@@ -21,11 +21,13 @@ class bposteasyplus(Service):
 	def root(self, paramlist):
 		true=True
 		false=False
-		data={"/": {"get": true},"/type": {"get": true},"/label": {"get": true},"/price": {"get": false},"/status": {"get": true}}
+		data={"/": {"get": true},"/type": {"get": true},"/label": {"post": true},"/price": {"post": false},"/status": {"get": true}}
 
 		return data
 
 	def status(self, paramlist):
+		allresponseTime=[]
+		paramlist=""
 		start = time.time()
 		available = True
 		response_time = 0
@@ -83,10 +85,33 @@ class bposteasyplus(Service):
 
 		if response_time > 30:
 			timeout = True
+		allresponseTime.append(response_time)
+
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		final_responseTime=min(allresponseTime)
 
 		result = {
   			"available": available,
-  			"response_time": response_time,
+  			"response_time": final_responseTime,
   			"timeout": timeout,
   			"limit": 30000
 		}
@@ -105,10 +130,12 @@ class bposteasyplus(Service):
 		event={}
 		event["destination"] = {}
 		event["origin"] = {}
+		event["destination"]["line1"] = ""
 		event["destination"]["line2"] = ""
+		event["origin"]["line1"] = ""
 		event["origin"]["line2"] = ""
-		req_list=["destination/line1","origin/line1","destination/street_number","destination/zipcode","destination/city","destination/country_code","origin/street_number",
-		"origin/name","origin/zipcode","origin/city","origin/country_code","return_id"]
+		req_list=["destination/street_name","origin/street_name","destination/street_number","destination/zipcode","destination/city","destination/country_code","origin/street_number",
+		"origin/name","origin/zipcode","origin/city","origin/country_code","shipment_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -116,8 +143,8 @@ class bposteasyplus(Service):
 		else:
 			return checkparamlist["message"]
 
-		full_destination_address = event["destination"]["line1"] + " " + event["destination"]["line2"]
-		full_origin_address = event["origin"]["line1"] + " " + event["origin"]["line2"]
+		# full_destination_address = event["destination"]["line1"] + " " + event["destination"]["line2"]
+		# full_origin_address = event["origin"]["line1"] + " " + event["origin"]["line2"]
 		xmlresult="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
 	       <soapenv:Header/>
 	       <soapenv:Body>
@@ -127,7 +154,7 @@ class bposteasyplus(Service):
 	            </v001:ContractInfo>
 	            <v001:Addressee>
 	                <v001:Name>""" + event["destination"]["name"] + """</v001:Name>
-	                <v001:Streetname>""" + full_destination_address + """</v001:Streetname>
+	                <v001:Streetname>""" + event["destination"]["street_name"] + """</v001:Streetname>
 	                <v001:Streetnumber>""" + event["destination"]["street_number"] + " " + """</v001:Streetnumber>
 	                <v001:PostalCode>""" + event["destination"]["zipcode"] + """</v001:PostalCode>
 	                <v001:MunicipalityName>""" + event["destination"]["city"] + """</v001:MunicipalityName>
@@ -135,14 +162,14 @@ class bposteasyplus(Service):
 	            </v001:Addressee>
 	            <v001:Sender>
 	              <v001:Name>""" + event["origin"]["name"] + """</v001:Name>
-	              <v001:Streetname>""" + full_origin_address + """</v001:Streetname>
+	              <v001:Streetname>""" + event["origin"]["street_name"] + """</v001:Streetname>
 	              <v001:Streetnumber>""" + event["origin"]["street_number"] + " " + """</v001:Streetnumber>
 	              <v001:PostalCode>""" + event["origin"]["zipcode"] + """</v001:PostalCode>
 	              <v001:MunicipalityName>""" + event["origin"]["city"] + """</v001:MunicipalityName>
 	              <v001:CountryISO2Code>""" + event["origin"]["country_code"] + """</v001:CountryISO2Code>
 	            </v001:Sender>
 	            <v001:ReturnInfo>
-	              <v001:CustomerReference>""" + event["return_id"] + """</v001:CustomerReference>
+	              <v001:CustomerReference>""" + event["shipment_id"] + """</v001:CustomerReference>
 	            </v001:ReturnInfo>
 	          </v001:getReturnLabelRequest>
 	       </soapenv:Body>
@@ -176,7 +203,7 @@ class bposteasyplus(Service):
 			"origin": event["origin"],
 			"destination": event["destination"],
 			"parcel": event["parcel"],
-			"shipment_id": shipment_id,
+			"carrier_shipment_id": shipment_id,
 			"label_url": link_pdf
 		}
 

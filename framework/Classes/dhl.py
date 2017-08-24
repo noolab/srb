@@ -39,13 +39,13 @@ class dhl(Service):
 				"get":true
 			},
 			"pickup":{
-				"get":true
+				"post":true
 			},
 			"price":{
-				"get":true
+				"post":true
 			},
 			"label":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -60,7 +60,7 @@ class dhl(Service):
 		paramlist["requestor"]={}
 		paramlist["shipment_details"]={}
 		paramlist["place"]["line2"]=""
-		paramlist["place"]["post_code"]=""
+		paramlist["place"]["zipcode"]=""
 		paramlist["requestor"]["name"] =""
 		paramlist["requestor"]["phone"]="" 
 		paramlist["shipment_details"]["number_of_pieces"]=""
@@ -100,7 +100,7 @@ class dhl(Service):
 		root.find("Place/PackageLocation").text = paramlist["place"]["package_location"] 
 		root.find("Place/City").text = paramlist["place"]["city"] 
 		root.find("Place/CountryCode").text = paramlist["place"]["country_code"] 
-		root.find("Place/PostalCode").text = paramlist["place"]["post_code"] 
+		root.find("Place/PostalCode").text = paramlist["place"]["zipcode"] 
 
 		root.find("PickupContact/PersonName").text = paramlist["requestor"]["name"] 
 		root.find("PickupContact/Phone").text = paramlist["requestor"]["phone"] 
@@ -140,6 +140,9 @@ class dhl(Service):
 
 	def status(self,paramlist):
 		print ("type function")
+		allresponseTime=[]
+		paramlist=""
+
 		date = datetime.datetime.now()
 		datenow=re.sub(r'\s.*','',str(date))
 		tree = ET.parse('Assets/dhl/requests/003_Pickup.txt')
@@ -166,9 +169,158 @@ class dhl(Service):
 		if response_time>30:
 			timeout=True
 
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		#Cal pickupslots
+		response_time_3=0
+		start_3 = time.time()
+		try:
+			rootdata= self.pickupslots(paramlist)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+
+		#Call pickup
+		response_time_4=0
+		start_4 = time.time()
+		try:
+			dataparamlist={
+				"requestor": {
+				    "name": "Rikhil",
+				    "phone": "23162",
+				    "company": "Saurabh"
+				  },
+				  "place": {
+				    "line1": "123 Test Ave",
+				    "line2": "Test Bus Park",
+				    "package_location": "Reception",
+				    "city": "PARIS",
+				    "zipcode": "75018",
+				    "country_code": "FR"
+				  },
+				  "pickup": {
+					"pickup_date": "2017-08-21",
+				    "slot_id": "string",
+				    "ready_by_time": "10:20",
+				    "close_time": "23:20",
+				    "number_of_pieces": 0,
+				    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
+				  },
+				  "shipment_details": {
+				    "number_of_pieces": 1,
+				    "weight": 200
+				  }
+			}
+			rootdata= self.pickup(dataparamlist)
+		except:
+			response_time_4=-1
+		if response_time_4 == 0:
+			response_time_4 = time.time() - start_4
+		allresponseTime.append(response_time_4)
+
+		#Cal label
+		response_time_5=0
+		start_5 = time.time()
+		labelparamlist ={
+			"origin": {
+		    "name": "Ithyvan Schreys",
+		    "first_name": "",
+		    "last_name": "",
+		    "phone": "d arnouville",
+		    "email": "",
+		    "company": "Company Origin",
+		    "line1": "32 rue de paradis",
+		    "street_number":"21",
+			"street_name":"test",
+		    "state": "Ile de france",
+		    "zipcode": "75010",
+		    "country": "France",
+		    "country_code": "FR",
+		    "city": "Paris",
+		    "place_description": "At office"
+		  },
+		  "destination": {
+		    "name": "Maison",
+		    "shipment_id": "return_id_at_srb",
+		    "first_name": "Leo",
+		    "last_name": "Martin",
+		    "company": "Company Destination",
+		    "line1": "Wilsnacker Str. 52",
+		    "line2": "line2",
+		    "street_number":"21",
+			"street_name":"test",
+		    "state": "Helsinki",
+		    "zipcode": "00101",
+		    "country": "Finland",
+		    "country_code": "FI",
+		    "phone": "3589635732",
+		    "email": "eddy@gmail.com",
+		    "city": "Helsinki"
+		  },
+		  "parcel": {
+		    "length_in_cm": 10,
+		    "width_in_cm": 10,
+		    "height_in_cm": 10,
+		    "weight_in_grams": 1700,
+		  	"content": "This is a contents write by "
+		  },
+		  "shipment_date": "2017-06-23"
+		}
+		try:
+			rootdata= self.label(labelparamlist)
+		except:
+			response_time_5=-1
+		if response_time_5 == 0:
+			response_time_5 = time.time() - start_5
+		allresponseTime.append(response_time_5)
+		# Call PRice
+		response_time_6=0
+		start_6 = time.time()
+		try:
+			rootdata= self.price(labelparamlist)
+		except:
+			response_time_6=-1
+		if response_time_6 == 0:
+			response_time_6 = time.time() - start_6
+		allresponseTime.append(response_time_6)
+
+		#call tracking
+		response_time_7=0
+		start_7 = time.time()
+		try:
+			rootdata= self.tracking(labelparamlist)
+		except:
+			response_time_7=-1
+		if response_time_7 == 0:
+			response_time_7 = time.time() - start_7
+		allresponseTime.append(response_time_7)
+
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
-		    "response_time": response_time,
+		    "response_time": final_responseTime,
 		    "timeout": timeout,
 		    "limit": 30000
 		}
@@ -244,6 +396,8 @@ class dhl(Service):
 		paramlist["origin"] = {}
 		paramlist["parcel"] = {}
 		paramlist["destination"] = {}
+		paramlist["destination"]["street_name"] = ""
+		paramlist["destination"]["street_number"] = ""
 		paramlist["destination"]["phone"] = ""
 		paramlist["destination"]["email"] = ""
 		paramlist["destination"]["line2"] = ""
@@ -251,9 +405,11 @@ class dhl(Service):
 		paramlist["parcel"]["weight_in_grams"] = "0.0"
 		paramlist["parcel"]["height_in_cm"] = ""
 		paramlist["parcel"]["length_in_cm"] = ""
-		paramlist["contents"] = ""
+		paramlist["parcel"]["contents"] = ""
 		# paramlist["origin"]["first_name"] = ""
 		# paramlist["origin"]["last_name"] = ""
+		paramlist["origin"]["street_name"]= ""
+		paramlist["origin"]["street_number"] = ""
 		paramlist["origin"]["company"] = ""
 		paramlist["origin"]["line2"] = ""
 		paramlist["origin"]["zipcode"] = ""
@@ -267,6 +423,14 @@ class dhl(Service):
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			if "street_number" not in paramlist["origin"]:
+				paramlist["origin"]["street_number"] = ""
+			if "street_name" not in paramlist["origin"]:
+				paramlist["origin"]["street_name"]= ""
+			if "street_number" not in paramlist["destination"]:
+				paramlist["destination"]["street_number"] = ""
+			if "street_name" not in paramlist["destination"]:
+				paramlist["destination"]["street_name"]= ""
 		else:
 			return checkparamlist["message"]
 
@@ -303,7 +467,7 @@ class dhl(Service):
 		root.find("Billing/ShipperAccountNumber").text = shipperAccountNumber
 		root.find("Billing/BillingAccountNumber").text = shipperAccountNumber
 		root.find("Consignee/CompanyName").text = paramlist["destination"]["company"]
-		root.find("Consignee/AddressLine").text = paramlist["destination"]["line1"]
+		root.find("Consignee/AddressLine").text = str(paramlist["destination"]["street_number"])+str(paramlist["destination"]["street_name"]) #+str(paramlist["destination"]["line1"])
 		root.find("Consignee/City").text = paramlist["destination"]["city"]
 		root.find("Consignee/Division").text = paramlist["destination"]["state"]
 		root.find("Consignee/PostalCode").text = paramlist["destination"]["zipcode"]
@@ -323,11 +487,11 @@ class dhl(Service):
 		root.find("ShipmentDetails/Pieces/Piece/Depth").text = str(paramlist["parcel"]["length_in_cm"])
 		root.find("ShipmentDetails/Weight").text = str(parcel_weight_in_grams)
 		root.find("ShipmentDetails/Date").text = paramlist["shipment_date"]
-		root.find("ShipmentDetails/Contents").text =  paramlist["contents"]
+		root.find("ShipmentDetails/Contents").text =  paramlist["parcel"]["content"]
 
 		root.find("Shipper/ShipperID").text = shipperAccountNumber
 		root.find("Shipper/CompanyName").text = paramlist["origin"]["company"]
-		root.find("Shipper/AddressLine").text = paramlist["origin"]["line1"]
+		root.find("Shipper/AddressLine").text = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"]) #+str(paramlist["origin"]["line1"])
 		# root.find("Shipper/AddressLine").text = origin_line2
 		root.find("Shipper/City").text = paramlist["origin"]["city"]
 		root.find("Shipper/PostalCode").text = paramlist["origin"]["zipcode"]
@@ -338,7 +502,7 @@ class dhl(Service):
 		root.find("Shipper/Contact/Email").text = paramlist["origin"]["email"]
 
 		root.find("Place/CompanyName").text = paramlist["origin"]["company"]
-		root.find("Place/AddressLine").text = paramlist["origin"]["line1"]
+		root.find("Place/AddressLine").text = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"]) #+str(paramlist["origin"]["line1"])
 		root.find("Place/City").text = paramlist["origin"]["city"]
 		root.find("Place/CountryCode").text = paramlist["origin"]["country_code"]
 		root.find("Place/Division").text = paramlist["origin"]["state"]
@@ -378,7 +542,7 @@ class dhl(Service):
 		  "origin": paramlist["origin"],
 		  "destination": paramlist["destination"],
 		  "parcel": paramlist["parcel"],
-		  "shipment_id": shipmentId,
+		  "carrier_shipment_id": shipmentId,
 		  "label_url": link_pdf
 		}
 		return data
@@ -425,7 +589,7 @@ class dhl(Service):
 		true=True
 		false=False
 		data={
-			"type": "postal",
+			"type": "pickup",
 			"postal": true,
 			"pickup": false,
 			"dropoff": false,

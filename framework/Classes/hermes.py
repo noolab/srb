@@ -40,7 +40,7 @@ class hermes(Service):
 				"get":true
 			},
 			"label":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -61,10 +61,8 @@ class hermes(Service):
 		return data
 
 	def status(self,paramlist):
-		# date = datetime.datetime.now()
-		# datenow=re.sub(r'\s.*','',str(date))
-		# tree = ET.parse('Assets/royalmail/requests/createshipment.txt')
-		# root = tree.getroot()
+		allresponseTime=[]
+		paramlist=""
 		
 		start=time.time()
 		available=True
@@ -88,6 +86,81 @@ class hermes(Service):
 		if response_time>30:
 			timeout=True
 
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+		#Cal label
+		response_time_3=0
+		start_3 = time.time()
+		labelparamlist ={
+			"origin": {
+		    "name": "Ithyvan Schreys",
+		    "first_name": "",
+		    "last_name": "",
+		    "phone": "d arnouville",
+		    "email": "",
+		    "company": "Company Origin",
+		    "line1": "32 rue de paradis",
+		    "state": "Ile de france",
+		    "zipcode": "75010",
+		    "country": "France",
+		    "country_code": "FR",
+		    "city": "Paris",
+		    "place_description": "At office"
+		  },
+		  "destination": {
+		    "name": "Maison",
+		    "shipment_id": "return_id_at_srb",
+		    "first_name": "Leo",
+		    "last_name": "Martin",
+		    "company": "Company Destination",
+		    "line1": "Wilsnacker Str. 52",
+		    "line2": "line2",
+		    "state": "Helsinki",
+		    "zipcode": "00101",
+		    "country": "Finland",
+		    "country_code": "FI",
+		    "phone": "3589635732",
+		    "email": "eddy@gmail.com",
+		    "city": "Helsinki"
+		  },
+		  "parcel": {
+		    "length_in_cm": 10,
+		    "width_in_cm": 10,
+		    "height_in_cm": 10,
+		    "weight_in_grams": 1700,
+		    "content": "This is a contents write by "
+		  },
+		  "shipment_date": "2017-06-23"
+		  
+		}
+		try:
+			rootdata= self.label(labelparamlist)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+		
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
 		    "response_time": response_time,
@@ -98,7 +171,7 @@ class hermes(Service):
 
 	def label(self,userparamlist):
 		paramlist = {}
-		paramlist["return_id"] = ""
+		paramlist["shipment_id"] = ""
 		paramlist["partnerid"] = os.environ["HERMES_PATHNERID"]
 		paramlist["password"] = os.environ["HERMES_PASSWORD"]
 
@@ -111,6 +184,7 @@ class hermes(Service):
 		paramlist["destination"]["email"]=""
 		paramlist["destination"]["company"] =""
 		paramlist["destination"]["street_number"] =""
+		paramlist["destination"]["street_name"] =""
 		paramlist["destination"]["line1"] =""
 		paramlist["destination"]["line2"] =""
 		paramlist["destination"]["state"] =""
@@ -125,6 +199,7 @@ class hermes(Service):
 		paramlist["origin"]["company"] =""
 		paramlist["origin"]["line1"] =""
 		paramlist["origin"]["line2"] =""
+		paramlist["origin"]["street_name"] =""
 		paramlist["origin"]["state"] =""
 		paramlist["origin"]["country_code"] =""
 		paramlist["origin"]["place_description"] =""
@@ -133,35 +208,46 @@ class hermes(Service):
 		paramlist["parcel"]["width_in_cm"] =""
 		paramlist["parcel"]["height_in_cm"] =""
 		paramlist["parcel"]["weight_in_grams"] =""
-		paramlist["return_id"]= ""
+		paramlist["shipment_id"]= ""
 
 		req_list=["origin/country","origin/first_name","origin/last_name","origin/street_number","origin/line1","origin/zipcode","origin/city"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
-			# if not paramlist["return_id"]:
-			# 	paramlist["return_id"] = ""
+			if "street_name" not in paramlist["origin"]:
+				paramlist["origin"]["street_name"] =""
+			if "street_number" not in paramlist["origin"]:
+				paramlist["origin"]["street_number"] = ""
+			streetInfo = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"])+str(paramlist["origin"]["line1"])
 			data_param ={
 				"partnerid":os.environ["HERMES_PATHNERID"],
 				"password":os.environ["HERMES_PASSWORD"],
-				"country":paramlist["origin"]["country"],
+				"country":paramlist["origin"]["country_code"],
 				"firstname":paramlist["origin"]["first_name"],
 				"lastname":paramlist["origin"]["last_name"],
 				"additionalinfo":"",
-				"street":paramlist["origin"]["line1"],
+				"street":streetInfo,
 				"housenumber":paramlist["origin"]["street_number"],
 				"zipcode":paramlist["origin"]["zipcode"],
 				"city":paramlist["origin"]["city"],
-				"kdrefno":paramlist["return_id"]
+				"kdrefno":paramlist["shipment_id"]
 			}
 		else:
 			return checkparamlist["message"]
 		
 		
-		responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
-		d = responsePrint.headers['content-disposition']
-		shipmentId = re.sub(r'\s+|\.pdf|.*?\=','',str(d))
+		# responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")
+		headers={"Content-Type": "application/json"}
+		try:
+			responsePrint=requests.post('https://api-return.hermesworld.com/LabelService/V1/getReturnLabel', data=data_param)
+		except:
+			return responsePrint.content
+		try:
+			d = responsePrint.headers['content-disposition']
+			shipmentId = re.sub(r'\s+|\.pdf|.*?\=','',str(d))
+		except:
+			return responsePrint.content
 
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])
 		bucket = c.get_bucket("srbstickers", validate=False)
@@ -183,8 +269,8 @@ class hermes(Service):
 			"origin": paramlist["origin"],
 			"destination": paramlist["destination"],
 			"parcel": paramlist["parcel"],
-			"shipment_id": shipmentId,
-			"return_id":paramlist["return_id"],
+			"carrier_shipment_id": shipmentId,
+			"shipment_id":paramlist["shipment_id"],   #return_id
 			"label_url": link_pdf
 		}
 

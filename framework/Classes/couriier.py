@@ -27,7 +27,7 @@ class couriier(Service):
 				"get": true
 			},
 			"pickup": {
-				"get": true
+				"post": true
 			},
 			"status": {
 				"get": true
@@ -39,6 +39,8 @@ class couriier(Service):
 		start = time.time()
 		available = True
 		response_time = 0
+		allresponseTime=[]
+		paramlist=""
 
 		try:
 			headersConfig = {'apikey': COURIIER_HEADERS_APIKEY}
@@ -59,9 +61,83 @@ class couriier(Service):
 		if response_time > 30:
 			timeout = True
 
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		#Cal pickupslots
+		response_time_3=0
+		start_3 = time.time()
+		try:
+			rootdata= self.pickupslots(paramlist)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+
+		#Cal pickup
+		response_time_4=0
+		start_4 = time.time()
+		try:
+			dataparamlist={
+				"requestor": {
+				    "name": "Test Mission", 
+				    "phone": "0671844487", 
+				    "company": "string"
+				},
+				"place": {
+				    "street_number": "string",
+				    "line1": "21 rue des filles du calvaire",
+				    "line2": "Digicode test", 
+				    "city": "Paris", 
+				    "zipcode": "75003", 
+				    "latitude": 55.685800, 
+				    "longitude": 12.584826
+				},
+				"destination": {
+				    "name": "Test Campaign",
+				    "line1": "9 rue du faubourg saint Denis",
+				    "line2": "Digicode test",
+				    "zipcode": "75010",
+				    "city": "Paris", 
+				    "phone": "0671844487", 
+				    "latitude": 48.86302, 
+				    "longitude": 2.366132
+				},
+				"pickup": {
+				    "pickup_date": "2017-07-05 15:00:00",
+				}
+			}
+			rootdata= self.pickup(dataparamlist)
+		except:
+			response_time_4=-1
+		if response_time_4 == 0:
+			response_time_4 = time.time() - start_4
+		allresponseTime.append(response_time_4)
+
+		final_responseTime=min(allresponseTime)
 		result = {
 			"available": available,
-			"response_time": response_time,
+			"response_time": final_responseTime,
 			"timeout": timeout,
 			"limit": 30000
 		}
@@ -143,7 +219,7 @@ class couriier(Service):
 		paramlist["plcae"]["line2"] = ""
 		paramlist["destination"] = {}
 		paramlist["destination"]["line2"] = ""
-		req_list=["requestor/name","place/latitude","place/longitude","place/line1","place/post_code","place/city","requestor/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/pickup_date"]
+		req_list=["requestor/name","place/latitude","place/longitude","place/line1","place/zipcode","place/city","requestor/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/pickup_date"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -151,7 +227,7 @@ class couriier(Service):
 		else:
 			return checkparamlist["message"]
 		data_sender=json.dumps({
-            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["requestor"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["place"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["place"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["place"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["place"]["line2"]+"\",\"pickupZip\": \""+paramlist["place"]["post_code"]+"\",\"pickupCity\": \""+paramlist["place"]["city"]+"\",\"pickupTel\": \""+paramlist["requestor"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
+            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["requestor"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["place"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["place"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["place"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["place"]["line2"]+"\",\"pickupZip\": \""+paramlist["place"]["zipcode"]+"\",\"pickupCity\": \""+paramlist["place"]["city"]+"\",\"pickupTel\": \""+paramlist["requestor"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
         })
         # data_sender = json.dumps(data)
 		response = netw.sendRequestHeaderConfig(url, data_sender, "post", headers)

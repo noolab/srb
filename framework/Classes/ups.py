@@ -35,7 +35,7 @@ class ups(Service):
 				"get":true
 			},
 			"label":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -55,6 +55,9 @@ class ups(Service):
 		}
 		return data
 	def status(self,paramlist):
+		allresponseTime=[]
+		paramlist="" 
+
 		start=time.time()
 		available=True
 		response_time=0
@@ -72,10 +75,102 @@ class ups(Service):
 
 		if response_time>30:
 			timeout=True
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
 
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+		#Cal label
+		response_time_3=0
+		start_3 = time.time()
+		try:
+			dataparam={
+			  "origin": {
+			    "name": "Test Type",
+			    "first_name": "Ithyvan",
+			    "last_name": "Schreys",
+			    "phone": "0622889977",
+			    "email": "eddy@shoprunback.com",
+			    "company": "Company Origin",
+			    "line1": "11 avenue de la habette",
+			    "line2": "la habette",
+			    "street_number": "212121",
+			    "street_name":"test",
+			    "state": "",
+			    "zipcode": "94000",
+			    "country": "France",
+			    "country_code": "FR",
+			    "city": "CRETEIL",
+			    "place_description": "At home"
+			  },
+			  "destination": {
+			    "name": "Client Base fulfilment ltd",
+			    "shipment_id": "return_id_at_srb",
+			    "first_name": "Leo",
+			    "last_name": "Martin",
+			    "company": "Company Destination",
+			    "street_number": "121212",
+			    "street_name":"test",
+			    "line1": "Clientbase Fulfilment",
+			    "line2": "Woodview Road",
+			    "state": "IDF",
+			    "zipcode": "TQ4 7SR",
+			    "country": "France",
+			    "country_code": "GB",
+			    "phone": "07801123456",
+			    "email": "tom.smith@royalmail.com",
+			    "city": "PAIGNTON"
+			  },
+			  "parcel": {
+			    "length_in_cm": 10,
+			    "width_in_cm": 10,
+			    "height_in_cm": 10,
+			     "contents": "TESTS",
+			    "weight_in_grams": 1950
+			  },
+			  "shipment_date": "2017-07-21",
+			 
+			  "return_id": "9999"
+			}
+			rootdata= self.label(dataparam)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+		
+		#Cal Tracking
+		response_time_4=0
+		start_4 = time.time()
+		try:
+			paramlist='FL067074022GB'
+			rootdata= self.tracking(paramlist)
+		except:
+			response_time_4=-1
+		if response_time_4 == 0:
+			response_time_4 = time.time() - start_4
+		allresponseTime.append(response_time_4)
+
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
-		    "response_time": response_time,
+		    "response_time": final_responseTime,
 		    "timeout": timeout,
 		    "limit": 30000
 		}
@@ -137,6 +232,13 @@ class ups(Service):
 		paramlist = {}
 		paramlist["origin"] ={}
 		paramlist["origin"]["phone"]=""
+		paramlist["origin"]["line1"]=""
+		paramlist["origin"]["street_number"]=""
+		paramlist["origin"]["street_name"]=""
+		paramlist["destination"] ={}
+		paramlist["destination"]["line1"] = ""
+		paramlist["destination"]["street_number"]=""
+		paramlist["destination"]["street_name"] = ""
 
 		req_list=["origin/name","origin/first_name","origin/last_name","origin/city","origin/zipcode","origin/country_code","destination/name","destination/phone","destination/zipcode","destination/country_code"]
 		instance = Validator()
@@ -149,6 +251,10 @@ class ups(Service):
 		attentionNameOri = str(paramlist["origin"]["first_name"]) + str(paramlist["origin"]["last_name"])
 		attentionNameDes =str(paramlist["destination"]["first_name"])+ str(paramlist["destination"]["last_name"])
 		weight_in_kg = str(float(paramlist["parcel"]["weight_in_grams"])/1000)
+
+		#new addreess
+		fulladdressOrigin = str(paramlist["origin"]["street_number"]) +str(paramlist["origin"]["street_name"]) #+str(paramlist["origin"]["line1"])
+		fulladdressDestination = str(paramlist["destination"]["street_number"]) +str(paramlist["destination"]["street_name"]) #+str(paramlist["destination"]["line1"])
 		
 		payload="""<envr:Envelope xmlns:auth="http://www.ups.com/schema/xpci/1.0/auth"
 			xmlns:envr="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -204,7 +310,7 @@ class ups(Service):
 			                    <ship:Number>"""+paramlist["destination"]["phone"]+"""</ship:Number>
 			                    </ship:Phone>
 			                    <ship:Address>
-			                    <ship:AddressLine>"""+paramlist["destination"]["line1"]+"""</ship:AddressLine>
+			                    <ship:AddressLine>"""+fulladdressDestination+"""</ship:AddressLine>
 			                    <ship:City>"""+paramlist["destination"]["city"]+"""</ship:City>
 			                    <ship:PostalCode>"""+paramlist["destination"]["zipcode"]+"""</ship:PostalCode>
 			                    <ship:CountryCode>"""+paramlist["destination"]["country_code"]+"""</ship:CountryCode>
@@ -217,7 +323,7 @@ class ups(Service):
 			                    <ship:Number>"""+paramlist["origin"]["phone"]+"""</ship:Number>
 			                    </ship:Phone>
 			                    <ship:Address>
-			                    <ship:AddressLine>"""+paramlist["origin"]["line1"]+"""</ship:AddressLine>
+			                    <ship:AddressLine>"""+fulladdressOrigin+"""</ship:AddressLine>
 			                    <ship:City>"""+paramlist["origin"]["city"]+"""</ship:City>
 			                    <ship:PostalCode>"""+paramlist["origin"]["zipcode"]+"""</ship:PostalCode>
 			                    <ship:CountryCode>"""+paramlist["origin"]["country_code"]+"""</ship:CountryCode>
@@ -297,7 +403,7 @@ class ups(Service):
 			"origin": paramlist["origin"],
 			"destination": paramlist["destination"],
 			"parcel": paramlist["parcel"],
-			"shipment_id": shipment_id,
+			"carrier_shipment_id": shipment_id,
 			"label_url": link_pdf
 		}
 		return data

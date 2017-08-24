@@ -41,7 +41,7 @@ class royalmail(Service):
 				"get":true
 			},
 			"label":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -60,6 +60,9 @@ class royalmail(Service):
 		}
 		return data
 	def status(self,paramlist):
+		allresponseTime=[]
+		paramlist=""
+
 		date = datetime.datetime.now()
 		datenow=re.sub(r'\s.*','',str(date))
 		tree = ET.parse('Assets/royalmail/requests/createshipment.txt')
@@ -84,9 +87,101 @@ class royalmail(Service):
 		if response_time>30:
 			timeout=True
 
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		#Cal label
+		response_time_3=0
+		start_3 = time.time()
+		try:
+			dataparam={
+			  "origin": {
+			    "name": "Test Type",
+			    "first_name": "Ithyvan",
+			    "last_name": "Schreys",
+			    "phone": "0622889977",
+			    "email": "eddy@shoprunback.com",
+			    "company": "Company Origin",
+			    "line1": "11 avenue de la habette",
+			    "line2": "la habette",
+			    "street_number": "212121",
+			    "state": "",
+			    "zipcode": "94000",
+			    "country": "France",
+			    "country_code": "FR",
+			    "city": "CRETEIL",
+			    "place_description": "At home"
+			  },
+			  "destination": {
+			    "name": "Client Base fulfilment ltd",
+			    "shipment_id": "return_id_at_srb",
+			    "first_name": "Leo",
+			    "last_name": "Martin",
+			    "company": "Company Destination",
+			    "street_number": "121212",
+			    "line1": "Clientbase Fulfilment",
+			    "line2": "Woodview Road",
+			    "state": "IDF",
+			    "zipcode": "TQ4 7SR",
+			    "country": "France",
+			    "country_code": "GB",
+			    "phone": "07801123456",
+			    "email": "tom.smith@royalmail.com",
+			    "city": "PAIGNTON"
+			  },
+			  "parcel": {
+			    "length_in_cm": 10,
+			    "width_in_cm": 10,
+			    "height_in_cm": 10,
+			    "content": "TESTS",
+			    "weight_in_grams": 1950
+			  },
+			  "shipment_date": "2017-07-21",
+			  
+			  "return_id": "9999"
+			}
+			rootdata= self.label(dataparam)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+		
+		#Cal Tracking
+		response_time_4=0
+		start_4 = time.time()
+		try:
+			paramlist='FL067074022GB'
+			rootdata= self.tracking(paramlist)
+		except:
+			response_time_4=-1
+		if response_time_4 == 0:
+			response_time_4 = time.time() - start_4
+		allresponseTime.append(response_time_4)
+
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
-		    "response_time": response_time,
+		    "response_time": final_responseTime,
 		    "timeout": timeout,
 		    "limit": 30000
 		}
@@ -149,6 +244,12 @@ class royalmail(Service):
 		else:
 			return checkparamlist["message"]
 
+		# fulladdress =str(paramlist["destination"]["line1"])paramlist["destination"]["line1"]=""
+		if "street_number" not in paramlist["origin"]:
+			paramlist["origin"]["street_number"] = ""
+		if "street_name" not in paramlist["origin"]:
+			paramlist["origin"]["street_name"]= ""
+		line1=str(paramlist["origin"]["street_number"]+str(paramlist["origin"]["street_name"]))
 		payload = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:v2="http://www.royalmailgroup.com/api/ship/V2" xmlns:v1="http://www.royalmailgroup.com/integration/core/V1">
 		   <soapenv:Header>
 		<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
@@ -225,7 +326,7 @@ class royalmail(Service):
               <v2:senderReference>SenderReference1</v2:senderReference>
 
               <v2:importerAddress>
-				<addressLine1>"""+paramlist["origin"]["line1"]+"""</addressLine1>
+				<addressLine1>"""+line1+"""</addressLine1>
 				<addressLine2>"""+paramlist["origin"]["line2"]+"""</addressLine2>
 				<stateOrProvince>
 					<stateOrProvinceCode>
@@ -352,7 +453,7 @@ class royalmail(Service):
 			    "city": "PAIGNTON"
 			},
 			"parcel": paramlist["parcel"],
-			"shipment_id": shipmentNumber,
+			"carrier_shipment_id": shipmentNumber,
 			"label_url": link_pdf
 		}
 		

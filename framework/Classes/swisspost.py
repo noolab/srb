@@ -44,7 +44,7 @@ class swisspost(Service):
 				"get":true
 			},
 			"label":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -65,13 +65,16 @@ class swisspost(Service):
 		return data
 
 	def status(self,paramlist):
+		allresponseTime=[]
+		paramlist=""
+
 		start=time.time()
 		available=True
 		response_time=0
 		try:
 			# xmlresponse=netw.sendRequest(SWISSPOST_URL,"","get","","")
 			paramlist = {
-		      "return_id" : "4444" ,
+		      "shipment_id" : "4444" ,
 		      "origin": {"first_name": "Walter",
 		               "last_name": "Wechlin" ,
 		               "street_number": "25",
@@ -95,48 +98,64 @@ class swisspost(Service):
 
 		if response_time>30:
 			timeout=True
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
 
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
-		    "response_time": response_time,
+		    "response_time": final_responseTime,
 		    "timeout": timeout,
 		    "limit": 30000
 		}
 		return result
 
 	def label(self,userparamlist):
-		req_list=["return_id","origin/first_name","origin/last_name","origin/city","origin/street_number","origin/line1","origin/zipcode","origin/country_code","destination/company",]
+		req_list=["shipment_id","origin/first_name","origin/last_name","origin/city","origin/street_number","origin/line1","origin/zipcode","origin/country_code","destination/company",]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			data=userparamlist
 		else:
 			return checkparamlist["message"]
-		# data = {
-	 #      "return_id" : paramlist["return_id"] ,
-	 #      "origin": {"first_name": paramlist["origin"]["first_name"],
-	 #               "last_name": paramlist["origin"]["last_name"] ,
-	 #               "street_number": paramlist["origin"]["street_number"],
-	 #               "line1": paramlist["origin"]["line1"],
-	 #               "zipcode": paramlist["origin"]["zipcode"],
-	 #               "city": paramlist["origin"]["city"],
-	 #               "country_code": paramlist["origin"]["country_code"]
-	 #               },
-	 #       "destination":{"company": paramlist["destination"]["company"]}
-	 #    }
+		if "street_name" not in paramlist["origin"]:
+			data["origin"]["street_name"] =""
+		if "street_number" not in paramlist["origin"]:
+			data["origin"]["street_number"] = ""
+		data_line1 = str(data["origin"]["street_number"])+str(data["origin"]["street_name"])
 
-		return_id = data['return_id']
+		shipment_id = data['shipment_id']
 		firstName = data['origin']['first_name']
 		lastName = data['origin']['last_name']
 		streetNumber = data['origin']['street_number']
-		line1 = data['origin']['line1']
+		line1 =  data_line1#data['origin']['line1']
 		line1 = line1[:18]
 		zipCode = data['origin']['zipcode']
 		city = data['origin']['city']
 		countryCode = data['origin']['country_code']
 		company = data['destination']['company']
 
-		returnIdCondition = return_id.zfill(8)
+		returnIdCondition = shipment_id.zfill(8)
 		name_file = str(time.time()) + ".pdf"
 		pathToFile='/tmp/'+name_file
 		c = canvas.Canvas(pathToFile)
@@ -194,7 +213,7 @@ class swisspost(Service):
 			"origin": data["origin"],
 			"destination": data["destination"],
 			"parcel": data["parcel"],
-			"shipment_id": "transport_return_number",
+			"carrier_shipment_id": "transport_return_number",
 			"label_url": link_pdf
 		}
 		return data_final

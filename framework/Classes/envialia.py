@@ -32,7 +32,7 @@ class envialia(Service):
 				"get":true
 			},
 			"pickup":{
-				"get":true
+				"post":true
 			},
 			"status":{
 				"get":true
@@ -51,6 +51,9 @@ class envialia(Service):
 		}
 		return data
 	def status(self,paramlist):
+		allresponseTime=[]
+		paramlist=""
+
 		start=time.time()
 		available=True
 		response_time=0
@@ -68,9 +71,81 @@ class envialia(Service):
 		if response_time>30:
 			timeout=True
 
+		#Call Rooot =======
+		response_time_1=0
+		start_1 = time.time()
+		try:
+			rootdata= self.root(paramlist)
+		except:
+			response_time_1=-1
+		if response_time_1 == 0:
+			response_time_1 = time.time() - start_1
+		allresponseTime.append(response_time_1)
+
+		#Cal type
+		response_time_2=0
+		start_2 = time.time()
+		try:
+			rootdata= self.type(paramlist)
+		except:
+			response_time_2=-1
+		if response_time_2 == 0:
+			response_time_1 = time.time() - start_2
+		allresponseTime.append(response_time_2)
+
+		#Cal pickupslots
+		response_time_3=0
+		start_3 = time.time()
+		try:
+			rootdata= self.pickupslots(paramlist)
+		except:
+			response_time_3=-1
+		if response_time_3 == 0:
+			response_time_3 = time.time() - start_3
+		allresponseTime.append(response_time_3)
+
+		#Call pickup
+		response_time_4=0
+		start_4 = time.time()
+		try:
+			dataparamlist={
+				"requestor": {
+				    "name": "Rikhil",
+				    "phone": "23162",
+				    "company": "Saurabh"
+				  },
+				  "place": {
+				    "line1": "123 Test Ave",
+				    "line2": "Test Bus Park",
+				    "package_location": "Reception",
+				    "city": "PARIS",
+				    "zipcode": "75018",
+				    "country_code": "FR"
+				  },
+				  "pickup": {
+					"pickup_date": "2017-08-21",
+				    "slot_id": "string",
+				    "ready_by_time": "10:20",
+				    "close_time": "23:20",
+				    "number_of_pieces": 0,
+				    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
+				  },
+				  "shipment_details": {
+				    "number_of_pieces": 1,
+				    "weight": 200
+				  }
+			}
+			rootdata= self.pickup(dataparamlist)
+		except:
+			response_time_4=-1
+		if response_time_4 == 0:
+			response_time_4 = time.time() - start_4
+		allresponseTime.append(response_time_4)
+		
+		final_responseTime=min(allresponseTime)
 		result = {
 		    "available": available,
-		    "response_time": response_time,
+		    "response_time": final_responseTime,
 		    "timeout": timeout,
 		    "limit": 30000
 		}
@@ -108,12 +183,12 @@ class envialia(Service):
 		paramlist["destination"]["name"] = ""
 		paramlist["destination"]["street_number"] = ""
 		paramlist["destination"]["city"] = ""
-		paramlist["destination"]["street_number"] = ""
+		paramlist["destination"]["street_name"] = ""
 		paramlist["destination"]["city"] = ""
 		paramlist["destination"]["zipcode"] = ""
 		paramlist["destination"]["phone"] = ""
 
-		req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/street_number","place/city","place/post_code"]
+		req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/city","place/zipcode"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -146,9 +221,9 @@ class envialia(Service):
 					<dtFecRec>"""+pickup_date+"""</dtFecRec>
 					<intBul>"""+str(paramlist["pickup"]["number_of_pieces"])+"""</intBul>
 					<strNomOri>"""+paramlist["requestor"]["name"]+"""</strNomOri>
-					<strDirOri>"""+str(paramlist["place"]["street_number"])+str(paramlist["place"]["line1"])+"""</strDirOri>
+					<strDirOri>"""+str(paramlist["place"]["street_number"])+str(paramlist["place"]["street_name"])+str(paramlist["place"]["line1"])+"""</strDirOri>
 					<strPobOri>"""+paramlist["place"]["city"]+"""</strPobOri>
-					<strCPOri>"""+str(paramlist["place"]["post_code"])+"""</strCPOri>
+					<strCPOri>"""+str(paramlist["place"]["zipcode"])+"""</strCPOri>
 					<strTlfOri>"""+str(paramlist["requestor"]["phone"])+"""</strTlfOri>
 					<strNomDes>Envialia</strNomDes>
 					<strDirDes>Avenida de Suiza, 2</strDirDes>
