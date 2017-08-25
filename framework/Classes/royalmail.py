@@ -51,7 +51,7 @@ class royalmail(Service):
 				"get":true
 			},
 			"tracking":{
-				"get":false
+				"get":true
 			}
 		}
 		return data

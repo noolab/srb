@@ -16,6 +16,7 @@ class couriier(Service):
 
 	def root(self,paramlist):
 		true=True
+		false = False
 		data={
 			"/": {
 				"get": true
