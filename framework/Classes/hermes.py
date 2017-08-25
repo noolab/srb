@@ -16,14 +16,11 @@ import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
 import hashlib
-# import cloudinary
-# import cloudinary.uploader
-# import cloudinary.api
-# cloudinary.config( 
-#   cloud_name = "dozjp3am8", 
-#   api_key = "714151172147688", 
-#   api_secret = "fJBHf8VSu3q2-rkgcE7M9K92too" 
-# )
+
+
+date = datetime.datetime.now()
+curdate = re.sub(r'\s.*','',str(date))
+
 HERMES_URL_LABEL = os.environ["HERMES_URL_LABEL"]
 HERMES_URL_STATUS = os.environ["HERMES_URL_STATUS"]
 
@@ -32,6 +29,7 @@ class hermes(Service):
 	"""docstring for hermes"""
 	def root(self,userparamlist):
 		true=True
+		false= False
 		data={
 			"/":{
 				"get":true
@@ -44,6 +42,9 @@ class hermes(Service):
 			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":false
 			}
 		}
 		return data
@@ -149,7 +150,7 @@ class hermes(Service):
 		    "weight_in_grams": 1700,
 		    "content": "This is a contents write by "
 		  },
-		  "shipment_date": "2017-06-23"
+		  "shipment_date": curdate
 		  
 		}
 		try:
@@ -219,7 +220,7 @@ class hermes(Service):
 				paramlist["origin"]["street_name"] =""
 			if "street_number" not in paramlist["origin"]:
 				paramlist["origin"]["street_number"] = ""
-			streetInfo = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"])+str(paramlist["origin"]["line1"])
+			streetInfo = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"])#+str(paramlist["origin"]["line1"])
 			data_param ={
 				"partnerid":os.environ["HERMES_PATHNERID"],
 				"password":os.environ["HERMES_PASSWORD"],
@@ -270,7 +271,7 @@ class hermes(Service):
 			"destination": paramlist["destination"],
 			"parcel": paramlist["parcel"],
 			"carrier_shipment_id": shipmentId,
-			"shipment_id":paramlist["shipment_id"],   #return_id
+			##"shipment_id":paramlist["shipment_id"],   #return_id
 			"label_url": link_pdf
 		}
 

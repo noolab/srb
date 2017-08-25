@@ -31,7 +31,11 @@ class couriier(Service):
 			},
 			"status": {
 				"get": true
+			},
+			"tracking":{
+				"get":false
 			}
+
 		}
 		return data
 
@@ -99,12 +103,10 @@ class couriier(Service):
 		start_4 = time.time()
 		try:
 			dataparamlist={
-				"requestor": {
+				"origin": {
 				    "name": "Test Mission", 
 				    "phone": "0671844487", 
-				    "company": "string"
-				},
-				"place": {
+				    "company": "string",
 				    "street_number": "string",
 				    "line1": "21 rue des filles du calvaire",
 				    "line2": "Digicode test", 
@@ -214,12 +216,12 @@ class couriier(Service):
 		url = COURIIER_PICKUP_URL
 		headers={"apiKey": COURIIER_HEADERS_APIKEY,"Content-Type": "application/json"}
 		paramlist = {}
-		paramlist["requestor"] = {}
-		paramlist["plcae"] = {}
-		paramlist["plcae"]["line2"] = ""
+		paramlist["origin"] = {}
+		paramlist["origin"] = {}
+		paramlist["origin"]["line2"] = ""
 		paramlist["destination"] = {}
 		paramlist["destination"]["line2"] = ""
-		req_list=["requestor/name","place/latitude","place/longitude","place/line1","place/zipcode","place/city","requestor/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/pickup_date"]
+		req_list=["origin/name","origin/latitude","origin/longitude","origin/line1","origin/zipcode","origin/city","origin/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/pickup_date"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -227,7 +229,7 @@ class couriier(Service):
 		else:
 			return checkparamlist["message"]
 		data_sender=json.dumps({
-            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["requestor"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["place"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["place"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["place"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["place"]["line2"]+"\",\"pickupZip\": \""+paramlist["place"]["zipcode"]+"\",\"pickupCity\": \""+paramlist["place"]["city"]+"\",\"pickupTel\": \""+paramlist["requestor"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
+            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["origin"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["origin"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["origin"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["origin"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["origin"]["line2"]+"\",\"pickupZip\": \""+paramlist["origin"]["zipcode"]+"\",\"pickupCity\": \""+paramlist["origin"]["city"]+"\",\"pickupTel\": \""+paramlist["origin"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
         })
         # data_sender = json.dumps(data)
 		response = netw.sendRequestHeaderConfig(url, data_sender, "post", headers)

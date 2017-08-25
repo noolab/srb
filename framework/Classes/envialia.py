@@ -24,6 +24,7 @@ class envialia(Service):
 	"""docstring for envialia"""
 	def root(self,userparamlist):
 		true=True
+		false= False
 		data={
 			"/":{
 				"get":true
@@ -34,8 +35,14 @@ class envialia(Service):
 			"pickup":{
 				"post":true
 			},
+			"pickup/slots":{
+				"get":true
+			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":false
 			}
 		}
 		return data
@@ -109,12 +116,10 @@ class envialia(Service):
 		start_4 = time.time()
 		try:
 			dataparamlist={
-				"requestor": {
+				"origin": {
 				    "name": "Rikhil",
 				    "phone": "23162",
-				    "company": "Saurabh"
-				  },
-				  "place": {
+				    "company": "Saurabh",
 				    "line1": "123 Test Ave",
 				    "line2": "Test Bus Park",
 				    "package_location": "Reception",
@@ -125,12 +130,12 @@ class envialia(Service):
 				  "pickup": {
 					"pickup_date": "2017-08-21",
 				    "slot_id": "string",
-				    "ready_by_time": "10:20",
-				    "close_time": "23:20",
+				    "slot_start_at": "10:20",
+				    "slot_end_at": "23:20",
 				    "number_of_pieces": 0,
 				    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
 				  },
-				  "shipment_details": {
+				  "parcel": {
 				    "number_of_pieces": 1,
 				    "weight": 200
 				  }
@@ -177,8 +182,8 @@ class envialia(Service):
 
 	def pickup(self,userparamlist):
 		paramlist = {}
-		paramlist["requestor"] = {}
-		paramlist["requestor"]["phone"] = ""
+		paramlist["origin"] = {}
+		paramlist["origin"]["phone"] = ""
 		paramlist["destination"] = {}
 		paramlist["destination"]["name"] = ""
 		paramlist["destination"]["street_number"] = ""
@@ -188,7 +193,8 @@ class envialia(Service):
 		paramlist["destination"]["zipcode"] = ""
 		paramlist["destination"]["phone"] = ""
 
-		req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/city","place/zipcode"]
+		#req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/city","place/zipcode"]
+		req_list=["pickup/pickup_date","origin/line1","pickup/number_of_pieces","origin/name","origin/city","origin/zipcode"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -220,11 +226,11 @@ class envialia(Service):
 					<strCodAgeCargo>"""+str(ENVIALIA_STRCODE)+"""</strCodAgeCargo>
 					<dtFecRec>"""+pickup_date+"""</dtFecRec>
 					<intBul>"""+str(paramlist["pickup"]["number_of_pieces"])+"""</intBul>
-					<strNomOri>"""+paramlist["requestor"]["name"]+"""</strNomOri>
-					<strDirOri>"""+str(paramlist["place"]["street_number"])+str(paramlist["place"]["street_name"])+str(paramlist["place"]["line1"])+"""</strDirOri>
-					<strPobOri>"""+paramlist["place"]["city"]+"""</strPobOri>
-					<strCPOri>"""+str(paramlist["place"]["zipcode"])+"""</strCPOri>
-					<strTlfOri>"""+str(paramlist["requestor"]["phone"])+"""</strTlfOri>
+					<strNomOri>"""+paramlist["origin"]["name"]+"""</strNomOri>
+					<strDirOri>"""+str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"])+str(paramlist["origin"]["line1"])+"""</strDirOri>
+					<strPobOri>"""+paramlist["origin"]["city"]+"""</strPobOri>
+					<strCPOri>"""+str(paramlist["origin"]["zipcode"])+"""</strCPOri>
+					<strTlfOri>"""+str(paramlist["origin"]["phone"])+"""</strTlfOri>
 					<strNomDes>Envialia</strNomDes>
 					<strDirDes>Avenida de Suiza, 2</strDirDes>
 					<strPobDes>Madrid</strPobDes>
@@ -244,19 +250,17 @@ class envialia(Service):
 			return xmlresponse
 		if paramlist["destination"]:
 			final_data={
-				"requestor":paramlist["requestor"],
-				"place":paramlist["place"],
+				"origin":paramlist["origin"],
 				"pickup":paramlist["pickup"],
-				"shipment_details":paramlist["shipment_details"],
+				"shipment_details":paramlist["parcel"],
 				"destination":paramlist["destination"],
 				"pickup_id":pickup_id
 			}
 		else:
 			final_data={
-				"requestor":paramlist["requestor"],
-				"place":paramlist["place"],
+				"origin":paramlist["origin"],
 				"pickup":paramlist["pickup"],
-				"shipment_details":paramlist["shipment_details"],
+				"shipment_details":paramlist["parcel"],
 				"pickup_id":pickup_id
 			}
 

@@ -16,6 +16,11 @@ import base64
 import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
+
+
+date = datetime.datetime.now()
+curdate = re.sub(r'\s.*','',str(date))
+
 UPS_LABEL_URL = os.environ["UPS_LABEL_URL"] 
 UPS_USERNAME =  os.environ["UPS_USERNAME"]
 UPS_PASSWD = os.environ["UPS_PASSWD"]
@@ -39,6 +44,9 @@ class ups(Service):
 			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":true
 			}
 		}
 		return data
@@ -47,10 +55,10 @@ class ups(Service):
 		true=True
 		false=False
 		data={
-			"type": "postal",
-			"postal": true,
+			"type": "dropoff",
+			"postal": false,
 			"pickup": false,
-			"dropoff": false,
+			"dropoff": true,
 			"linehaul": false
 		}
 		return data
@@ -144,9 +152,9 @@ class ups(Service):
 			     "contents": "TESTS",
 			    "weight_in_grams": 1950
 			  },
-			  "shipment_date": "2017-07-21",
+			  "shipment_date": curdate,
 			 
-			  "return_id": "9999"
+			  "shipment_id": "9999"
 			}
 			rootdata= self.label(dataparam)
 		except:
@@ -219,8 +227,17 @@ class ups(Service):
 			status = data["soapenv:Envelope"]["soapenv:Body"]["trk:TrackResponse"]["trk:Shipment"]["trk:Package"]["trk:Activity"]["trk:Status"]["trk:Description"]
 		except:
 			return response
-
+		if "processed" in status.lower():
+			datastatus="processed"
+		elif "transit" in status.lower():
+			datastatus ="transit"
+		elif "delivered" in status.lower():
+			datastatus="delivered"
+		else:
+			datastatus ="unknown"
+		
 		final_data=[{
+			"status":datastatus,
 			"steps": [{
 				"status": status,
 				"location": location

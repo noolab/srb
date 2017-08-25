@@ -36,6 +36,7 @@ class swisspost(Service):
 
 	def root(self,paramlist):
 		true=True
+		false =False
 		data={
 			"/":{
 				"get":true
@@ -48,6 +49,9 @@ class swisspost(Service):
 			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":false
 			}
 		}
 		return data

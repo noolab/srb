@@ -21,6 +21,8 @@ import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
 
+date = datetime.datetime.now()
+curdate = re.sub(r'\s.*','',str(date))
 
 DHL_URL = os.environ["DHL_URL"]  #"https://xmlpitest-ea.dhl.com/XMLShippingServlet"
 # netw = networking()
@@ -49,6 +51,9 @@ class dhl(Service):
 			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":true
 			}
 		}
 		return data
@@ -56,17 +61,16 @@ class dhl(Service):
 
 	def pickup(self, userparamlist):
 		paramlist={}
-		paramlist["place"]={}
-		paramlist["requestor"]={}
-		paramlist["shipment_details"]={}
-		paramlist["place"]["line2"]=""
-		paramlist["place"]["zipcode"]=""
-		paramlist["requestor"]["name"] =""
-		paramlist["requestor"]["phone"]="" 
-		paramlist["shipment_details"]["number_of_pieces"]=""
+		paramlist["origin"]={}
+		paramlist["parcel"]={}
+		paramlist["origin"]["line2"]=""
+		paramlist["origin"]["zipcode"]=""
+		paramlist["origin"]["name"] =""
+		paramlist["origin"]["phone"]="" 
+		paramlist["parcel"]["number_of_pieces"]=""
 		instance = Validator()
-		req_list=["pickup/pickup_date","pickup/ready_by_time","pickup/close_time","requestor/company","place/line1","place/package_location",
-		"place/city","place/country_code","shipment_details/weight"]
+		req_list=["pickup/pickup_date","pickup/slot_start_at","pickup/slot_end_at","origin/company","origin/line1","origin/package_location",
+		"origin/city","origin/country_code","parcel/weight"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
@@ -91,22 +95,22 @@ class dhl(Service):
 		root.find("Request/ServiceHeader/Password").text = os.environ["DHL_PWD"]
 
 		root.find("Pickup/PickupDate").text = paramlist["pickup"]["pickup_date"]   #paramlist["pickup_date"] # "2017-05-26"
-		root.find("Pickup/ReadyByTime").text = paramlist["pickup"]["ready_by_time"] #paramlist["ready_by_time"] # "10:20"
-		root.find("Pickup/CloseTime").text = paramlist["pickup"]["close_time"]  #paramlist["close_time"] # "14:20"
+		root.find("Pickup/ReadyByTime").text = paramlist["pickup"]["slot_start_at"] #paramlist["ready_by_time"] # "10:20"
+		root.find("Pickup/CloseTime").text = paramlist["pickup"]["slot_end_at"]  #paramlist["slot_end_at"] # "14:20"
 		
-		root.find("Place/CompanyName").text = paramlist["requestor"]["company"]
-		root.find("Place/Address1").text = paramlist["place"]["line1"]
-		root.find("Place/Address2").text = paramlist["place"]["line2"] 
-		root.find("Place/PackageLocation").text = paramlist["place"]["package_location"] 
-		root.find("Place/City").text = paramlist["place"]["city"] 
-		root.find("Place/CountryCode").text = paramlist["place"]["country_code"] 
-		root.find("Place/PostalCode").text = paramlist["place"]["zipcode"] 
+		root.find("Place/CompanyName").text = paramlist["origin"]["company"]
+		root.find("Place/Address1").text = paramlist["origin"]["line1"]
+		root.find("Place/Address2").text = paramlist["origin"]["line2"] 
+		root.find("Place/PackageLocation").text = paramlist["origin"]["package_location"] 
+		root.find("Place/City").text = paramlist["origin"]["city"] 
+		root.find("Place/CountryCode").text = paramlist["origin"]["country_code"] 
+		root.find("Place/PostalCode").text = paramlist["origin"]["zipcode"] 
 
-		root.find("PickupContact/PersonName").text = paramlist["requestor"]["name"] 
-		root.find("PickupContact/Phone").text = paramlist["requestor"]["phone"] 
+		root.find("PickupContact/PersonName").text = paramlist["origin"]["name"] 
+		root.find("PickupContact/Phone").text = paramlist["origin"]["phone"] 
 
-		root.find("ShipmentDetails/NumberOfPieces").text = str(paramlist["shipment_details"]["number_of_pieces"])
-		root.find("ShipmentDetails/Weight").text = str(paramlist["shipment_details"]["weight"])
+		root.find("ShipmentDetails/NumberOfPieces").text = str(paramlist["parcel"]["number_of_pieces"])
+		root.find("ShipmentDetails/Weight").text = str(paramlist["parcel"]["weight"])
 
 		# more variable can be set to xml here ... 
 
@@ -207,12 +211,10 @@ class dhl(Service):
 		start_4 = time.time()
 		try:
 			dataparamlist={
-				"requestor": {
+				"origin": {
 				    "name": "Rikhil",
 				    "phone": "23162",
-				    "company": "Saurabh"
-				  },
-				  "place": {
+				    "company": "Saurabh",
 				    "line1": "123 Test Ave",
 				    "line2": "Test Bus Park",
 				    "package_location": "Reception",
@@ -223,12 +225,12 @@ class dhl(Service):
 				  "pickup": {
 					"pickup_date": "2017-08-21",
 				    "slot_id": "string",
-				    "ready_by_time": "10:20",
-				    "close_time": "23:20",
+				    "slot_start_at": "10:20",
+				    "slot_end_at": "23:20",
 				    "number_of_pieces": 0,
 				    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
 				  },
-				  "shipment_details": {
+				  "parcel": {
 				    "number_of_pieces": 1,
 				    "weight": 200
 				  }
@@ -286,7 +288,7 @@ class dhl(Service):
 		    "weight_in_grams": 1700,
 		  	"content": "This is a contents write by "
 		  },
-		  "shipment_date": "2017-06-23"
+		  "shipment_date": curdate
 		}
 		try:
 			rootdata= self.label(labelparamlist)
@@ -418,7 +420,7 @@ class dhl(Service):
 		paramlist["origin"]["place_description"] =""
 		
 		instance = Validator()
-		req_list=["shipment_date","destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
+		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
 		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -486,7 +488,7 @@ class dhl(Service):
 		root.find("ShipmentDetails/Pieces/Piece/Height").text = str(paramlist["parcel"]["height_in_cm"])
 		root.find("ShipmentDetails/Pieces/Piece/Depth").text = str(paramlist["parcel"]["length_in_cm"])
 		root.find("ShipmentDetails/Weight").text = str(parcel_weight_in_grams)
-		root.find("ShipmentDetails/Date").text = paramlist["shipment_date"]
+		root.find("ShipmentDetails/Date").text = curdate
 		root.find("ShipmentDetails/Contents").text =  paramlist["parcel"]["content"]
 
 		root.find("Shipper/ShipperID").text = shipperAccountNumber
@@ -590,8 +592,8 @@ class dhl(Service):
 		false=False
 		data={
 			"type": "pickup",
-			"postal": true,
-			"pickup": false,
+			"postal": false,
+			"pickup": true,
 			"dropoff": false,
 			"linehaul": false
 		}
@@ -622,14 +624,26 @@ class dhl(Service):
 
 		final_data=[]
 		dt ={
+			"status":"",
 			"steps": []
 		}
-		for l in allstep["ShipmentEvent"]:
+		for index, l in enumerate(allstep["ShipmentEvent"]):
 			res={
 	        	"status": l["ServiceEvent"]["Description"],
 	        	"location": l["ServiceArea"]["Description"]
 	      	}
 			dt['steps'].append(res)
+			if index == len(allstep["ShipmentEvent"])-1:
+				strStatus = l["ServiceEvent"]["Description"]
+				if "processed" in strStatus.lower():
+					datastatus="processed"
+				elif "transit" in strStatus.lower():
+					datastatus ="transit"
+				elif "delivered" in strStatus.lower():
+					datastatus="delivered"
+				else:
+					datastatus ="unknown"
+				dt["status"]=datastatus
 		final_data.append(dt)
 		return final_data
 

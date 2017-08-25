@@ -21,7 +21,7 @@ class bposteasyplus(Service):
 	def root(self, paramlist):
 		true=True
 		false=False
-		data={"/": {"get": true},"/type": {"get": true},"/label": {"post": true},"/price": {"post": false},"/status": {"get": true}}
+		data={"/": {"get": true},"/type": {"get": true},"/label": {"post": true},"/price": {"post": false},"/status": {"get": true},"tracking":{"get":false}}
 
 		return data
 
@@ -150,7 +150,7 @@ class bposteasyplus(Service):
 	       <soapenv:Body>
 	          <v001:getReturnLabelRequest>
 	            <v001:ContractInfo>
-	              <v001:ContractID>BPI/2016/9678</v001:ContractID>
+	              <v001:ContractID>""" + os.environ["BPOST_CONTRACT_ID"] + """</v001:ContractID>
 	            </v001:ContractInfo>
 	            <v001:Addressee>
 	                <v001:Name>""" + event["destination"]["name"] + """</v001:Name>

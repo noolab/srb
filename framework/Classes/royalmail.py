@@ -19,6 +19,9 @@ import base64
 import random
 
 import http.client
+
+date = datetime.datetime.now()
+curdate = re.sub(r'\s.*','',str(date))
 # import requests
 conn = http.client.HTTPSConnection("api.royalmail.net")
 ROYALMAIL_URL= os.environ["ROYALMAIL_URL"]
@@ -33,6 +36,7 @@ class royalmail(Service):
 
 	def root(self,paramlist):
 		true=True
+		false= False
 		data={
 			"/":{
 				"get":true
@@ -45,6 +49,9 @@ class royalmail(Service):
 			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":false
 			}
 		}
 		return data
@@ -155,9 +162,9 @@ class royalmail(Service):
 			    "content": "TESTS",
 			    "weight_in_grams": 1950
 			  },
-			  "shipment_date": "2017-07-21",
+			  "shipment_date": curdate,
 			  
-			  "return_id": "9999"
+			  "shipment_id": "9999"
 			}
 			rootdata= self.label(dataparam)
 		except:
@@ -236,7 +243,7 @@ class royalmail(Service):
 		paramlist["parcel"]["length_in_cm"]=""
 		paramlist["parcel"]["width_in_cm"] = ""
 		paramlist["parcel"]["height_in_cm"] =""
-		req_list=["shipment_date","destination/name","destination/phone","destination/zipcode","destination/country_code"]
+		req_list=["destination/name","destination/phone","destination/zipcode","destination/country_code"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -287,7 +294,7 @@ class royalmail(Service):
               <v2:serviceFormat>
                  <serviceFormatCode/>
               </v2:serviceFormat>
-              <v2:shippingDate>"""+paramlist["shipment_date"]+"""</v2:shippingDate>
+              <v2:shippingDate>"""+curdate+"""</v2:shippingDate>
                <v2:recipientContact>
                  <v2:name>Client Base fulfilment ltd</v2:name>
                  <v2:telephoneNumber>
@@ -514,10 +521,11 @@ class royalmail(Service):
 
 		final_data=[]
 		dt ={
+			"status":"",
 			"steps": []
 		}
 
-		for l in allres:
+		for index,l in enumerate(allres):
 			trackDate = l["NS1:trackDate"]
 			location =l["NS1:trackPoint"]
 			status = l["NS1:header"]
@@ -526,6 +534,17 @@ class royalmail(Service):
 				"location": location
 			}
 			dt["steps"].append(obj)
+			if index == len(allres)-1:
+				strStatus = l["NS1:header"]
+				if "processed" in strStatus.lower():
+					datastatus="processed"
+				elif "transit" in strStatus.lower():
+					datastatus ="transit"
+				elif "delivered" in strStatus.lower():
+					datastatus="delivered"
+				else:
+					datastatus ="unknown"
+				dt["status"]=datastatus
 		
 		final_data.append(dt)
 		return final_data

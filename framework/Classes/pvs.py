@@ -32,6 +32,7 @@ class pvs(Service):
 
 	def root(self,paramlist):
 		true=True
+		false =False
 		data={
 			"/":{
 				"get":true
@@ -44,6 +45,9 @@ class pvs(Service):
 			},
 			"status":{
 				"get":true
+			},
+			"tracking":{
+				"get":false
 			}
 		}
 		return data
