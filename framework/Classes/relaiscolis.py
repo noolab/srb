@@ -38,22 +38,22 @@ class relaiscolis(Service):
 			"/": {
 	        	"get": true
 	      	},
-	      	"/type": {
+	      	"type": {
 	       		"get": true
 	      	},
-	      	"/dropoffpoints": {
+	      	"dropoffpoints": {
 	        	"get": true
 	      	},
-	      	"/reserve_dropoff_slots": {
+	      	"reserve_dropoff_slots": {
 	        	"get": false
 	     	 },
-	      	"/status": {
+	      	"status": {
 	        	"get": true
 	      	},
-	      	"/label": {
+	      	"label": {
 	        	"post": true
 	      	},
-	      	"/tracking":{
+	      	"tracking":{
 	      		"get":false
 	      	}
 		}
@@ -110,7 +110,7 @@ class relaiscolis(Service):
 		response_time_3=0
 		start_3 = time.time()
 		try:
-			rootdata= self.dropoffpoint(paramlist)
+			rootdata= self.dropoffpoints(paramlist)
 		except:
 			response_time_3=-1
 		if response_time_3 == 0:

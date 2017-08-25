@@ -125,22 +125,59 @@ class dhl(Service):
 		 Sometimes the http response an error object. To test with error object use file "ObjectName_Fail.xml"
 		 located at the same level with "ObjectName_Success.xml"
 		"""
-		#xmlresponse = ET.parse("Assets/dhl/test_response/003_Pickup_Success.xml")
-		#xmlroot = xmlresponse.getroot()
 
 		# Prevent Error
-		try:
-		# STEP 4: Load "json_model"from assets
-			with open("Assets/dhl/json_response_model/003_Pickup.json") as data_file:
-				json_model = json.load(data_file)
+		# try:
+		# 	with open("Assets/dhl/json_response_model/003_Pickup.json") as data_file:
+		# 		json_model = json.load(data_file)
 
-			# STEP 5. convert "response_object" to "json_model" and return result ##NEED PARAMSLIST
-			# final_result = converter.xml_converter(json_model, xmlroot)
-			final_result=converter.xml_converter_Pickup(json_model,xmlroot,paramlist)
-			print ("Pickup Info from DHL: \n"+str(final_result))
-			return  final_result
+		# 	final_result=converter.xml_converter_Pickup(json_model,xmlroot,paramlist)
+		# 	print ("Pickup Info from DHL: \n"+str(final_result))
+		# 	return  final_result
+		# except:
+		# 	return "Cannot get data from the URL"+str(xmlresponse)
+		"""New Modify try to get it direclty """
+		try:
+			pickup_id=xmlroot.find("ConfirmationNumber").text
 		except:
-			return "Cannot get data from the URL"+str(xmlresponse)
+			return xmlresponse
+
+		# datalabel={}
+		# carrier_shipment_id=''
+		# label_url =""
+		try:
+			# global datalabel
+			datalabel=self.label(paramlist)
+			try:
+				# final_datalabel=datalabel
+				carrier_shipment_id =datalabel["carrier_shipment_id"],
+				label_url = datalabel["label_url"]
+			except:
+				return "eror  here"
+		except:
+			return datalabel
+
+		if "destination" in paramlist:
+			final_data={
+				"origin":paramlist["origin"],
+				"pickup":paramlist["pickup"],
+				"shipment_details":paramlist["parcel"],
+				"destination":paramlist["destination"],
+				"pickup_id":pickup_id,
+				"carrier_shipment_id": carrier_shipment_id,
+    			"label_url": label_url
+			}
+		else:
+			final_data={
+				"origin":paramlist["origin"],
+				"pickup":paramlist["pickup"],
+				"shipment_details":paramlist["parcel"],
+				"pickup_id":pickup_id,
+				"carrier_shipment_id": carrier_shipment_id,
+    			"label_url": label_url
+			}
+
+		return final_data
 
 	def status(self,paramlist):
 		print ("type function")

@@ -19,13 +19,21 @@ class data_converter(object):
 	#convert for dhl pickup only
 	def xml_converter_Pickup(json_model,original_xml,paramlist):
 		pickup_id=original_xml.find("ConfirmationNumber").text
-		result=[{
-		    "pickup_id": pickup_id,
-		    "requestor": paramlist["requestor"],
-		    "place": paramlist["place"],
-		    "pickup": paramlist["pickup"],
-		    "shipment_details": paramlist["shipment_details"]
-		}]
+		if "destination" in paramlist:
+			result=[{
+			    "pickup_id": pickup_id,
+			    "origin": paramlist["origin"],
+			    "destination": paramlist["destination"],
+			    "pickup": paramlist["pickup"],
+			    "shipment_details": paramlist["shipment_details"]
+			}]
+		else:
+			result=[{
+			    "pickup_id": pickup_id,
+			    "origin": paramlist["origin"],
+			    "pickup": paramlist["pickup"],
+			    "shipment_details": paramlist["parcel"]
+			}]
 
 		return result
 
