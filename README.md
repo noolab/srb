@@ -84,11 +84,6 @@ https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/tracking/{tra
 https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/label <br/>
 https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/dhl/pickupslots <br/>
 
-bposteasyplus  <br/>
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus <br/>
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/type <br/> 
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/status<br/>
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/label <br/>
 
 RELAISCOLIS <br />
  
@@ -99,3 +94,23 @@ https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/label
 https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/dropoffpoints <br />
 
 
+BPOSTEASYPLUS <br />
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/label
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/status
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/type
+
+
+HERMES  <br/>
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/type
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/status
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/label
+
+
+COURRIER <br />
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/type
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/status
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/pickup/slots
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/pickup

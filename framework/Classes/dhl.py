@@ -141,21 +141,148 @@ class dhl(Service):
 			pickup_id=xmlroot.find("ConfirmationNumber").text
 		except:
 			return xmlresponse
+		"""call label function directly"""
+		tree = ET.parse('Assets/dhl/requests/002_Shipment_FR_BE.txt')
+		root = tree.getroot()
 
-		# datalabel={}
-		# carrier_shipment_id=''
-		# label_url =""
-		try:
-			# global datalabel
-			datalabel=self.label(paramlist)
-			try:
-				# final_datalabel=datalabel
-				carrier_shipment_id =datalabel["carrier_shipment_id"],
-				label_url = datalabel["label_url"]
-			except:
-				return "eror  here"
-		except:
-			return datalabel
+		date = datetime.datetime.now()
+		datenow=re.sub(r'\s.*','',str(date))
+
+		s3key1=os.environ["S3_KEY1"]
+		s3key2=os.environ["S3_KEY2"]
+		
+		instance = Validator()
+		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
+		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			paramlist=userparamlist
+			if "street_number" not in paramlist["origin"]:
+				paramlist["origin"]["street_number"] = ""
+			if "street_name" not in paramlist["origin"]:
+				paramlist["origin"]["street_name"]= ""
+			if "street_number" not in paramlist["destination"]:
+				paramlist["destination"]["street_number"] = ""
+			if "street_name" not in paramlist["destination"]:
+				paramlist["destination"]["street_name"]= ""
+		else:
+			return checkparamlist["message"]
+
+
+		origin_countrycode=str(paramlist["origin"]["country_code"])
+		if origin_countrycode=="FR":
+			shipperAccountNumber= str(os.environ["SHIPPER_ACCOUNT_NUMBER_EXPORT"])
+		else:
+			shipperAccountNumber=str(os.environ["SHIPPER_ACCOUNT_NUMBER_IMPORT"])
+
+		messageTime=str(datenow)+"T11:28:56.000-08:00"
+		messageReference=str(randrange(0,10000000000000000000000000000000))
+		
+		parcel_weight_in_grams=str(paramlist["parcel"]["weight_in_grams"])
+		parcel_weight_in_grams=str(float(parcel_weight_in_grams)/1000)
+		if parcel_weight_in_grams <= "0":
+			parcel_weight_in_grams="0.0"
+
+		destination_fullname= str(paramlist["destination"]["first_name"]) + str(paramlist["destination"]["last_name"])
+		
+		origin_countrycode=str(paramlist["origin"]["country_code"])
+		destination_countryCode = str(paramlist["destination"]["country_code"])
+		if origin_countrycode == "FR" and destination_countryCode == "FR":
+			root.find("ShipmentDetails/GlobalProductCode").text = "N"
+		else:
+			root.find("ShipmentDetails/GlobalProductCode").text = "U"
+
+		root.find("Request/ServiceHeader/MessageTime").text = messageTime
+		root.find("Request/ServiceHeader/MessageReference").text = messageReference
+
+		root.find("Request/ServiceHeader/SiteID").text = os.environ["DHL_USERID"]
+		root.find("Request/ServiceHeader/Password").text = os.environ["DHL_PWD"]
+
+		root.find("Billing/ShipperAccountNumber").text = shipperAccountNumber
+		root.find("Billing/BillingAccountNumber").text = shipperAccountNumber
+		root.find("Consignee/CompanyName").text = paramlist["destination"]["company"]
+		root.find("Consignee/AddressLine").text = str(paramlist["destination"]["street_number"])+str(paramlist["destination"]["street_name"]) #+str(paramlist["destination"]["line1"])
+		root.find("Consignee/City").text = paramlist["destination"]["city"]
+		root.find("Consignee/Division").text = paramlist["destination"]["state"]
+		root.find("Consignee/PostalCode").text = paramlist["destination"]["zipcode"]
+		root.find("Consignee/CountryCode").text = paramlist["destination"]["country_code"]
+		root.find("Consignee/CountryName").text = paramlist["destination"]["country"]
+		root.find("Consignee/Contact/PersonName").text = destination_fullname
+		root.find("Consignee/Contact/PhoneNumber").text = paramlist["destination"]["phone"]
+		root.find("Consignee/Contact/Email").text = paramlist["destination"]["email"]
+		root.find("Consignee/Contact/MobilePhoneNumber").text = paramlist["destination"]["phone"]
+
+		root.find("Commodity/CommodityCode").text = paramlist["destination"]["shipment_id"]
+		root.find("Reference/ReferenceID").text = paramlist["destination"]["shipment_id"]
+		# root.find("ShipmentDetails/NumberOfPieces").text = destination_shipmentId
+		root.find("ShipmentDetails/Pieces/Piece/Weight").text = str(parcel_weight_in_grams)
+		root.find("ShipmentDetails/Pieces/Piece/Width").text = str(paramlist["parcel"]["width_in_cm"])
+		root.find("ShipmentDetails/Pieces/Piece/Height").text = str(paramlist["parcel"]["height_in_cm"])
+		root.find("ShipmentDetails/Pieces/Piece/Depth").text = str(paramlist["parcel"]["length_in_cm"])
+		root.find("ShipmentDetails/Weight").text = str(parcel_weight_in_grams)
+		root.find("ShipmentDetails/Date").text = curdate
+		root.find("ShipmentDetails/Contents").text =  paramlist["parcel"]["content"]
+
+		root.find("Shipper/ShipperID").text = shipperAccountNumber
+		root.find("Shipper/CompanyName").text = paramlist["origin"]["company"]
+		root.find("Shipper/AddressLine").text = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"]) #+str(paramlist["origin"]["line1"])
+		# root.find("Shipper/AddressLine").text = origin_line2
+		root.find("Shipper/City").text = paramlist["origin"]["city"]
+		root.find("Shipper/PostalCode").text = paramlist["origin"]["zipcode"]
+		root.find("Shipper/CountryCode").text = paramlist["origin"]["country_code"]
+		root.find("Shipper/CountryName").text = paramlist["origin"]["country"]
+		# root.find("Shipper/Contact/PersonName").text = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+		root.find("Shipper/Contact/PhoneNumber").text = paramlist["origin"]["phone"]
+		root.find("Shipper/Contact/Email").text = paramlist["origin"]["email"]
+
+		root.find("Place/CompanyName").text = paramlist["origin"]["company"]
+		root.find("Place/AddressLine").text = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"]) #+str(paramlist["origin"]["line1"])
+		root.find("Place/City").text = paramlist["origin"]["city"]
+		root.find("Place/CountryCode").text = paramlist["origin"]["country_code"]
+		root.find("Place/Division").text = paramlist["origin"]["state"]
+		root.find("Place/PostalCode").text = paramlist["origin"]["zipcode"]
+		root.find("Place/PackageLocation").text = paramlist["origin"]["place_description"]
+
+		c = boto.connect_s3(s3key1, s3key2)
+		b = c.get_bucket("srbstickers", validate=False)
+
+		xmlresult = ET.tostring(root, encoding='ascii', method='xml')
+		xmlresponse = netw.sendRequest(DHL_URL, xmlresult, "post", "xml", "xml")
+		xmlroot = ET.fromstring(xmlresponse)
+
+		for child in xmlroot.findall('LabelImage'):
+			pdf=child.find('OutputFormat').text+'.pdf'
+			img_data=child.find('OutputImage').text
+			name_file=str(time.time())+".pdf"
+			k = Key(b)
+			k.key = name_file
+			k.contentType="application/pdf"
+			k.ContentDisposition="inline"
+			# k.set_contents_from_string(img_data.decode('base64'))
+			k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))
+			link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
+
+		
+		shipmentId="0"
+		for getchild in xmlroot.findall('AirwayBillNumber'):
+			if len(getchild)<0:
+				shipmentId= ''
+			else:
+				shipmentId=getchild.text
+
+		if shipmentId=="0":
+			return xmlresponse
+
+		"""END call label function directly"""
+		# try:
+		# 	datalabel=self.label(paramlist)
+		# 	try:
+		# 		carrier_shipment_id =datalabel["carrier_shipment_id"],
+		# 		label_url = datalabel["label_url"]
+		# 	except:
+		# 		return "eror  here"
+		# except:
+		# 	return datalabel
 
 		if "destination" in paramlist:
 			final_data={
@@ -164,8 +291,8 @@ class dhl(Service):
 				"shipment_details":paramlist["parcel"],
 				"destination":paramlist["destination"],
 				"pickup_id":pickup_id,
-				"carrier_shipment_id": carrier_shipment_id,
-    			"label_url": label_url
+				"carrier_shipment_id": shipmentId,
+    			"label_url": link_pdf
 			}
 		else:
 			final_data={
@@ -173,8 +300,8 @@ class dhl(Service):
 				"pickup":paramlist["pickup"],
 				"shipment_details":paramlist["parcel"],
 				"pickup_id":pickup_id,
-				"carrier_shipment_id": carrier_shipment_id,
-    			"label_url": label_url
+				"carrier_shipment_id": shipmentId,
+    			"label_url": link_pdf
 			}
 
 		return final_data
