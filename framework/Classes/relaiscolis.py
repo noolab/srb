@@ -44,7 +44,7 @@ class relaiscolis(Service):
 	      	"dropoff/points": {
 	        	"get": true
 	      	},
-	      	"dropoff/reserveslots": {
+	      	"dropoff/reserve_slots": {
 	        	"get": false
 	     	 },
 	      	"status": {

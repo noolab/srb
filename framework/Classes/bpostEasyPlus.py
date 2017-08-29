@@ -194,7 +194,16 @@ class bposteasyplus(Service):
 		try:
 			shipment_id = data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:Leg3']['msg:ItemInfo']['msg:Code']
 		except:
-			return xmlresponse
+			# return xmlresponse
+			responseErr = {
+				"status": 500,
+				"errors": [
+					{
+						"detail": str(xmlresponse)
+					}
+				]
+			}
+			raise Exception(responseErr)
 
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 

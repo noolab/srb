@@ -369,7 +369,15 @@ class royalmail(Service):
 		try:
 			shipmentNumber=data['SOAP-ENV:Envelope']['SOAP-ENV:Body']['createShipmentResponse']['completedShipmentInfo']['allCompletedShipments']['completedShipments']['shipments']['shipmentNumber']
 		except:
-			return data
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(response)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 
 		auth2=self.getAuth()
 		auth_created2=str(auth2[2])
@@ -433,7 +441,16 @@ class royalmail(Service):
 		try:
 			img_data=dataresult['SOAP-ENV:Envelope']['SOAP-ENV:Body']['printLabelResponse']['label']
 		except:
-			return responsePrint
+			# return responsePrint
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(responsePrint)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 
 		k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))	
 		

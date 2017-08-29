@@ -243,12 +243,29 @@ class hermes(Service):
 		try:
 			responsePrint=requests.post('https://api-return.hermesworld.com/LabelService/V1/getReturnLabel', data=data_param)
 		except:
-			return responsePrint.content
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(responsePrint)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 		try:
 			d = responsePrint.headers['content-disposition']
 			shipmentId = re.sub(r'\s+|\.pdf|.*?\=','',str(d))
 		except:
-			return responsePrint.content
+			# return responsePrint.content
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(responsePrint)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])
 		bucket = c.get_bucket("srbstickers", validate=False)
@@ -266,13 +283,44 @@ class hermes(Service):
 
 		
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
-		final_response = {
-			"origin": paramlist["origin"],
-			"destination": paramlist["destination"],
-			"parcel": paramlist["parcel"],
-			"carrier_shipment_id": shipmentId,
-			##"shipment_id":paramlist["shipment_id"],   #return_id
-			"label_url": link_pdf
-		}
+		if "destination" and "parcel" in paramlist:
+			print("destination and parcel found")
+			final_response = {
+				"origin": paramlist["origin"],
+				"destination": paramlist["destination"],
+				"parcel": paramlist["parcel"],
+				"carrier_shipment_id": shipmentId,
+				"label_url": link_pdf
+			}
+		elif "destination" in paramlist:
+			print('destination found')
+			final_response = {
+				"origin": paramlist["origin"],
+				"destination": paramlist["destination"],
+				"carrier_shipment_id": shipmentId,
+				"label_url": link_pdf
+			}
+		elif "parcel" in paramlist:
+			print("parcel found")
+			final_response = {
+				"origin": paramlist["origin"],
+				"parcel": paramlist["parcel"],
+				"carrier_shipment_id": shipmentId,
+				"label_url": link_pdf
+			}
+		else:
+			print("destination and parcel not found")
+			final_response = {
+				"origin": paramlist["origin"],
+				"carrier_shipment_id": shipmentId,
+				"label_url": link_pdf
+			}
+		# final_response = {
+		# 	"origin": paramlist["origin"],
+		# 	"destination": paramlist["destination"],
+		# 	"parcel": paramlist["parcel"],
+		# 	"carrier_shipment_id": shipmentId,
+		# 	"label_url": link_pdf
+		# }
 
 		return final_response

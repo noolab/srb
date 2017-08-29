@@ -241,7 +241,7 @@ class dhl(Service):
 		root.find("Place/CountryCode").text = paramlist["origin"]["country_code"]
 		root.find("Place/Division").text = paramlist["origin"]["state"]
 		root.find("Place/PostalCode").text = paramlist["origin"]["zipcode"]
-		root.find("Place/PackageLocation").text = paramlist["origin"]["place_description"]
+		root.find("Place/PackageLocation").text = "" ##paramlist["origin"]["place_description"]
 
 		c = boto.connect_s3(s3key1, s3key2)
 		b = c.get_bucket("srbstickers", validate=False)
@@ -508,11 +508,16 @@ class dhl(Service):
 			else:
 				print ("no check")
 			newdate=re.sub(r'\s.*',' ',str(date))
-			fullstartdate1=str(newdate)+" 10:00:00:000Z"
-			fullstartdate2=str(newdate)+" 12:00:00:000Z"
-			fullstartdate3=str(newdate)+" 14:00:00:000Z"
-			fullstartdate4=str(newdate)+" 16:00:00:000Z"
-			fullstartdate5=str(newdate)+" 18:00:00:000Z"
+			# fullstartdate1=str(newdate)+" 10:00:00:000Z"
+			# fullstartdate2=str(newdate)+" 12:00:00:000Z"
+			# fullstartdate3=str(newdate)+" 14:00:00:000Z"
+			# fullstartdate4=str(newdate)+" 16:00:00:000Z"
+			# fullstartdate5=str(newdate)+" 18:00:00:000Z"
+			fullstartdate1="10:00:00"
+			fullstartdate2="12:00:00"
+			fullstartdate3="14:00:00"
+			fullstartdate4="16:00:00"
+			fullstartdate5="18:00:00"
 			data={
 		        "date": str(date),
 		        "slots": [
@@ -673,7 +678,7 @@ class dhl(Service):
 		root.find("Place/CountryCode").text = paramlist["origin"]["country_code"]
 		root.find("Place/Division").text = paramlist["origin"]["state"]
 		root.find("Place/PostalCode").text = paramlist["origin"]["zipcode"]
-		root.find("Place/PackageLocation").text = paramlist["origin"]["place_description"]
+		root.find("Place/PackageLocation").text = "" #paramlist["origin"]["place_description"]
 
 		c = boto.connect_s3(s3key1, s3key2)
 		b = c.get_bucket("srbstickers", validate=False)

@@ -219,14 +219,32 @@ class ups(Service):
 			response=requests.post(UPS_TRACK_URL, data=payload, headers=headersConfig).text
 			data = xmltodict.parse(response)
 		except:
-			return response
+			# return response
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(response)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 
 		try:
 			# allres = data["soapenv:Envelope"]["soapenv:Body"]["trk:TrackResponse"]["trk:Shipment"]["trk:Package"]["trk:Activity"]
 			location =  data["soapenv:Envelope"]["soapenv:Body"]["trk:TrackResponse"]["trk:Shipment"]["trk:Package"]["trk:Activity"]["trk:ActivityLocation"]["trk:Address"]["trk:City"]
 			status = data["soapenv:Envelope"]["soapenv:Body"]["trk:TrackResponse"]["trk:Shipment"]["trk:Package"]["trk:Activity"]["trk:Status"]["trk:Description"]
 		except:
-			return response
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(response)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
+
 		if "processed" in status.lower():
 			datastatus="processed"
 		elif "transit" in status.lower():
@@ -396,7 +414,16 @@ class ups(Service):
 			img_data = data["soapenv:Envelope"]["soapenv:Body"]["ship:ShipmentResponse"]["ship:ShipmentResults"]["ship:PackageResults"]["ship:ShippingLabel"]["ship:GraphicImage"]
 			
 		except:
-			return response
+			# return response
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(response)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 		try:
 			shipment_id = data["soapenv:Envelope"]["soapenv:Body"]["ship:ShipmentResponse"]["ship:ShipmentResults"]["ship:ShipmentIdentificationNumber"]
 		except:

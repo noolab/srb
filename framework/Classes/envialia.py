@@ -175,7 +175,15 @@ class envialia(Service):
 		try:
 			sessionID = data["SOAP-ENV:Envelope"]["SOAP-ENV:Header"]["ROClientIDHeader"]["ID"]
 		except:
-			return xmlresponse
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(xmlresponse)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
 
 		return sessionID
 
@@ -247,7 +255,17 @@ class envialia(Service):
 		try:
 			pickup_id = data["SOAP-ENV:Envelope"]["SOAP-ENV:Body"]["v1:WebServService___GrabaRecogida2Response"]["v1:strCodOut"]
 		except:
-			return xmlresponse
+			# return xmlresponse
+			responseErr = {
+	        	"status": 500,
+	        	"errors": [
+	            	{
+	              		"detail": str(xmlresponse)
+	            	}
+	        	]
+	        }
+			raise Exception(responseErr)
+
 		if paramlist["destination"]:
 			final_data={
 				"origin":paramlist["origin"],
@@ -281,8 +299,10 @@ class envialia(Service):
 			else:
 				print ("no check")
 			newdate=re.sub(r'\s.*',' ',str(date))
-			fullstartdate1=str(newdate)+" 10:00:00:000Z"
-			fullstartdate2=str(newdate)+" 14:00:00:000Z"
+			# fullstartdate1=str(newdate)+" 10:00:00:000Z"
+			# fullstartdate2=str(newdate)+" 14:00:00:000Z"
+			fullstartdate1="10:00:00"
+			fullstartdate2="14:00:00"
 			data={
 		        "date": str(date),
 		        "slots": [
