@@ -95,22 +95,22 @@ https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/dropo
 
 
 BPOSTEASYPLUS <br />
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/label
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/status
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/type
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/label <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/status <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/bposteasyplus/type <br /> 
 
 
 HERMES  <br/>
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/type
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/status
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/label
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/ <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/type <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/status <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/hermes/label <br /> 
 
 
 COURRIER <br />
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/type
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/status
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/pickup/slots
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/pickup
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/ <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/type <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/status <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/pickup/slots <br /> 
+https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/couriier/pickup <br /> 
