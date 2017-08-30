@@ -228,7 +228,10 @@ class couriier(Service):
 		if checkparamlist["status"]:
 			paramlist=userparamlist
 		else:
-			return checkparamlist["message"]
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
+
 		data_sender=json.dumps({
             "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["origin"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["origin"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["origin"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["origin"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["origin"]["line2"]+"\",\"pickupZip\": \""+paramlist["origin"]["zipcode"]+"\",\"pickupCity\": \""+paramlist["origin"]["city"]+"\",\"pickupTel\": \""+paramlist["origin"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
         })

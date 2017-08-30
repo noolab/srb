@@ -141,7 +141,9 @@ class bposteasyplus(Service):
 		if checkparamlist["status"]:
 			event=userparamlist
 		else:
-			return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
+			# return checkparamlist["message"]
 
 		# full_destination_address = event["destination"]["line1"] + " " + event["destination"]["line2"]
 		# full_origin_address = event["origin"]["line1"] + " " + event["origin"]["line2"]

@@ -281,7 +281,8 @@ class ups(Service):
 		if checkparamlist["status"]:
 			paramlist=userparamlist
 		else:
-			return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 
 		attentionNameOri = str(paramlist["origin"]["first_name"]) + str(paramlist["origin"]["last_name"])
 		attentionNameDes =str(paramlist["destination"]["first_name"])+ str(paramlist["destination"]["last_name"])

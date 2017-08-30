@@ -249,7 +249,9 @@ class royalmail(Service):
 		if checkparamlist["status"]:
 			paramlist=userparamlist
 		else:
-			return checkparamlist["message"]
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 
 		# fulladdress =str(paramlist["destination"]["line1"])paramlist["destination"]["line1"]=""
 		if "street_number" not in paramlist["origin"]:

@@ -141,7 +141,9 @@ class swisspost(Service):
 		if checkparamlist["status"]:
 			data=userparamlist
 		else:
-			return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
+			
 		if "street_name" not in paramlist["origin"]:
 			data["origin"]["street_name"] =""
 		if "street_number" not in paramlist["origin"]:

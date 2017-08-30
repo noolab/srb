@@ -212,7 +212,9 @@ class envialia(Service):
 			else:
 				paramlist["destination"]= ""
 		else:
-			return checkparamlist["message"]
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 
 		pickup_date = re.sub(r'\s.*','',str(paramlist["pickup"]["pickup_date"]))
 		pickup_date = re.sub(r'\-','/',str(pickup_date))

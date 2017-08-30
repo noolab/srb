@@ -229,7 +229,9 @@ class relaiscolis(Service):
 			if "street_name" not in event["origin"]:
 				event["origin"]["street_name"]=""
 		else:
-			return checkparamlist["message"]
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 
 		firstName = event['origin']['first_name']
 		lastName = event['origin']['last_name']

@@ -235,7 +235,9 @@ class hermes(Service):
 				"kdrefno":paramlist["shipment_id"]
 			}
 		else:
-			return checkparamlist["message"]
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 		
 		
 		# responsePrint = netw.sendRequest(HERMES_URL_LABEL, data_param, "postgetcontent", "json", "")

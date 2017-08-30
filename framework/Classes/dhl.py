@@ -166,7 +166,9 @@ class dhl(Service):
 			if "street_name" not in paramlist["destination"]:
 				paramlist["destination"]["street_name"]= ""
 		else:
-			return checkparamlist["message"]
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 
 
 		origin_countrycode=str(paramlist["origin"]["country_code"])
@@ -603,8 +605,9 @@ class dhl(Service):
 			if "street_name" not in paramlist["destination"]:
 				paramlist["destination"]["street_name"]= ""
 		else:
-			return checkparamlist["message"]
-
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
 
 		origin_countrycode=str(paramlist["origin"]["country_code"])
 		if origin_countrycode=="FR":
@@ -742,7 +745,8 @@ class dhl(Service):
 		try:
 			shipment_id=xmlroot.find("ConfirmationNumber").text
 		except:
-			return xmlresponse
+			responseErr = {"status": 500,"errors": [{"detail": str(xmlresponse)}]}
+			raise Exception(responseErr)
 		currency="$"
 		data={
 			"destination":paramlist["destination"],
