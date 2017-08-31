@@ -163,16 +163,18 @@ class couriier(Service):
 			# start_time =l["formatted_date"]+" "+l["slot"]["formatted_slot_from"]
 			s2 = l["slot"]["formatted_slot_to"]
 			s1 = l["slot"]["formatted_slot_from"]
-			minus_hour="01:00:00"
-			start_time =  datetime.datetime.strftime(s1, FMT) - datetime.datetime.strftime(minus_hour, FMT)
-			duration = datetime.datetime.strftime(s2, FMT) - datetime.datetime.strftime(s1, FMT)
+			minusone_hour='01:00:00'
+			bigone_hour='04:00:00'
+			start_time =l["slot"]["formatted_slot_from"]
+			duration = datetime.datetime.strptime(s2, FMT) - datetime.datetime.strptime(s1, FMT)
 			duration=int(duration.seconds/60 )
+			timezone=True
+			newstart_time =  datetime.datetime.strptime(start_time, FMT) - datetime.datetime.strptime(minusone_hour, FMT)
 			dt={
 				"formatted_date":l["formatted_date"],
-				"timezone":True,
 				"slot":{
 					"id":l["id"],
-					"start_time":start_time,
+					"start_time":str(newstart_time),
 					"duration":duration,
 					"availability":-1
 				}
@@ -186,6 +188,7 @@ class couriier(Service):
 			if count ==1:
 				dt={
 					"date":l["formatted_date"],
+					"timezone":True,
 					"slots":[l["slot"]]
 				}
 				result.append(dt)
@@ -200,6 +203,7 @@ class couriier(Service):
 						print("diff sir")
 						dt={
 							"date":l["formatted_date"],
+							"timezone":True,
 							"slots":[l["slot"]]
 						}
 						result.append(dt)

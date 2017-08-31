@@ -763,9 +763,9 @@ class dhl(Service):
 		# 	"price":0,
 		# 	"currency":currency
 	 #    }
-	 	paramlist["currency"]=currency
-	 	paramlist["carrier_shipment_id"]=shipment_id
-	 	paramlist["price"]=0
+		paramlist["currency"]=currency
+		paramlist["carrier_shipment_id"]=shipment_id
+		paramlist["price"]=0
 
 		return paramlist
 
