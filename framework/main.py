@@ -52,6 +52,8 @@ def lamda_function(event, context):
 	elif "tracking" in service:
 		service=resource[2]
 		paramlist=event["id"] #resource[3]
+	elif "dropoff" in service:
+		service = resource[2]
 	return myservice.call_service(company, service, paramlist)
 if __name__=="__main__":
 	app.run()

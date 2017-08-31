@@ -127,7 +127,7 @@ class couriier(Service):
 				    "longitude": 2.366132
 				},
 				"pickup": {
-				    "pickup_date": "2017-07-05 15:00:00",
+				    "date": "2017-07-05 15:00:00",
 				}
 			}
 			rootdata= self.pickup(dataparamlist)
@@ -160,13 +160,16 @@ class couriier(Service):
 		FMT = '%H:%M:%S'
 		data =[]
 		for l in data_json:
-			start_time =l["formatted_date"]+" "+l["slot"]["formatted_slot_from"]
+			# start_time =l["formatted_date"]+" "+l["slot"]["formatted_slot_from"]
 			s2 = l["slot"]["formatted_slot_to"]
 			s1 = l["slot"]["formatted_slot_from"]
-			duration = datetime.datetime.strptime(s2, FMT) - datetime.datetime.strptime(s1, FMT)
+			minus_hour="01:00:00"
+			start_time =  datetime.datetime.strftime(s1, FMT) - datetime.datetime.strftime(minus_hour, FMT)
+			duration = datetime.datetime.strftime(s2, FMT) - datetime.datetime.strftime(s1, FMT)
 			duration=int(duration.seconds/60 )
 			dt={
 				"formatted_date":l["formatted_date"],
+				"timezone":True,
 				"slot":{
 					"id":l["id"],
 					"start_time":start_time,
@@ -216,24 +219,22 @@ class couriier(Service):
 		print("pickup fucntion")
 		url = COURIIER_PICKUP_URL
 		headers={"apiKey": COURIIER_HEADERS_APIKEY,"Content-Type": "application/json"}
-		paramlist = {}
-		paramlist["origin"] = {}
-		paramlist["origin"] = {}
-		paramlist["origin"]["line2"] = ""
-		paramlist["destination"] = {}
-		paramlist["destination"]["line2"] = ""
-		req_list=["origin/name","origin/latitude","origin/longitude","origin/line1","origin/zipcode","origin/city","origin/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/pickup_date"]
+		req_list=["origin/name","origin/latitude","origin/longitude","origin/line1","origin/zipcode","origin/city","origin/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/date"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			if "line2" not in paramlist["origin"]:
+				paramlist["origin"]["line2"]=""
+			if "line2" not in paramlist["destination"]:
+				paramlist["destination"]["line2"]=""
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)
 
 		data_sender=json.dumps({
-            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["origin"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["origin"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["origin"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["origin"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["origin"]["line2"]+"\",\"pickupZip\": \""+paramlist["origin"]["zipcode"]+"\",\"pickupCity\": \""+paramlist["origin"]["city"]+"\",\"pickupTel\": \""+paramlist["origin"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["pickup_date"]+"\"}]"
+            "datas": "[{\"offerIdTarifs\": \"RPP-CLASSIC\",\"pickupName\": \""+paramlist["origin"]["name"]+"\",\"pickupLatitude\": \""+str(paramlist["origin"]["latitude"])+"\",\"pickupLongitude\": \""+str(paramlist["origin"]["longitude"])+"\",\"pickupAddress\": \""+paramlist["origin"]["line1"]+"\",\"pickupAddress2\": \""+paramlist["origin"]["line2"]+"\",\"pickupZip\": \""+paramlist["origin"]["zipcode"]+"\",\"pickupCity\": \""+paramlist["origin"]["city"]+"\",\"pickupTel\": \""+paramlist["origin"]["phone"]+"\",\"recipientName\": \""+paramlist["destination"]["name"]+"\",\"recipientLatitude\": \""+str(paramlist["destination"]["latitude"])+"\",\"recipientLongitude\": \""+str(paramlist["destination"]["longitude"])+"\",\"recipientAddress\": \""+paramlist["destination"]["line1"]+"\",\"recipientAddress2\": \""+paramlist["destination"]["line2"]+"\",\"recipientZip\": \""+paramlist["destination"]["zipcode"]+"\",\"recipientCity\": \""+paramlist["destination"]["city"]+"\",\"recipientTel\": \""+paramlist["destination"]["phone"]+"\",\"deliveryType\": \"BAL\", \"pickupTimeManagement\": \""+paramlist["pickup"]["date"]+"\"}]"
         })
         # data_sender = json.dumps(data)
 		response = netw.sendRequestHeaderConfig(url, data_sender, "post", headers)

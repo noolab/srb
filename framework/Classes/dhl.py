@@ -69,11 +69,15 @@ class dhl(Service):
 		paramlist["origin"]["phone"]="" 
 		paramlist["parcel"]["number_of_pieces"]=""
 		instance = Validator()
-		req_list=["pickup/pickup_date","pickup/slot_start_at","pickup/slot_end_at","origin/company","origin/line1","origin/package_location",
-		"origin/city","origin/country_code","parcel/weight"]
+		req_list=["pickup/date","pickup/slot_start_at","pickup/slot_end_at","origin/company","origin/line1","origin/package_location",
+		"origin/city","origin/country_code"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			if "line2" not in paramlist["origin"]:
+				paramlist["origin"]["line2"]=""
+			if "weight_in_grams" not in paramlist["parcel"]:
+				paramlist["parcel"]["weight_in_grams"]="0.0"
 		else:
 			return checkparamlist["message"]
 			
@@ -94,7 +98,7 @@ class dhl(Service):
 		root.find("Request/ServiceHeader/SiteID").text = os.environ["DHL_USERID"]
 		root.find("Request/ServiceHeader/Password").text = os.environ["DHL_PWD"]
 
-		root.find("Pickup/PickupDate").text = paramlist["pickup"]["pickup_date"]   #paramlist["pickup_date"] # "2017-05-26"
+		root.find("Pickup/PickupDate").text = paramlist["pickup"]["date"]   #paramlist["pickup_date"] # "2017-05-26"
 		root.find("Pickup/ReadyByTime").text = paramlist["pickup"]["slot_start_at"] #paramlist["ready_by_time"] # "10:20"
 		root.find("Pickup/CloseTime").text = paramlist["pickup"]["slot_end_at"]  #paramlist["slot_end_at"] # "14:20"
 		
@@ -110,7 +114,7 @@ class dhl(Service):
 		root.find("PickupContact/Phone").text = paramlist["origin"]["phone"] 
 
 		root.find("ShipmentDetails/NumberOfPieces").text = str(paramlist["parcel"]["number_of_pieces"])
-		root.find("ShipmentDetails/Weight").text = str(paramlist["parcel"]["weight"])
+		root.find("ShipmentDetails/Weight").text = str(paramlist["parcel"]["weight_in_grams"])
 
 		# more variable can be set to xml here ... 
 
@@ -276,37 +280,34 @@ class dhl(Service):
 			return xmlresponse
 
 		"""END call label function directly"""
-		# try:
-		# 	datalabel=self.label(paramlist)
-		# 	try:
-		# 		carrier_shipment_id =datalabel["carrier_shipment_id"],
-		# 		label_url = datalabel["label_url"]
-		# 	except:
-		# 		return "eror  here"
-		# except:
-		# 	return datalabel
+		
+		paramlist["pickup_id"]=pickup_id
+		paramlist["carrier_shipment_id"]=shipmentId
+		paramlist["label_url"]=link_pdf
+		paramlist["shipment_details"]=paramlist["parcel"]
+		del paramlist["parcel"]
 
-		if "destination" in paramlist:
-			final_data={
-				"origin":paramlist["origin"],
-				"pickup":paramlist["pickup"],
-				"shipment_details":paramlist["parcel"],
-				"destination":paramlist["destination"],
-				"pickup_id":pickup_id,
-				"carrier_shipment_id": shipmentId,
-    			"label_url": link_pdf
-			}
-		else:
-			final_data={
-				"origin":paramlist["origin"],
-				"pickup":paramlist["pickup"],
-				"shipment_details":paramlist["parcel"],
-				"pickup_id":pickup_id,
-				"carrier_shipment_id": shipmentId,
-    			"label_url": link_pdf
-			}
+		# if "destination" in paramlist:
+		# 	final_data={
+		# 		"origin":paramlist["origin"],
+		# 		"pickup":paramlist["pickup"],
+		# 		"shipment_details":paramlist["parcel"],
+		# 		"destination":paramlist["destination"],
+		# 		"pickup_id":pickup_id,
+		# 		"carrier_shipment_id": shipmentId,
+  #   			"label_url": link_pdf
+		# 	}
+		# else:
+		# 	final_data={
+		# 		"origin":paramlist["origin"],
+		# 		"pickup":paramlist["pickup"],
+		# 		"shipment_details":paramlist["parcel"],
+		# 		"pickup_id":pickup_id,
+		# 		"carrier_shipment_id": shipmentId,
+  #   			"label_url": link_pdf
+		# 	}
 
-		return final_data
+		return paramlist
 
 	def status(self,paramlist):
 		print ("type function")
@@ -389,7 +390,7 @@ class dhl(Service):
 				    "country_code": "FR"
 				  },
 				  "pickup": {
-					"pickup_date": "2017-08-21",
+					"date": "2017-08-21",
 				    "slot_id": "string",
 				    "slot_start_at": "10:20",
 				    "slot_end_at": "23:20",
@@ -398,7 +399,7 @@ class dhl(Service):
 				  },
 				  "parcel": {
 				    "number_of_pieces": 1,
-				    "weight": 200
+				    "weight_in_grams": 200
 				  }
 			}
 			rootdata= self.pickup(dataparamlist)
@@ -521,7 +522,8 @@ class dhl(Service):
 			fullstartdate4="16:00:00"
 			fullstartdate5="18:00:00"
 			data={
-		        "date": str(date),
+		        "date": str(newdate),
+		        "timezone":False,
 		        "slots": [
 			        {
 						"start_time": fullstartdate1,
@@ -711,15 +713,20 @@ class dhl(Service):
 				shipmentId=getchild.text
 
 		if shipmentId=="0":
-			return xmlresponse
-		data={
-		  "origin": paramlist["origin"],
-		  "destination": paramlist["destination"],
-		  "parcel": paramlist["parcel"],
-		  "carrier_shipment_id": shipmentId,
-		  "label_url": link_pdf
-		}
-		return data
+			responseErr = {"status": 500,"errors": [{"detail": str(xmlresponse)}]}
+			raise Exception(responseErr)
+
+		paramlist["label_url"] = link_pdf
+		paramlist["carrier_shipment_id"] =shipmentId
+
+		# data={
+		#   "origin": paramlist["origin"],
+		#   "destination": paramlist["destination"],
+		#   "parcel": paramlist["parcel"],
+		#   "carrier_shipment_id": shipmentId,
+		#   "label_url": link_pdf
+		# }
+		return paramlist
 
 
 
@@ -748,15 +755,19 @@ class dhl(Service):
 			responseErr = {"status": 500,"errors": [{"detail": str(xmlresponse)}]}
 			raise Exception(responseErr)
 		currency="$"
-		data={
-			"destination":paramlist["destination"],
-			"origin":paramlist["origin"],
-			"parcel":paramlist["parcel"],
-			"shipment_id": shipment_id,
-			"price":0,
-			"currency":currency
-	    }
-		return data
+		# data={
+		# 	"destination":paramlist["destination"],
+		# 	"origin":paramlist["origin"],
+		# 	"parcel":paramlist["parcel"],
+		# 	"shipment_id": shipment_id,
+		# 	"price":0,
+		# 	"currency":currency
+	 #    }
+	 	paramlist["currency"]=currency
+	 	paramlist["carrier_shipment_id"]=shipment_id
+	 	paramlist["price"]=0
+
+		return paramlist
 
 
 	def type(self,paramlist):

@@ -120,20 +120,7 @@ class bposteasyplus(Service):
 
 
 	def label(sef,userparamlist):
-		#tree = ET.parse('Assets/bpostEasyPlus/request/xmlrequest.txt')
-		#root = tree.getroot()
-
-		# root.find('soapenv:Body/v001:getReturnLabelRequest/v001:ContractInfo/v001:ContractID',root.nsmap).text = BPOST_CONTRACT_ID
-		# root.find("soapenv:Body/v001:getReturnLabelRequest/v001:ContractInfo/v001:ContractID").text = BPOST_CONTRACT_ID
 		
-		# xmlresult = ET.tostring(root, encoding='ascii', method='xml')
-		event={}
-		event["destination"] = {}
-		event["origin"] = {}
-		event["destination"]["line1"] = ""
-		event["destination"]["line2"] = ""
-		event["origin"]["line1"] = ""
-		event["origin"]["line2"] = ""
 		req_list=["destination/street_name","origin/street_name","destination/street_number","destination/zipcode","destination/city","destination/country_code","origin/street_number",
 		"origin/name","origin/zipcode","origin/city","origin/country_code","shipment_id"]
 		instance = Validator()
@@ -209,16 +196,25 @@ class bposteasyplus(Service):
 
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 
+		event["label_url"]=link_pdf
+		event["carrier_shipment_id"] = shipment_id
+		# if "parcel" in event:
+		# 	final_response = {
+		# 		"origin": event["origin"],
+		# 		"destination": event["destination"],
+		# 		"parcel": event["parcel"],
+		# 		"carrier_shipment_id": shipment_id,
+		# 		"label_url": link_pdf
+		# 	}
+		# else:
+		# 	final_response = {
+		# 		"origin": event["origin"],
+		# 		"destination": event["destination"],
+		# 		"carrier_shipment_id": shipment_id,
+		# 		"label_url": link_pdf
+		# 	}
 
-		final_response = {
-			"origin": event["origin"],
-			"destination": event["destination"],
-			"parcel": event["parcel"],
-			"carrier_shipment_id": shipment_id,
-			"label_url": link_pdf
-		}
-
-		return final_response
+		return event
 
 	def type(self,paramlist):
 		true=True

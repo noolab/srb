@@ -159,7 +159,8 @@ class relaiscolis(Service):
 	  	}
 		return result
 
-	def dropoffpoints(self,paramlist):
+	def dropoff(self,paramlist):
+		"""here is a dropoffpoints function """
 		# GET LAT + LNG
 		lng = paramlist["longitude"]
 		lat = paramlist["latitude"]

@@ -128,7 +128,7 @@ class envialia(Service):
 				    "country_code": "FR"
 				  },
 				  "pickup": {
-					"pickup_date": "2017-08-21",
+					"date": "2017-08-21",
 				    "slot_id": "string",
 				    "slot_start_at": "10:20",
 				    "slot_end_at": "23:20",
@@ -137,7 +137,7 @@ class envialia(Service):
 				  },
 				  "parcel": {
 				    "number_of_pieces": 1,
-				    "weight": 200
+				    "weight_in_grams": 200
 				  }
 			}
 			rootdata= self.pickup(dataparamlist)
@@ -202,7 +202,7 @@ class envialia(Service):
 		paramlist["destination"]["phone"] = ""
 
 		#req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/city","place/zipcode"]
-		req_list=["pickup/pickup_date","origin/line1","pickup/number_of_pieces","origin/name","origin/city","origin/zipcode"]
+		req_list=["pickup/date","origin/line1","pickup/number_of_pieces","origin/name","origin/city","origin/zipcode"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -216,7 +216,7 @@ class envialia(Service):
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)
 
-		pickup_date = re.sub(r'\s.*','',str(paramlist["pickup"]["pickup_date"]))
+		pickup_date = re.sub(r'\s.*','',str(paramlist["pickup"]["date"]))
 		pickup_date = re.sub(r'\-','/',str(pickup_date))
 		sessionID = self.login(paramlist)
 		# return seesionID
@@ -306,7 +306,8 @@ class envialia(Service):
 			fullstartdate1="10:00:00"
 			fullstartdate2="14:00:00"
 			data={
-		        "date": str(date),
+		        "date": str(newdate),
+		        "timezone":False,
 		        "slots": [
 			        {
 						"start_time": fullstartdate1,
