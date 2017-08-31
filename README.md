@@ -18,7 +18,7 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/tracking/{AWBNu
 RELAISCOLIS <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/label <br />
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/dropoffpoints  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/dropoff/points  <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/status <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/relaiscolis/type <br />
 
@@ -91,7 +91,7 @@ https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis <br /
 https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/type <br /> 
 https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/status <br />
 https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/label <br /> 
-https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/prod/relaiscolis/dropoffpoints <br />
+
 
 
 BPOSTEASYPLUS <br />
