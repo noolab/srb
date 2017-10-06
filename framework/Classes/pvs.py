@@ -225,13 +225,15 @@ class pvs(Service):
 		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
 
-		data = {
-			"origin": paramlist["origin"],
-			"destination": paramlist["destination"],
-			"parcel": paramlist["parcel"],
-			"carrier_shipment_id": "transport_return_number",
-			"label_url": link_pdf
-		}
-		return data
+		# data = {
+		# 	"origin": paramlist["origin"],
+		# 	"destination": paramlist["destination"],
+		# 	"parcel": paramlist["parcel"],
+		# 	"carrier_shipment_id": "transport_return_number",
+		# 	"label_url": link_pdf
+		# }
+		paramlist["carrier_shipment_id"]="transport_return_number"
+		paramlist["label_url"] = link_pdf
+		return paramlist
 
 	

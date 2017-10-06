@@ -9,6 +9,7 @@ from Classes.envialia import envialia
 from Classes.pvs import pvs
 from Classes.swisspost import swisspost
 from Classes.ups import ups
+from Classes.colissimo import colissimo
 class ServiceManager(object):
 		
 	def call_service(self, company, service, paramlist):

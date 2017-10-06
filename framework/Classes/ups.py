@@ -264,22 +264,14 @@ class ups(Service):
 		return final_data
 	
 	def label(self,userparamlist):
-		paramlist = {}
-		paramlist["origin"] ={}
-		paramlist["origin"]["phone"]=""
-		paramlist["origin"]["line1"]=""
-		paramlist["origin"]["street_number"]=""
-		paramlist["origin"]["street_name"]=""
-		paramlist["destination"] ={}
-		paramlist["destination"]["line1"] = ""
-		paramlist["destination"]["street_number"]=""
-		paramlist["destination"]["street_name"] = ""
-
-		req_list=["origin/name","origin/first_name","origin/last_name","origin/city","origin/zipcode","origin/country_code","destination/name","destination/phone","destination/zipcode","destination/country_code"]
+		
+		req_list=["origin/street_number","origin/street_name","origin/name","origin/first_name","origin/last_name","origin/city","origin/zipcode","origin/country_code","destination/name","destination/phone","destination/zipcode","destination/country_code"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
+			# paramlist=userparamlist
+			reqEmpty=["parcel/weight_in_grams","destination/first_name","destination/last_name","destination/street_name","destination/street_number","destination/line1","origin/line1","origin/phone"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)

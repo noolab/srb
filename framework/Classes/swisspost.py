@@ -121,7 +121,7 @@ class swisspost(Service):
 		except:
 			response_time_2=-1
 		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
+			response_time_2 = time.time() - start_2
 		allresponseTime.append(response_time_2)
 
 
@@ -139,15 +139,13 @@ class swisspost(Service):
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			data=userparamlist
+			# data=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name"]
+			data = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)
 			
-		if "street_name" not in paramlist["origin"]:
-			data["origin"]["street_name"] =""
-		if "street_number" not in paramlist["origin"]:
-			data["origin"]["street_number"] = ""
 		data_line1 = str(data["origin"]["street_number"])+str(data["origin"]["street_name"])
 
 		shipment_id = data['shipment_id']
@@ -214,12 +212,21 @@ class swisspost(Service):
 		k.set_contents_from_filename(pathToFile)
 		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
+		if "shipment_id" in data:
+			carrier_shipment_id = data["shipment_id"]
+		else:
+			carrier_shipment_id = "transport_return_number"
+			
+		del data["shipment_id"]
 
-		data_final = {
-			"origin": data["origin"],
-			"destination": data["destination"],
-			"parcel": data["parcel"],
-			"carrier_shipment_id": "transport_return_number",
-			"label_url": link_pdf
-		}
-		return data_final
+		data["carrier_shipment_id"] = carrier_shipment_id
+		data["label_url"] = link_pdf
+		# data_final = {
+		# 	"origin": data["origin"],
+		# 	"destination": data["destination"],
+		# 	"parcel": data["parcel"],
+		# 	"carrier_shipment_id": "transport_return_number",
+		# 	"label_url": link_pdf
+		# }
+		# return data_final
+		return data

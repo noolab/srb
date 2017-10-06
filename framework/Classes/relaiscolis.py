@@ -189,16 +189,27 @@ class relaiscolis(Service):
 		      	'line1': relay["poi"]["location"]["formattedAddressLine"],
 		      	'zipcode': relay["poi"]["location"]["postalCode"],
 		      	'country': relay["poi"]["location"]["countryLabel"],
-		      	'opening': {
-		        	'monday': { 'am': sub_tab[0]["value"], 'pm': sub_tab[1]["value"]},
-		        	'tuesday': { 'am': sub_tab[2]["value"], 'pm': sub_tab[3]["value"]},
-		        	'wednesday': { 'am': sub_tab[4]["value"], 'pm': sub_tab[5]["value"]},
-		        	'thursday': { 'am': sub_tab[6]["value"], 'pm': sub_tab[7]["value"]},
-		        	'friday': { 'am': sub_tab[8]["value"], 'pm': sub_tab[9]["value"]},
-		        	'saturday': { 'am': sub_tab[10]["value"], 'pm': sub_tab[11]["value"]},
-		        	'sunday': { 'am': sub_tab[12]["value"], 'pm': sub_tab[13]["value"]}
-		        }
+		        'opening': [
+					{'start_at':sub_tab[0]["value"],'end_at':sub_tab[1]["value"]},
+					{'start_at':sub_tab[2]["value"],'end_at':sub_tab[3]["value"]},
+					{'start_at':sub_tab[4]["value"],'end_at':sub_tab[5]["value"]},
+					{'start_at':sub_tab[6]["value"],'end_at':sub_tab[7]["value"]},
+					{'start_at':sub_tab[8]["value"],'end_at':sub_tab[9]["value"]},
+					{'start_at':sub_tab[10]["value"],'end_at':sub_tab[11]["value"]},
+					{'start_at':sub_tab[12]["value"],'end_at':sub_tab[13]["value"]}
+
+		        ]
+
 		    })
+			#'opening': {
+				#'monday': { 'am': sub_tab[0]["value"], 'pm': sub_tab[1]["value"]},
+				#'tuesday': { 'am': sub_tab[2]["value"], 'pm': sub_tab[3]["value"]},
+				#'wednesday': { 'am': sub_tab[4]["value"], 'pm': sub_tab[5]["value"]},
+				#'thursday': { 'am': sub_tab[6]["value"], 'pm': sub_tab[7]["value"]},
+				#'friday': { 'am': sub_tab[8]["value"], 'pm': sub_tab[9]["value"]},
+				#'saturday': { 'am': sub_tab[10]["value"], 'pm': sub_tab[11]["value"]},
+				#'sunday': { 'am': sub_tab[12]["value"], 'pm': sub_tab[13]["value"]}
+			#},
 		return relay_list
 
 	def type(self,paramlist):
@@ -224,11 +235,9 @@ class relaiscolis(Service):
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			event=userparamlist
-			if "street_number" not in event["origin"]:
-				event["origin"]["street_number"]=""
-			if "street_name" not in event["origin"]:
-				event["origin"]["street_name"]=""
+			# event=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name",""]
+			event = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -402,14 +411,17 @@ class relaiscolis(Service):
 		link_pdf="https://s3-us-west-2.amazonaws.com/srbstickers/"+name_file
 
 
-		data = {
-			"origin": event["origin"],
-			"destination": event["destination"],
-			"parcel": event["parcel"],
-			"carrier_shipment_id": transport_return_number,
-			"label_url": link_pdf
-		}
-		return data
+		# data = {
+		# 	"origin": event["origin"],
+		# 	"destination": event["destination"],
+		# 	"parcel": event["parcel"],
+		# 	"carrier_shipment_id": transport_return_number,
+		# 	"label_url": link_pdf
+		# }
+		
+		event["carrier_shipment_id"]=transport_return_number
+		event["label_url"]=link_pdf
+		return event
 
 
 

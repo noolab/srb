@@ -247,17 +247,16 @@ class royalmail(Service):
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
+			# paramlist=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name","origin/state","origin/country"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)
 
-		# fulladdress =str(paramlist["destination"]["line1"])paramlist["destination"]["line1"]=""
-		if "street_number" not in paramlist["origin"]:
-			paramlist["origin"]["street_number"] = ""
-		if "street_name" not in paramlist["origin"]:
-			paramlist["origin"]["street_name"]= ""
+		
+
 		line1=str(paramlist["origin"]["street_number"]+str(paramlist["origin"]["street_name"]))
 		payload = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:v2="http://www.royalmailgroup.com/api/ship/V2" xmlns:v1="http://www.royalmailgroup.com/integration/core/V1">
 		   <soapenv:Header>
@@ -459,32 +458,38 @@ class royalmail(Service):
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
 
 
-		final_response = {
-			"origin": paramlist["origin"],
-			"destination": {
-			    "name": "Client Base fulfilment ltd",
-			    "shipment_id": "return_id_at_srb",
-			    "first_name": paramlist["destination"]["first_name"],
-			    "last_name": paramlist["destination"]["last_name"],
-			    "company": "Company Destination",
-			    "street_number": paramlist["destination"]["street_number"],
-			    "line1": "Clientbase Fulfilment",
-			    "line2": "Woodview Road",
-			    "state": "",
-			    "zipcode": "TQ4 7SR",
-			    "country": "",
-			    "country_code": "GB",
-			    "phone": "07801123456",
-			    "email": "tom.smith@royalmail.com",
-			    "city": "PAIGNTON"
-			},
-			"parcel": paramlist["parcel"],
-			"carrier_shipment_id": shipmentNumber,
-			"label_url": link_pdf
-		}
+		# final_response = {
+		# 	"origin": paramlist["origin"],
+		# 	"destination": {
+		# 	    "name": "Client Base fulfilment ltd",
+		# 	    "shipment_id": "return_id_at_srb",
+		# 	    "first_name": paramlist["destination"]["first_name"],
+		# 	    "last_name": paramlist["destination"]["last_name"],
+		# 	    "company": "Company Destination",
+		# 	    "street_number": paramlist["destination"]["street_number"],
+		# 	    "line1": "Clientbase Fulfilment",
+		# 	    "line2": "Woodview Road",
+		# 	    "state": "",
+		# 	    "zipcode": "TQ4 7SR",
+		# 	    "country": "",
+		# 	    "country_code": "GB",
+		# 	    "phone": "07801123456",
+		# 	    "email": "tom.smith@royalmail.com",
+		# 	    "city": "PAIGNTON"
+		# 	},
+		# 	"parcel": paramlist["parcel"],
+		# 	"carrier_shipment_id": shipmentNumber,
+		# 	"label_url": link_pdf
+		# }
 		
 
-		return final_response
+		if 'shiment_id' in paramlist:
+			del paramlist['shiment_id']
+
+		paramlist["carrier_shipment_id"]= shipmentNumber
+		paramlist["label_url"] =link_pdf
+		
+		return paramlist
 
 
 

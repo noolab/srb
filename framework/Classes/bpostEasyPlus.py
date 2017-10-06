@@ -126,7 +126,9 @@ class bposteasyplus(Service):
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			event=userparamlist
+			# event=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name","destination/name"]
+			event = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)

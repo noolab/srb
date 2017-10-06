@@ -189,28 +189,14 @@ class envialia(Service):
 
 
 	def pickup(self,userparamlist):
-		paramlist = {}
-		paramlist["origin"] = {}
-		paramlist["origin"]["phone"] = ""
-		paramlist["destination"] = {}
-		paramlist["destination"]["name"] = ""
-		paramlist["destination"]["street_number"] = ""
-		paramlist["destination"]["city"] = ""
-		paramlist["destination"]["street_name"] = ""
-		paramlist["destination"]["city"] = ""
-		paramlist["destination"]["zipcode"] = ""
-		paramlist["destination"]["phone"] = ""
-
+		
 		#req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/city","place/zipcode"]
 		req_list=["pickup/date","origin/line1","pickup/number_of_pieces","origin/name","origin/city","origin/zipcode"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
-			if "destination" in paramlist:
-				print ("destnation")
-			else:
-				paramlist["destination"]= ""
+			reqEmpty=["origin/street_number","origin/street_name","origin/phone","destination/street_number","destination/street_name","destination/phone","destination/city","destination/zipcode","destination/name"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}

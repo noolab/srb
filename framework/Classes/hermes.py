@@ -171,55 +171,20 @@ class hermes(Service):
 		return result
 
 	def label(self,userparamlist):
-		paramlist = {}
-		paramlist["shipment_id"] = ""
 		paramlist["partnerid"] = os.environ["HERMES_PATHNERID"]
 		paramlist["password"] = os.environ["HERMES_PASSWORD"]
-
-		#default value
-		paramlist["destination"]={}
-		paramlist["destination"]["name"]=""
-		paramlist["destination"]["first_name"]=""
-		paramlist["destination"]["last_name"]=""
-		paramlist["destination"]["phone"] = ""
-		paramlist["destination"]["email"]=""
-		paramlist["destination"]["company"] =""
-		paramlist["destination"]["street_number"] =""
-		paramlist["destination"]["street_name"] =""
-		paramlist["destination"]["line1"] =""
-		paramlist["destination"]["line2"] =""
-		paramlist["destination"]["state"] =""
-		paramlist["destination"]["zipcode"]=""
-		paramlist["destination"]["country"] =""
-		paramlist["destination"]["country_code"] = ""
-		paramlist["destination"]["city"] =""
-		paramlist["origin"]={}
-		paramlist["origin"]["name"] =""
-		paramlist["origin"]["phone"] =""
-		paramlist["origin"]["email"] =""
-		paramlist["origin"]["company"] =""
-		paramlist["origin"]["line1"] =""
-		paramlist["origin"]["line2"] =""
-		paramlist["origin"]["street_name"] =""
-		paramlist["origin"]["state"] =""
-		paramlist["origin"]["country_code"] =""
-		paramlist["origin"]["place_description"] =""
-		paramlist["parcel"]={}
-		paramlist["parcel"]["length_in_cm"] =""
-		paramlist["parcel"]["width_in_cm"] =""
-		paramlist["parcel"]["height_in_cm"] =""
-		paramlist["parcel"]["weight_in_grams"] =""
-		paramlist["shipment_id"]= ""
 
 		req_list=["origin/country","origin/first_name","origin/last_name","origin/street_number","origin/line1","origin/zipcode","origin/city"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
-			if "street_name" not in paramlist["origin"]:
-				paramlist["origin"]["street_name"] =""
-			if "street_number" not in paramlist["origin"]:
-				paramlist["origin"]["street_number"] = ""
+			# paramlist=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name","shipment_id","parcel/weight_in_grams","parcel/height_in_cm","parcel/width_in_cm","parcel/length_in_cm",
+					"origin/place_description","origin/country_code","origin/state","origin/line2","origin/line1","origin/company","origin/email","origin/phone","origin/name",
+					"destination/city","destination/country","destination/country_code","destination/zipcode","destination/state","destination/line2","destination/line1",
+					"destination/street_name","destination/street_number","destination/company","destination/email","destination/phone","destination/first_name","destination/last_name","destination/name"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			
 			streetInfo = str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"])#+str(paramlist["origin"]["line1"])
 			data_param ={
 				"partnerid":os.environ["HERMES_PATHNERID"],
@@ -326,3 +291,57 @@ class hermes(Service):
 		# }
 
 		return final_response
+
+
+	def dropoff(self,userparamlist):
+		consumerName = os.environ["HERMES_DROPOFF_CONSUMERNAME"] #" EXT002361"
+		consumerPassword= os.environ["HERMES_DROPOFF_CONSUMERPASSWORD"]#'e2b0762a75603b097fc269a3df0c1438668b0f7a472f524a134b17f911332563'
+		dropoff_url=os.environ["HERMES_DROPOFF_URL"]#'https://psfinder.hermesworld.com/psfinder-rest-api-impl/rest/findParcelShopsByLocation?'
+		
+		req_list=["street","postcode","city","housenumber","countries"]
+		instance = Validator()
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			paramlist=userparamlist
+			street =paramlist["street"]
+			postcode=paramlist["postcode"]
+			city= paramlist["city"]
+			housenumber =paramlist["housenumber"]
+			countries =paramlist["countries"]
+		else:
+			# return checkparamlist["message"]
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
+		fullurl= dropoff_url+'consumerName='+consumerName+'&'+'consumerPassword='+consumerPassword+'&'+'street='+street+'&'+'postcode='+postcode+'&'+'city='+city+'&'+'houseNumber='+housenumber+'&'+'countries='+countries
+		response = netw.sendRequestHeaderConfig(fullurl,'','get','')
+		data = json.loads(response.text)
+		result = []
+		for da in data:
+			openning =[]
+			for op in da["businessHours"]:
+				optime={
+					"start_at":op["openFrom"],
+					"end_at":op["openTill"]
+				}
+				openning.append(optime)
+
+			res = {
+			    "name": da["shopOwner"],
+			    "latitude": 0,
+			    "longitude": 0,
+			    "street_number": "",
+			    "street_name": da["address"]["street"],
+			    "line1": "",
+			    "line2": "",
+			    "state": "",
+			    "zipcode": da["address"]["postCode"],
+			    "city": da["address"]["city"],
+			    "country_code": "",
+			    "logo_url": "",
+			    "id": da["parcelShopNumber"],
+			    "booking_reference": "",
+			    "opening": openning
+			}
+			result.append(res)
+
+		return result

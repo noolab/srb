@@ -60,22 +60,15 @@ class dhl(Service):
 		
 
 	def pickup(self, userparamlist):
-		paramlist={}
-		paramlist["origin"]={}
-		paramlist["parcel"]={}
-		paramlist["origin"]["line2"]=""
-		paramlist["origin"]["zipcode"]=""
-		paramlist["origin"]["name"] =""
-		paramlist["origin"]["phone"]="" 
-		paramlist["parcel"]["number_of_pieces"]=""
+		
 		instance = Validator()
 		req_list=["pickup/date","pickup/slot_start_at","pickup/slot_end_at","origin/company","origin/line1","origin/package_location",
 		"origin/city","origin/country_code"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
-			if "line2" not in paramlist["origin"]:
-				paramlist["origin"]["line2"]=""
+			# paramlist=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name","origin/line2","origin/zipcode","origin/name","origin/phone","origin/number_of_pieces","origin/city","origin/country_code"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 			if "weight_in_grams" not in paramlist["parcel"]:
 				paramlist["parcel"]["weight_in_grams"]="0.0"
 		else:
@@ -160,15 +153,10 @@ class dhl(Service):
 		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
-			if "street_number" not in paramlist["origin"]:
-				paramlist["origin"]["street_number"] = ""
-			if "street_name" not in paramlist["origin"]:
-				paramlist["origin"]["street_name"]= ""
-			if "street_number" not in paramlist["destination"]:
-				paramlist["destination"]["street_number"] = ""
-			if "street_name" not in paramlist["destination"]:
-				paramlist["destination"]["street_name"]= ""
+			# paramlist=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name","destination/street_number","destination/street_name"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -566,46 +554,15 @@ class dhl(Service):
 
 		s3key1=os.environ["S3_KEY1"]
 		s3key2=os.environ["S3_KEY2"]
-
-		paramlist = {}
-		paramlist["origin"] = {}
-		paramlist["parcel"] = {}
-		paramlist["destination"] = {}
-		paramlist["destination"]["street_name"] = ""
-		paramlist["destination"]["street_number"] = ""
-		paramlist["destination"]["phone"] = ""
-		paramlist["destination"]["email"] = ""
-		paramlist["destination"]["line2"] = ""
-		paramlist["parcel"]["width_in_cm"] = ""
-		paramlist["parcel"]["weight_in_grams"] = "0.0"
-		paramlist["parcel"]["height_in_cm"] = ""
-		paramlist["parcel"]["length_in_cm"] = ""
-		paramlist["parcel"]["contents"] = ""
-		# paramlist["origin"]["first_name"] = ""
-		# paramlist["origin"]["last_name"] = ""
-		paramlist["origin"]["street_name"]= ""
-		paramlist["origin"]["street_number"] = ""
-		paramlist["origin"]["company"] = ""
-		paramlist["origin"]["line2"] = ""
-		paramlist["origin"]["zipcode"] = ""
-		paramlist["origin"]["phone"] = ""
-		paramlist["origin"]["state"] = ""
-		paramlist["origin"]["place_description"] =""
 		
 		instance = Validator()
 		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
 		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
-			if "street_number" not in paramlist["origin"]:
-				paramlist["origin"]["street_number"] = ""
-			if "street_name" not in paramlist["origin"]:
-				paramlist["origin"]["street_name"]= ""
-			if "street_number" not in paramlist["destination"]:
-				paramlist["destination"]["street_number"] = ""
-			if "street_name" not in paramlist["destination"]:
-				paramlist["destination"]["street_name"]= ""
+			# paramlist=userparamlist
+			reqEmpty=["origin/street_number","origin/street_name","destination/street_name","destination/street_number","destination/phone","destination/email","destination/line2","parcel/width_in_cm","parcel/height_in_cm","parcel/length_in_cm","parcel/contents","origin/company","origin/line2","origin/zipcode","origin/phone","origin/state","origin/place_description"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
