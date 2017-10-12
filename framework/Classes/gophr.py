@@ -229,3 +229,58 @@ class gophr(Service):
 			]
 		}]
 		return dt
+
+	def pickupslots(self, paramlist):
+		print ("pickupslots from gophr")
+		date = datetime.datetime.now()
+		alldays=[]
+		for l in range(7):
+			date += datetime.timedelta(days=1)
+			if date.isoweekday()==6:
+				date += datetime.timedelta(days=2)
+				print ("saturday +2: "+str(date))
+			elif date.isoweekday()==7:
+				date += datetime.timedelta(days=1)
+				print ("sunday +1: "+str(date))
+			else:
+				print ("no check")
+			newdate=re.sub(r'\s.*',' ',str(date))
+			fullstartdate1="10:00:00"
+			fullstartdate2="12:00:00"
+			fullstartdate3="14:00:00"
+			fullstartdate4="16:00:00"
+			fullstartdate5="18:00:00"
+			data={
+		        "date": str(newdate),
+		        "timezone":False,
+		        "slots": [
+			        {
+						"start_time": fullstartdate1,
+				        "duration": "120",
+				        "availability": -1
+					},
+					{
+						"start_time": fullstartdate2,
+				        "duration": "120",
+				        "availability": -1
+					},
+					{
+						"start_time": fullstartdate3,
+				        "duration": "120",
+				        "availability": -1
+					},
+					{
+						"start_time": fullstartdate4,
+				        "duration": "120",
+				        "availability": -1
+					},
+					{
+						"start_time": fullstartdate5,
+				        "duration": "120",
+				        "availability": -1
+					}
+				]
+		    }
+
+			alldays.append(data)
+		return alldays

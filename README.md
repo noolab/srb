@@ -14,6 +14,7 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/  <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/status   <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/type  <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/pickup  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/pickup/slots <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/tracking/{trackingid}  <br />
 DHL <br />
 
