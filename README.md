@@ -2,7 +2,19 @@
 
 Lambda URLs
 
+COLISSIMO   <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/status
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/type
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/label
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/tracking/{trackingid}
 
+GOPHR  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/status
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/type
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/pickup
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/tracking/{trackingid}
 DHL <br />
 
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/ <br />

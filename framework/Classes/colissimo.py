@@ -3,6 +3,7 @@ from Modules.data_converter import data_converter as converter
 from Modules.network import networking as netw
 from Modules.data_validator import Validator 
 from BuiltInService import requests
+from BuiltInService import xmltodict
 import os
 import time
 import datetime
@@ -13,7 +14,7 @@ import base64
 import boto
 from boto.s3.key import Key
 from boto.s3.connection import S3Connection
-
+responese =""
 class colissimo(Service):
 
 	def root(self,paramlist):
@@ -30,10 +31,13 @@ class colissimo(Service):
 				"get": true
 			},
 			"label":{
+				"post":false
+			},
+			"pickup":{
 				"post":true
 			},
 			"tracking":{
-				"get":false
+				"get":true
 			}
 
 		}
@@ -46,7 +50,7 @@ class colissimo(Service):
 		available=True
 		response_time=0
 		try:
-			paramlist={
+			myparamlist={
 				"origin":{
 					"country_code": "FR",
                     "line2": "main address",
@@ -56,17 +60,21 @@ class colissimo(Service):
 				},
 				"destination":{
 					"last_name": "lastName",
-                    "first_mame": "firstName",
+                    "first_name": "firstName",
                     "line2": "main address",
                     "country_code": "FR",
                     "city": "Paris",
-                    "zipcode": "75017"
+                    "zipcode": "75017",
+                    "company":"shoprunback"
 				}
 			}
-			responese = self.label(paramlist)
+
+			responese = self.label(myparamlist)
 		except:
 			available=False
 			response_time=-1
+
+		# responese = self.label(myparamlist)
 
 		if response_time==0:
 			response_time=time.time()-start
@@ -202,3 +210,49 @@ class colissimo(Service):
 			paramlist={"status": 400,"errors": [{"detail":"HTTP Request failed" }]}
 
 		return paramlist
+
+	def tracking(self,paramlist):
+		print("tracking colisimo")
+		tracking_id = str(paramlist) #8R30646307058
+		accountNumber = "816721"
+		password = "quai77"
+		url =os.environ["COLISSIMO_URL_TRACKING"]  #"https://www.coliposte.fr/tracking-chargeur-cxf/TrackingServiceWS"
+
+		xmldata="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:char="http://chargeur.tracking.geopost.com/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <char:track>
+		         <!--Optional:-->
+		         <accountNumber>"""+accountNumber+"""</accountNumber>
+		         <!--Optional:-->
+		         <password>"""+password+"""</password>
+		         <!--Optional:-->
+		         <skybillNumber>"""+tracking_id+"""</skybillNumber>
+		      </char:track>
+		   </soapenv:Body>
+		</soapenv:Envelope>"""
+		headers = {'Content-Type': 'application/xml'}
+		# try:
+		# 	resp = requests.post(url=url, data=xmldata, headers=headers)
+		# except:
+		# 	return resp.content
+		xmlresponse = netw.sendRequest(url, xmldata, "post", "xml", "xml")
+		data = xmltodict.parse(xmlresponse)
+		# resp = requests.post(url=url, data=xmldata, headers=headers)
+		# return resp.content
+		try:
+			status = data["soap:Envelope"]["soap:Body"]["ns1:trackResponse"]["return"]["eventLibelle"]
+			location = data["soap:Envelope"]["soap:Body"]["ns1:trackResponse"]["return"]["eventCode"]
+		except:
+			return xmlresponse
+
+		dt =[{
+			"status":status,
+			"steps": [
+				{
+					"status": status,
+					"location": location
+				}
+			]
+		}]
+		return dt

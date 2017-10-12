@@ -10,6 +10,7 @@ from Classes.pvs import pvs
 from Classes.swisspost import swisspost
 from Classes.ups import ups
 from Classes.colissimo import colissimo
+from Classes.gophr import gophr
 class ServiceManager(object):
 		
 	def call_service(self, company, service, paramlist):
