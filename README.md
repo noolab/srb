@@ -3,18 +3,18 @@
 Lambda URLs
 
 COLISSIMO   <br />
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/status
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/type
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/label
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/tracking/{trackingid}
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/status <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/type <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/label <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/tracking/{trackingid} <br />
 
 GOPHR  <br />
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/status
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/type
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/pickup
-https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/tracking/{trackingid}
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/status   <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/type  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/pickup  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/gophr/tracking/{trackingid}  <br />
 DHL <br />
 
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/dhl/ <br />
