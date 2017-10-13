@@ -131,7 +131,7 @@ class colissimo(Service):
 		COLISSIMO_PASSWORD = os.environ["COLISSIMO_PASSWORD"]
 		COLISSIMO_CONTRACTNUMBER = os.environ["COLISSIMO_CONTRACTNUMBER"]
 
-		req_list=["origin/line2","origin/country_code","origin/zipcode","origin/city","origin/company","destination/first_name","destination/last_name","destination/country_code","destination/city","destination/zipcode","destination/company","destination/line2"]
+		req_list=["origin/line1","origin/country_code","origin/zipcode","origin/city","origin/company","destination/first_name","destination/last_name","destination/country_code","destination/city","destination/zipcode","destination/company","destination/line1"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -160,7 +160,7 @@ class colissimo(Service):
 			            "sender": {
 			                "address": {
 			                    "countryCode": paramlist["origin"]["country_code"],
-			                    "line2": paramlist["origin"]["line2"],
+			                    "line2": paramlist["origin"]["line1"],
 			                    "zipCode": paramlist["origin"]["zipcode"],
 			                    "city": paramlist["origin"]["city"],
 			                    "companyName": paramlist["origin"]["company"]
@@ -173,7 +173,7 @@ class colissimo(Service):
 			                "address": {
 			                    "lastName": paramlist["destination"]["last_name"],
 			                    "firstName": paramlist["destination"]["first_name"],
-			                    "line2": paramlist["destination"]["last_name"],
+			                    "line2": paramlist["destination"]["line1"],
 			                    "countryCode": paramlist["destination"]["country_code"],
 			                    "city": paramlist["destination"]["city"],
 			                    "zipCode": paramlist["destination"]["zipcode"],

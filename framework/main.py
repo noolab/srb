@@ -45,8 +45,9 @@ def lamda_function(event, context):
 		service=resource[2]+resource[3]
 	else:
 		service=""
-
-	paramlist=json.loads(event["body"])
+	dataparam = re.sub(r"null|None","\"\"",str(event["body"]))
+	paramlist=json.loads(dataparam)
+	# paramlist=json.loads(event["body"])
 	if company!="" and service=="":
 		service="root"
 	elif "tracking" in service:

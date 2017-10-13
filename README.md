@@ -1,6 +1,11 @@
 # SRB Carrier Wrappers <br />
 
 Lambda URLs
+POSTNORD    <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/postnord/  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/postnord/status  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/postnord/type  <br />
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/postnord/label  <br />
 
 COLISSIMO   <br />
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/colissimo/  <br />
