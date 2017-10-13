@@ -45,7 +45,10 @@ def lamda_function(event, context):
 		service=resource[2]+resource[3]
 	else:
 		service=""
-	dataparam = re.sub(r"null|None","\"\"",str(event["body"]))
+	dataparam = re.sub(r'(\bnull\b(?=[^"]*(?:"[^"]*\"[^"]*)*$))|(\bnil\b(?=[^"]*(?:"[^"]*\"[^"]*)*$))',"\"\"",str(event["body"]),flags=re.I)
+
+	# dataparam  = re.sub(r'\bnil\b|\bnull\b',"",str(dataparam),flags=re.I)
+	dataparam  = re.sub(r'\"null\"|\"nil\"',"\"\"",str(dataparam),flags=re.I)
 	paramlist=json.loads(dataparam)
 	# paramlist=json.loads(event["body"])
 	if company!="" and service=="":

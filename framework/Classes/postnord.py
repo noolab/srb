@@ -130,14 +130,14 @@ class postnord(Service):
 		return result
 
 	def label(self,userparamlist):
-		req_list=["destination/first_name","destination/last_name","destination/line1","destination/zipcode","destination/city","destination/phone",
-		"destination/name","parcel/weight_in_grams","parcel/contents"]
+		req_list=["destination/first_name","destination/last_name","destination/line1","destination/zipcode","destination/city","destination/phone","parcel/weight_in_grams","parcel/contents"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
 			reqEmpty=["destination/last_name"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			paramlist["destination"]["name"]= paramlist["destination"]["first_name"]+paramlist["destination"]["last_name"]
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)
