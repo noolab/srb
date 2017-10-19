@@ -117,7 +117,8 @@ class envialia(Service):
 		try:
 			dataparamlist={
 				"origin": {
-				    "name": "Rikhil",
+				    "first_name": "Rikhil",
+				    "last_name":"Rikhil",
 				    "phone": "23162",
 				    "company": "Saurabh",
 				    "line1": "123 Test Ave",
@@ -191,12 +192,21 @@ class envialia(Service):
 	def pickup(self,userparamlist):
 		
 		#req_list=["pickup/pickup_date","place/line1","pickup/number_of_pieces","requestor/name","place/city","place/zipcode"]
-		req_list=["pickup/date","origin/line1","pickup/number_of_pieces","origin/name","origin/city","origin/zipcode"]
+		req_list=["pickup/date","origin/line1","parcel/number_of_pieces","origin/first_name","origin/last_name","origin/city","origin/zipcode"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			reqEmpty=["origin/street_number","origin/street_name","origin/phone","destination/street_number","destination/street_name","destination/phone","destination/city","destination/zipcode","destination/name"]
+			reqEmpty=["origin/phone","destination/street_number","destination/line1","destination/phone","destination/city","destination/zipcode"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			paramlist["origin"]["name"] = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+
+			data_line1= str(paramlist["origin"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			paramlist["origin"]["street_number"]  = street_info["street_number"]
+			paramlist["origin"]["street_name"]  =street_info["street_name"]
+			if paramlist["origin"]["street_number"]=="":
+				paramlist["origin"]["street_number"]="0"
+
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -221,7 +231,7 @@ class envialia(Service):
 					<strCodAgeDes>"""+str(ENVIALIA_STRCODE)+"""</strCodAgeDes>
 					<strCodAgeCargo>"""+str(ENVIALIA_STRCODE)+"""</strCodAgeCargo>
 					<dtFecRec>"""+pickup_date+"""</dtFecRec>
-					<intBul>"""+str(paramlist["pickup"]["number_of_pieces"])+"""</intBul>
+					<intBul>"""+str(paramlist["parcel"]["number_of_pieces"])+"""</intBul>
 					<strNomOri>"""+paramlist["origin"]["name"]+"""</strNomOri>
 					<strDirOri>"""+str(paramlist["origin"]["street_number"])+str(paramlist["origin"]["street_name"])+str(paramlist["origin"]["line1"])+"""</strDirOri>
 					<strPobOri>"""+paramlist["origin"]["city"]+"""</strPobOri>

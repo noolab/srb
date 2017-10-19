@@ -265,13 +265,31 @@ class ups(Service):
 	
 	def label(self,userparamlist):
 		
-		req_list=["origin/street_number","origin/street_name","origin/name","origin/first_name","origin/last_name","origin/city","origin/zipcode","origin/country_code","destination/name","destination/phone","destination/zipcode","destination/country_code"]
+		req_list=["origin/first_name","origin/last_name","origin/city","origin/zipcode","origin/country_code","destination/first_name","destination/last_name","destination/phone","destination/line1","destination/zipcode","destination/country_code"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
 			reqEmpty=["parcel/weight_in_grams","destination/first_name","destination/last_name","destination/street_name","destination/street_number","destination/line1","origin/line1","origin/phone"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+
+			paramlist["origin"]["name"] = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+			paramlist["destination"]["name"] = str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
+			
+			data_line1= str(paramlist["origin"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			paramlist["origin"]["street_number"]  = street_info["street_number"]
+			paramlist["origin"]["street_name"]  =street_info["street_name"]
+			if paramlist["origin"]["street_number"]=="":
+				paramlist["origin"]["street_number"]="0"
+
+			dest_line1= str(paramlist["origin"]["line1"])
+			dest_street_info = instance.json_check_line1(dest_line1)
+			paramlist["destination"]["street_number"]  = dest_street_info["street_number"]
+			paramlist["destination"]["street_name"]  =dest_street_info["street_name"]
+			if paramlist["destination"]["street_number"]=="":
+				paramlist["destination"]["street_number"]="0"
+
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)

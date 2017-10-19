@@ -221,35 +221,15 @@ class royalmail(Service):
 		auth_nonce= auth[1].decode("utf-8")
 		auth_created= str(auth[2])  #.decode('utf-8')
 
-		paramlist={}
-		paramlist["origin"]={}
-		paramlist["origin"]["line1"]=""
-		paramlist["origin"]["line2"]=""
-		paramlist["origin"]["zipcode"]=""
-		paramlist["origin"]["country_code"]=""
-		paramlist["origin"]["country"]=""
-		paramlist["origin"]["city"]=""
-		paramlist["origin"]["state"]=""
-		paramlist["destination"]={}
-		paramlist["destination"]["line1"]=""
-		paramlist["destination"]["line2"]=""
-		paramlist["destination"]["first_name"]=""
-		paramlist["destination"]["last_name"]=""
-		paramlist["destination"]["street_number"]=""
-		paramlist["destination"]["country"]=""
-		paramlist["destination"]["email"]=""
-		paramlist["parcel"]={}
-		paramlist["parcel"]["weight_in_grams"]=""
-		paramlist["parcel"]["length_in_cm"]=""
-		paramlist["parcel"]["width_in_cm"] = ""
-		paramlist["parcel"]["height_in_cm"] =""
-		req_list=["destination/name","destination/phone","destination/zipcode","destination/country_code"]
+		req_list=["destination/phone","destination/zipcode","destination/country_code",
+		"origin/line1","origin/city","origin/zipcode","origin/country_code"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
-			reqEmpty=["origin/street_number","origin/street_name","origin/state","origin/country"]
+			reqEmpty=["origin/state","origin/line2"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			paramlist["origin"]["country"] = paramlist["origin"]["country_code"]
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -257,7 +237,7 @@ class royalmail(Service):
 
 		
 
-		line1=str(paramlist["origin"]["street_number"]+str(paramlist["origin"]["street_name"]))
+		line1=str(paramlist["origin"]["line1"])
 		payload = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:oas="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:v2="http://www.royalmailgroup.com/api/ship/V2" xmlns:v1="http://www.royalmailgroup.com/integration/core/V1">
 		   <soapenv:Header>
 		<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
@@ -456,32 +436,6 @@ class royalmail(Service):
 		k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))	
 		
 		link_pdf = "https://s3-us-west-2.amazonaws.com/srbstickers/" + name_file
-
-
-		# final_response = {
-		# 	"origin": paramlist["origin"],
-		# 	"destination": {
-		# 	    "name": "Client Base fulfilment ltd",
-		# 	    "shipment_id": "return_id_at_srb",
-		# 	    "first_name": paramlist["destination"]["first_name"],
-		# 	    "last_name": paramlist["destination"]["last_name"],
-		# 	    "company": "Company Destination",
-		# 	    "street_number": paramlist["destination"]["street_number"],
-		# 	    "line1": "Clientbase Fulfilment",
-		# 	    "line2": "Woodview Road",
-		# 	    "state": "",
-		# 	    "zipcode": "TQ4 7SR",
-		# 	    "country": "",
-		# 	    "country_code": "GB",
-		# 	    "phone": "07801123456",
-		# 	    "email": "tom.smith@royalmail.com",
-		# 	    "city": "PAIGNTON"
-		# 	},
-		# 	"parcel": paramlist["parcel"],
-		# 	"carrier_shipment_id": shipmentNumber,
-		# 	"label_url": link_pdf
-		# }
-		
 
 		if 'shiment_id' in paramlist:
 			del paramlist['shiment_id']

@@ -11,46 +11,63 @@ import sys
 
 myservice = ServiceManager()
 
-# test dhl dropoff service
-# paramdhl = {}
-# paramdhl["pickup_date"] = "2017-05-26"
-# paramdhl["ready_by_time"] = "10:20"
-# paramdhl["close_time"] = "14:20"
+
 paramdhl={
-  "requestor": {
-    "name": "Rikhil",
-    "phone": "23162",
-    "company": "Saurabh"
+  "shipment_id": "132456",
+  "origin": {
+    "first_name": "ithyvan",
+    "last_name": "schreys",
+    "name": "",
+    "phone": "0769090961",
+    "company": "ShopRunBack",
+    "street_number": "",
+    "street_name": "",
+    "line1": "Na Košince",
+    "line2": "",
+    "city": "Praha",
+    "zipcode": "180 00",
+    "country_code": "CZ"
   },
-  "place": {
-    "line1": "123 Test Ave",
-    "line2": "Test Bus Park",
-    "package_location": "Reception",
-    "city": "PARIS",
-    "post_code": "75018",
+  "destination": {
+    "first_name": "Ithyvan",
+    "last_name": "SCHREYS",
+    "name": "",
+    "phone": "",
+    "company": "",
+    "street_number": "",
+    "street_name": "",
+    "line1": "59 rue des petits champs",
+    "line2": "",
+    "city": "Paris",
+    "zipcode": "75001",
     "country_code": "FR"
   },
-  "pick_up": {
-    "pickup_date": "2017-06-14",
-    "slot_id": "string",
-    "ready_by_time": "10:20",
-    "close_time": "23:20",
-    "number_of_pieces": 0,
-    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
+  "parcel": {
+    "length_in_cm": "10",
+    "width_in_cm": "10",
+    "height_in_cm": "10",
+    "weight_in_grams": "1000",
+    "number_of_pieces": "1"
   },
-  "shipment_details": {
-    "number_of_pieces": 1,
-    "weight": 200
+  "dropoff": {
+    "point_id": ""
+  },
+  "pickup": {
+    "slot_id": "",
+    "date": "",
+    "slot_start_at": "",
+    "slot_end_at": "",
+    "special_instructions": ""
   }
 }
-myservice.call_service("dhl","pickup", paramdhl)
+myservice.call_service("bposteasyplus","label", paramdhl)
 
 print ("\n")
 # test parcel pickup service
-paramparcel = {}
-paramparcel['from'] = "France"
-paramparcel['to'] = "Cambodia"
-myservice.call_service("parcel", "pickup", paramparcel)
+# paramparcel = {}
+# paramparcel['from'] = "France"
+# paramparcel['to'] = "Cambodia"
+# myservice.call_service("parcel", "pickup", paramparcel)
 
 
 #========================= API GETWAY ================================

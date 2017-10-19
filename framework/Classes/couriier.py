@@ -41,110 +41,88 @@ class couriier(Service):
 		return data
 
 	def status(self,paramlist):
+		objfunction=["root","type","pickup","pickupslots"]
 		start = time.time()
 		available = True
-		response_time = 0
 		allresponseTime=[]
-		paramlist=""
-
-		try:
-			headersConfig = {'apikey': COURIIER_HEADERS_APIKEY}
-			date = datetime.datetime.now()
-			tmr = date + datetime.timedelta(days=1)
-			eightDay = date + datetime.timedelta(days=8)
-			urlreq=COURIIER_URL_REQ + (tmr).strftime('%Y-%m-%d') + "&dateTo=" + (eightDay).strftime('%Y-%m-%d')
-			response = netw.sendRequestHeaderConfig(urlreq, "", "get", headersConfig)
-		except:
-			available = False
-			response_time = -1
-
-		if response_time == 0:
-			response_time = time.time() - start
-
+		response_time = 0
 		timeout = False
-
-		if response_time > 30:
-			timeout = True
-
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		#Cal pickupslots
-		response_time_3=0
-		start_3 = time.time()
-		try:
-			rootdata= self.pickupslots(paramlist)
-		except:
-			response_time_3=-1
-		if response_time_3 == 0:
-			response_time_3 = time.time() - start_3
-		allresponseTime.append(response_time_3)
-
-		#Cal pickup
-		response_time_4=0
-		start_4 = time.time()
-		try:
-			dataparamlist={
-				"origin": {
-				    "name": "Test Mission", 
-				    "phone": "0671844487", 
-				    "company": "string",
-				    "street_number": "string",
-				    "line1": "21 rue des filles du calvaire",
-				    "line2": "Digicode test", 
-				    "city": "Paris", 
-				    "zipcode": "75003", 
-				    "latitude": 55.685800, 
-				    "longitude": 12.584826
-				},
-				"destination": {
-				    "name": "Test Campaign",
-				    "line1": "9 rue du faubourg saint Denis",
-				    "line2": "Digicode test",
-				    "zipcode": "75010",
-				    "city": "Paris", 
-				    "phone": "0671844487", 
-				    "latitude": 48.86302, 
-				    "longitude": 2.366132
-				},
-				"pickup": {
-				    "date": "2017-07-05 15:00:00",
-				}
+		parampickup={
+			"origin": {
+			    "first_name": "Test ",
+			    "last_name":"Mission",
+			    "phone": "0671844487", 
+			    "company": "string",
+			    "street_number": "string",
+			    "line1": "21 rue des filles du calvaire",
+			    "line2": "Digicode test", 
+			    "city": "Paris", 
+			    "zipcode": "75003", 
+			    "latitude": 55.685800, 
+			    "longitude": 12.584826
+			},
+			"destination": {
+			    "first_name": "Test",
+			    "last_name":"Campaign",
+			    "line1": "9 rue du faubourg saint Denis",
+			    "line2": "Digicode test",
+			    "zipcode": "75010",
+			    "city": "Paris", 
+			    "phone": "0671844487", 
+			    "latitude": 48.86302, 
+			    "longitude": 2.366132
+			},
+			"pickup": {
+			    "date": "2017-07-05 15:00:00",
 			}
-			rootdata= self.pickup(dataparamlist)
-		except:
-			response_time_4=-1
-		if response_time_4 == 0:
-			response_time_4 = time.time() - start_4
-		allresponseTime.append(response_time_4)
-
-		final_responseTime=min(allresponseTime)
-		result = {
-			"available": available,
-			"response_time": final_responseTime,
-			"timeout": timeout,
-			"limit": 30000
 		}
+		param=""
+		for service in objfunction:
+			try:
+				if service=="pickupslots":
+					data = self.label(param)
+				elif service =="pickup":
+					data =self.pickup(parampickup)
+				elif service =="dropoff":
+					data = self.dropoff(paramdropoff)
+				elif service =="root":
+				    data = self.root(param)
+				elif service =="type":
+					data=self.type(param)
+				if response_time == 0:
+			  		response_time = time.time() - start
+			  		allresponseTime.append(response_time)
 
+				if response_time > 30:
+					timeout = True
+					available = False
+					response_time = -1
+					result={
+						"available": available,
+						"response_time": response_time,
+						"timeout": timeout,
+						"service":service,
+						"limit": 30000
+					}
+					return result
+			except:
+				available = False
+				response_time = -1
+				result={
+			  		"available": available,
+			  		"response_time": response_time,
+			  		"timeout": timeout,
+			  		"service":service,
+			  		"limit": 30000
+			  	}
+				return result
+		final_responseTime=max(allresponseTime)
+		result={
+	  		"available": available,
+	  		"response_time": final_responseTime,
+	  		"timeout": timeout,
+	  		"limit": 30000
+	  	}
 		return result
 
 	def pickupslots(self ,paramlist):
@@ -223,11 +201,13 @@ class couriier(Service):
 		print("pickup fucntion")
 		url = COURIIER_PICKUP_URL
 		headers={"apiKey": COURIIER_HEADERS_APIKEY,"Content-Type": "application/json"}
-		req_list=["origin/name","origin/latitude","origin/longitude","origin/line1","origin/zipcode","origin/city","origin/phone","destination/name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/date"]
+		req_list=["origin/first_name","origin/last_name","origin/latitude","origin/longitude","origin/line1","origin/zipcode","origin/city","origin/phone","destination/first_name","destination/last_name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/date"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			paramlist["origin"]["name"]= str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+			paramlist["destination"]["name"]=str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
 			if "line2" not in paramlist["origin"]:
 				paramlist["origin"]["line2"]=""
 			if "line2" not in paramlist["destination"]:

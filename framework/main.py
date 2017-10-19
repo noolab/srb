@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ServiceManager import ServiceManager
 import datetime
 import sys
@@ -49,6 +50,8 @@ def lamda_function(event, context):
 
 	# dataparam  = re.sub(r'\bnil\b|\bnull\b',"",str(dataparam),flags=re.I)
 	dataparam  = re.sub(r'\"null\"|\"nil\"',"\"\"",str(dataparam),flags=re.I)
+	dataparam = re.sub(r"\\'","'",str(dataparam))
+	dataparam = re.sub(r"[^\x00-\x7F]+","",str(dataparam))
 	paramlist=json.loads(dataparam)
 	# paramlist=json.loads(event["body"])
 	if company!="" and service=="":

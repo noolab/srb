@@ -135,13 +135,20 @@ class swisspost(Service):
 		return result
 
 	def label(self,userparamlist):
-		req_list=["shipment_id","origin/first_name","origin/last_name","origin/city","origin/street_number","origin/line1","origin/zipcode","origin/country_code","destination/company",]
+		req_list=["shipment_id","origin/first_name","origin/last_name","origin/city","origin/line1","origin/zipcode","origin/country_code","destination/company",]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# data=userparamlist
-			reqEmpty=["origin/street_number","origin/street_name"]
+			reqEmpty=["origin/line2"]
 			data = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+
+			dataline1= str(data["origin"]["line1"])
+			street_info = instance.json_check_line1(dataline1)
+			data["origin"]["street_number"]  = street_info["street_number"]
+			data["origin"]["street_name"]  =street_info["street_name"]
+			if data["origin"]["street_number"]=="":
+				data["origin"]["street_number"]="0"
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)

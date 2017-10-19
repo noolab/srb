@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from Classes.AbstractService import Service
 from Modules.data_converter import data_converter as converter
 from Modules.network import networking as netw
@@ -26,109 +27,135 @@ class bposteasyplus(Service):
 		return data
 
 	def status(self, paramlist):
-		allresponseTime=[]
-		paramlist=""
+		objfunction=["root","type","label"]
 		start = time.time()
 		available = True
+		allresponseTime=[]
 		response_time = 0
-		
-		nsd = {'soapenv': 'http://schemas.xmlsoap.org/soap/envelope/', 'v001':  'http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001'}
-
-		tree = ET.parse('Assets/bpostEasyPlus/request/xmlrequest.txt')
-		# tree = etree.parse('Assets/bpostEasyPlus/request/xmlrequest.txt')
-		root = tree.getroot()
-
-		# root.find('soapenv:Body/v001:getReturnLabelRequest/v001:ContractInfo/v001:ContractID',root.nsmap).text = BPOST_CONTRACT_ID
-		# root.find("soapenv:Body/getReturnLabelRequest/ContractInfo/ContractID",namespaces=nsd).text = BPOST_CONTRACT_ID
-		
-		# xmlresult = ET.tostring(root, encoding='ascii', method='xml')
-		xmlresult="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
-		<soapenv:Header/>
-		<soapenv:Body>
-			<v001:getReturnLabelRequest>
-				<v001:ContractInfo>
-					<v001:ContractID>""" + os.environ["BPOST_CONTRACT_ID"] + """</v001:ContractID>
-				</v001:ContractInfo>
-				<v001:Addressee>
-					<v001:Name>Ithyvan SCHREYS</v001:Name>
-					<v001:Streetname>avenue de la habette</v001:Streetname>
-					<v001:Streetnumber>11</v001:Streetnumber>
-					<v001:PostalCode>94000</v001:PostalCode>
-					<v001:MunicipalityName>CRETEIL</v001:MunicipalityName>
-					<v001:CountryISO2Code>FR</v001:CountryISO2Code>
-				</v001:Addressee>
-				<v001:Sender>
-					<v001:Name>Leo MARTIN</v001:Name>
-					<v001:Streetname>59 rue des petits champs</v001:Streetname>
-					<v001:Streetnumber>59</v001:Streetnumber>
-					<v001:PostalCode>75001</v001:PostalCode>
-					<v001:MunicipalityName>PARIS</v001:MunicipalityName>
-					<v001:CountryISO2Code>FR</v001:CountryISO2Code>
-				</v001:Sender>
-				<v001:ReturnInfo>
-					<v001:CustomerReference>123456789</v001:CustomerReference>
-				</v001:ReturnInfo>
-			</v001:getReturnLabelRequest>
-		</soapenv:Body>
-		</soapenv:Envelope>"""
-
-		headersConfig = {'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
-		try:
-			xmlresponse = netw.sendRequestHeaderConfig(BPOST_EASY_PLUS_URL, xmlresult, "post", headersConfig)
-		except:
-			available = False
-			response_time = -1
-		if response_time == 0:
-			response_time = time.time() - start
-
 		timeout = False
-
-		if response_time > 30:
-			timeout = True
-		allresponseTime.append(response_time)
-
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		final_responseTime=min(allresponseTime)
-
-		result = {
-  			"available": available,
-  			"response_time": final_responseTime,
-  			"timeout": timeout,
-  			"limit": 30000
+		paramlabel={
+		  "origin": {
+		    "name": "Ithyvan Schreys",
+		    "first_name": "Ithyvan",
+		    "last_name": "Schreys",
+		    "phone": "0622889977",
+		    "email": "eddy@shoprunback.com",
+		    "company": "Company Origin",
+		    "line1": "12 avenue de la habette",
+		    "line2": "",
+		    "street_number": "12",
+		    "street_name": "avenue de la habette",
+		    "state": "",
+		    "zipcode": "94000",
+		    "country_code": "FR",
+		    "city": "CRETEIL"
+		  },
+		  "destination": {
+		    "name": "Leo Martin",
+		    "first_name": "Leo",
+		    "last_name": "Martin",
+		    "company": "Company Destination",
+		    "street_number": "59",
+		    "street_name": "rue des petits champs",
+		    "line1": "59 rue des petits champs",
+		    "line2": "",
+		    "state": "IDF",
+		    "zipcode": "75001",
+		    "country_code": "FR",
+		    "phone": "0688997788",
+		    "email": "",
+		    "city": "Paris"
+		  },
+		  "parcel": {
+		    "length_in_cm": 10,
+		    "width_in_cm": 10,
+		    "height_in_cm": 10,
+		    "weight_in_grams": 1950
+		  },
+		  "shipment_id": "979797",
+		  "dropoff": {
+		    "point_id": "C10G3"
+		  }
 		}
+		param=""
+		for service in objfunction:
+			try:
+				if service=="label":
+					data = self.label(paramlabel)
+				elif service =="pickup":
+					data =self.pickup(parampickup)
+				elif service =="dropoff":
+					data = self.dropoff(paramdropoff)
+				elif service =="root":
+				    data = self.root(param)
+				elif service =="type":
+					data=self.type(param)
+				if response_time == 0:
+			  		response_time = time.time() - start
+			  		allresponseTime.append(response_time)
+
+				if response_time > 30:
+					timeout = True
+					available = False
+					response_time = -1
+					result={
+						"available": available,
+						"response_time": response_time,
+						"timeout": timeout,
+						"service":service,
+						"limit": 30000
+					}
+					return result
+			except:
+				available = False
+				response_time = -1
+				result={
+			  		"available": available,
+			  		"response_time": response_time,
+			  		"timeout": timeout,
+			  		"service":service,
+			  		"limit": 30000
+			  	}
+				return result
+		final_responseTime=max(allresponseTime)
+		result={
+	  		"available": available,
+	  		"response_time": final_responseTime,
+	  		"timeout": timeout,
+	  		"limit": 30000
+	  	}
 		return result
 
 
 
 	def label(sef,userparamlist):
 		
-		req_list=["destination/street_name","origin/street_name","destination/street_number","destination/zipcode","destination/city","destination/country_code","origin/street_number",
-		"origin/name","origin/zipcode","origin/city","origin/country_code","shipment_id"]
+		req_list=["destination/line1","destination/zipcode","destination/city","destination/country_code","origin/line1",
+		"origin/first_name","origin/last_name","origin/zipcode","origin/city","origin/country_code","shipment_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# event=userparamlist
-			reqEmpty=["origin/street_number","origin/street_name","destination/name"]
+			reqEmpty=["destination/first_name","destination/last_name"]
 			event = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			event["origin"]["name"] = str(event["origin"]["first_name"])+str(event["origin"]["last_name"])
+			event["destination"]["name"] = str(event["destination"]["first_name"])+" "+str(event["destination"]["last_name"])
+
+			data_line1= str(event["origin"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			event["origin"]["street_number"]  = street_info["street_number"]
+			event["origin"]["street_name"]  =street_info["street_name"]
+			if event["origin"]["street_number"]=="":
+				event["origin"]["street_number"]="0"
+
+			#destination line1
+			dest_line1= event["destination"]["line1"]
+			
+			street_info = instance.json_check_line1(dest_line1)
+			event["destination"]["street_number"]  = street_info["street_number"]
+			event["destination"]["street_name"]  =street_info["street_name"]
+			if event["destination"]["street_number"]=="":
+				event["destination"]["street_number"]="0"
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)
@@ -136,7 +163,7 @@ class bposteasyplus(Service):
 
 		# full_destination_address = event["destination"]["line1"] + " " + event["destination"]["line2"]
 		# full_origin_address = event["origin"]["line1"] + " " + event["origin"]["line2"]
-		xmlresult="""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
+		xmlresult=u"""<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v001="http://schema.bpost.be/services/service/postal/ExternalMailItemReturnsCSMessages/v001">
 	       <soapenv:Header/>
 	       <soapenv:Body>
 	          <v001:getReturnLabelRequest>

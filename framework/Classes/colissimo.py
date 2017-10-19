@@ -44,75 +44,81 @@ class colissimo(Service):
 		return data
 
 	def status(self,paramlist):
+		objfunction=["root","type","label","tracking"]
+		start = time.time()
+		available = True
 		allresponseTime=[]
-		paramlist=""
-		start=time.time()
-		available=True
-		response_time=0
-		try:
-			myparamlist={
-				"origin":{
-					"country_code": "FR",
-                    "line2": "main address",
-                    "zipcode": "75007",
-                    "city": "Paris",
-                    "company": "companyName"
-				},
-				"destination":{
-					"last_name": "lastName",
-                    "first_name": "firstName",
-                    "line2": "main address",
-                    "country_code": "FR",
-                    "city": "Paris",
-                    "zipcode": "75017",
-                    "company":"shoprunback"
-				}
+		response_time = 0
+		timeout = False
+		paramtraking ="8R30646307058"
+		paramlabel={
+			"origin":{
+				"country_code": "FR",
+				"line1": "main address",
+				"zipcode": "75007",
+				"city": "Paris",
+				"company": "companyName"
+			},
+			"destination":{
+				"last_name": "lastName",
+				"first_name": "firstName",
+				"line1": "main address",
+				"country_code": "FR",
+				"city": "Paris",
+				"zipcode": "75017",
+				"company":"shoprunback"
 			}
-
-			responese = self.label(myparamlist)
-		except:
-			available=False
-			response_time=-1
-
-		# responese = self.label(myparamlist)
-
-		if response_time==0:
-			response_time=time.time()-start
-
-		timeout=False
-
-		if response_time>30:
-			timeout=True
-
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		final_responseTime=min(allresponseTime)
-		result = {
-		    "available": available,
-		    "response_time": final_responseTime,
-		    "timeout": timeout,
-		    "limit": 30000
 		}
+
+		param=""
+		for service in objfunction:
+			try:
+				if service=="label":
+					data = self.label(paramlabel)
+				elif service =="pickup":
+					data =self.pickup(parampickup)
+				elif service =="dropoff":
+					data = self.dropoff(paramdropoff)
+				elif service =="root":
+				    data = self.root(param)
+				elif service =="type":
+					data=self.type(param)
+				elif service =="tracking":
+					data = self.tracking(paramtraking)
+				if response_time == 0:
+			  		response_time = time.time() - start
+			  		allresponseTime.append(response_time)
+
+				if response_time > 30:
+					timeout = True
+					available = False
+					response_time = -1
+					result={
+						"available": available,
+						"response_time": response_time,
+						"timeout": timeout,
+						"service":service,
+						"limit": 30000
+					}
+					return result
+			except:
+				available = False
+				response_time = -1
+				result={
+			  		"available": available,
+			  		"response_time": response_time,
+			  		"timeout": timeout,
+			  		"service":service,
+			  		"limit": 30000
+			  	}
+				return result
+		final_responseTime=max(allresponseTime)
+		result={
+	  		"available": available,
+	  		"response_time": final_responseTime,
+	  		"timeout": timeout,
+	  		"limit": 30000
+	  	}
 		return result
 
 		

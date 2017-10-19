@@ -64,7 +64,8 @@ class gophr(Service):
 		paramlist={
 		  "shipment_id": "",
 		  "origin": {
-		    "name": "Mister John",
+		    "first_name": "Mister",
+		    "last_name": " John",
 		    "phone": "+44 20 9999 8964",
 		    "street_number": "",
 		    "street_name": "",
@@ -78,7 +79,6 @@ class gophr(Service):
 		    "pickup_date": timeformat
 		  },
 		  "destination": {
-		    "name": "David Beckbeck",
 		    "first_name": "David",
 		    "last_name": "Beckbeck",
 		    "company": "",
@@ -154,14 +154,16 @@ class gophr(Service):
 	def pickup(self,userparamlist):
 		url = os.environ["GOPHR_PICKUP_URL"]
 
-		req_list=["origin/name","origin/line1","origin/zipcode","origin/email","origin/phone","origin/country_code",
-		"destination/first_name","destination/last_name","destination/line1","destination/zipcode","destination/name"]
+		req_list=["origin/first_name","origin/last_name","origin/line1","origin/zipcode","origin/email","origin/phone","origin/country_code",
+		"destination/first_name","destination/last_name","destination/line1","destination/zipcode"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
 			# reqEmpty=["origin/line2","destination/line2"]
 			# paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			paramlist["origin"]["name"]  = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+			paramlist["destination"]["name"]  = str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
 		else:
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
 			raise Exception(responseErr)

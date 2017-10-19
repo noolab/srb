@@ -67,10 +67,21 @@ class dhl(Service):
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
-			reqEmpty=["origin/street_number","origin/street_name","origin/line2","origin/zipcode","origin/name","origin/phone","origin/number_of_pieces","origin/city","origin/country_code"]
+			reqEmpty=["origin/line2","origin/zipcode","origin/first_name","origin/last_name","origin/phone","origin/city","origin/country_code"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 			if "weight_in_grams" not in paramlist["parcel"]:
 				paramlist["parcel"]["weight_in_grams"]="0.0"
+
+			paramlist["origin"]["name"]  = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+
+			data_line1= str(paramlist["origin"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			paramlist["origin"]["street_number"]  = street_info["street_number"]
+			paramlist["origin"]["street_name"]  =street_info["street_name"]
+			if paramlist["origin"]["street_number"]=="":
+				paramlist["origin"]["street_number"]="0"
+
+			
 		else:
 			return checkparamlist["message"]
 			
@@ -149,14 +160,17 @@ class dhl(Service):
 		s3key2=os.environ["S3_KEY2"]
 		
 		instance = Validator()
-		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
-		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
+		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code",
+		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country_code","origin/first_name","origin/last_name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
 			reqEmpty=["origin/street_number","origin/street_name","destination/street_number","destination/street_name"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
-			
+			paramlist["origin"]["name"] = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+			paramlist["destination"]["name"] = str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
+			paramlist["origin"]["country"]  = instance.getCountryName(str(paramlist["origin"]["country_code"]))
+			paramlist["destination"]["country"]  = instance.getCountryName(str(paramlist["destination"]["country_code"]))
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -367,7 +381,8 @@ class dhl(Service):
 		try:
 			dataparamlist={
 				"origin": {
-				    "name": "Rikhil",
+				    "first_name": "Rikhil",
+				    "last_name":"Rikhil",
 				    "phone": "23162",
 				    "company": "Saurabh",
 				    "line1": "123 Test Ave",
@@ -403,8 +418,8 @@ class dhl(Service):
 		labelparamlist ={
 			"origin": {
 		    "name": "Ithyvan Schreys",
-		    "first_name": "",
-		    "last_name": "",
+		    "first_name": "Ithyvan",
+		    "last_name": "Schreys",
 		    "phone": "d arnouville",
 		    "email": "",
 		    "company": "Company Origin",
@@ -556,13 +571,33 @@ class dhl(Service):
 		s3key2=os.environ["S3_KEY2"]
 		
 		instance = Validator()
-		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code","destination/country","destination/name",
-		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country","origin/country_code","origin/name"]
+		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code",
+		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country_code","origin/first_name","origin/last_name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
-			reqEmpty=["origin/street_number","origin/street_name","destination/street_name","destination/street_number","destination/phone","destination/email","destination/line2","parcel/width_in_cm","parcel/height_in_cm","parcel/length_in_cm","parcel/contents","origin/company","origin/line2","origin/zipcode","origin/phone","origin/state","origin/place_description"]
+			reqEmpty=["destination/phone","destination/email","destination/line2","parcel/width_in_cm","parcel/height_in_cm","parcel/length_in_cm","parcel/contents","origin/company","origin/line2","origin/zipcode","origin/phone","origin/state"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+			paramlist["origin"]["name"] = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
+			paramlist["destination"]["name"] = str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
+			
+			paramlist["origin"]["country"] = instance.getCountryName(str(paramlist["origin"]["country_code"]))
+			paramlist["destination"]["country"] = instance.getCountryName(str(paramlist["destination"]["country_code"]))
+
+			data_line1= str(paramlist["origin"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			paramlist["origin"]["street_number"]  = street_info["street_number"]
+			paramlist["origin"]["street_name"]  =street_info["street_name"]
+			if paramlist["origin"]["street_number"]=="":
+				paramlist["origin"]["street_number"]="0"
+
+			#destination line1
+			dest_line1= str(paramlist["destination"]["line1"])
+			street_info = instance.json_check_line1(dest_line1)
+			paramlist["destination"]["street_number"]  = street_info["street_number"]
+			paramlist["destination"]["street_name"]  =street_info["street_name"]
+			if paramlist["destination"]["street_number"]=="":
+				paramlist["destination"]["street_number"]="0"
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}

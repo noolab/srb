@@ -232,7 +232,7 @@ class pvs(Service):
 		# 	"carrier_shipment_id": "transport_return_number",
 		# 	"label_url": link_pdf
 		# }
-		paramlist["carrier_shipment_id"]="transport_return_number"
+		paramlist["carrier_shipment_id"]="carrier_shipment_id"
 		paramlist["label_url"] = link_pdf
 		return paramlist
 

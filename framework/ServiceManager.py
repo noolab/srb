@@ -1,3 +1,5 @@
+import time
+import datetime
 from Classes.dhl import dhl
 from Classes.relaiscolis import relaiscolis
 from Classes.parcel import parcel
@@ -19,6 +21,7 @@ class ServiceManager(object):
 		instance = selected_class()
 		method = getattr(instance, service)
 		return method(paramlist)
+
 
 # README
 # This class is a factory class that will decide which concrete class to create an instance and which function to call

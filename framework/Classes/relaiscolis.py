@@ -59,6 +59,7 @@ class relaiscolis(Service):
 		}
 		return result
 
+
 	def status(self,paramlist):
 		allresponseTime=[]
 		paramlist=""
@@ -122,6 +123,7 @@ class relaiscolis(Service):
 		start_4 = time.time()
 		try:
 			dataparam={
+			"shipment_id": "11111111",
 			  "return_id": "9898",
 			  "origin": {
 					"first_name": "Test",
@@ -159,16 +161,26 @@ class relaiscolis(Service):
 	  	}
 		return result
 
-	def dropoff(self,paramlist):
+	def dropoff(self,userparamlist):
 		"""here is a dropoffpoints function """
+		req_list=["line1","zipcode","city","country_code"]
+		instance = Validator()
+		checkparamlist = instance.json_check_required(req_list, userparamlist)
+		if checkparamlist["status"]:
+			paramlist=userparamlist
+			address = str(paramlist["line1"])+" "+str(paramlist["city"])+" "+str(paramlist["zipcode"])+" "+str(paramlist["country"])
+			datalatlng = instance.getLatLng(address)
+		else:
+			
+			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
+			raise Exception(responseErr)
+
 		# GET LAT + LNG
-		lng = paramlist["longitude"]
-		lat = paramlist["latitude"]
+		lng = str(datalatlng["lat"])	#paramlist["longitude"]
+		lat = str(datalatlng["lng"])		#paramlist["latitude"]
 		# CREATE URI
 		uri = RELAISCOLIS_URL_STATUS_DROPOFF + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
-			# CALL
-
-		# response = requests.get(uri)
+		
 		response = netw.sendRequestHeaderConfig(uri,'','get','')
 		data = xmltodict.parse(response.text)
 
@@ -231,13 +243,20 @@ class relaiscolis(Service):
 		# root = tree.getroot()
 
 		
-		req_list=["origin/first_name","origin/last_name","origin/company","origin/street_number","origin/line1","origin/zipcode","origin/city","origin/phone","dropoff/point_id","shipment_id"]
+		req_list=["origin/first_name","origin/last_name","origin/company","origin/line1","origin/zipcode","origin/city","origin/phone","dropoff/point_id","shipment_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# event=userparamlist
 			reqEmpty=["origin/street_number","origin/street_name",""]
 			event = instance.jsonCheckEmpty(reqEmpty,userparamlist)
+
+			data_line1= str(event["origin"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			event["origin"]["street_number"]  = street_info["street_number"]
+			event["origin"]["street_name"]  =street_info["street_name"]
+			if event["origin"]["street_number"]=="":
+				event["origin"]["street_number"]="0"
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
