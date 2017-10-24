@@ -62,19 +62,19 @@ class dhl(Service):
 	def pickup(self, userparamlist):
 		
 		instance = Validator()
-		req_list=["pickup/date","pickup/slot_start_at","pickup/slot_end_at","origin/company","origin/line1","origin/package_location",
-		"origin/city","origin/country_code"]
+		req_list=["pickup/date","pickup/slot_start_at","pickup/slot_end_at","origin/company","origin/line1","origin/city","origin/country_code"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
-			reqEmpty=["origin/state","origin/email","origin/line2","origin/zipcode","origin/first_name","origin/last_name","origin/phone","origin/city","origin/country_code","parcel/width_in_cm","parcel/height_in_cm",
-			"parcel/length_in_cm","parcel/contents"]
+			reqEmpty=["origin/email","origin/line2","origin/zipcode","origin/first_name","origin/last_name","origin/phone","origin/city","origin/country_code","parcel/width_in_cm","parcel/height_in_cm",
+			"parcel/length_in_cm","parcel/contents","origin/package_location","destination/email"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 			if "weight_in_grams" not in paramlist["parcel"]:
 				paramlist["parcel"]["weight_in_grams"]="0.0"
 
 			paramlist["origin"]["name"]  = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
-
+			paramlist["origin"]["package_location"] ="Back Room"
+			paramlist["origin"]["state"] = str(paramlist["origin"]["city"])
 			data_line1= str(paramlist["origin"]["line1"])
 			street_info = instance.json_check_line1(data_line1)
 			paramlist["origin"]["street_number"]  = street_info["street_number"]
@@ -161,7 +161,7 @@ class dhl(Service):
 		s3key2=os.environ["S3_KEY2"]
 		
 		instance = Validator()
-		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code",
+		req_list=["shipment_id","destination/company","destination/line1","destination/city","destination/zipcode","destination/country_code",
 		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country_code","origin/first_name","origin/last_name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -172,6 +172,15 @@ class dhl(Service):
 			paramlist["destination"]["name"] = str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
 			paramlist["origin"]["country"]  = instance.getCountryName(str(paramlist["origin"]["country_code"]))
 			paramlist["destination"]["country"]  = instance.getCountryName(str(paramlist["destination"]["country_code"]))
+			paramlist["parcel"]["contents"] = str(pickup_id)
+			paramlist["destination"]["state"] =str(paramlist["destination"]["city"])
+
+			data_line1= str(paramlist["destination"]["line1"])
+			street_info = instance.json_check_line1(data_line1)
+			paramlist["destination"]["street_number"]  = street_info["street_number"]
+			paramlist["destination"]["street_name"]  =street_info["street_name"]
+			if paramlist["destination"]["street_number"]=="":
+				paramlist["destination"]["street_number"]="0"
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -221,8 +230,8 @@ class dhl(Service):
 		root.find("Consignee/Contact/Email").text = paramlist["destination"]["email"]
 		root.find("Consignee/Contact/MobilePhoneNumber").text = paramlist["destination"]["phone"]
 
-		root.find("Commodity/CommodityCode").text = paramlist["destination"]["shipment_id"]
-		root.find("Reference/ReferenceID").text = paramlist["destination"]["shipment_id"]
+		root.find("Commodity/CommodityCode").text = paramlist["shipment_id"]
+		root.find("Reference/ReferenceID").text = paramlist["shipment_id"]
 		# root.find("ShipmentDetails/NumberOfPieces").text = destination_shipmentId
 		root.find("ShipmentDetails/Pieces/Piece/Weight").text = str(parcel_weight_in_grams)
 		root.find("ShipmentDetails/Pieces/Piece/Width").text = str(paramlist["parcel"]["width_in_cm"])
@@ -314,6 +323,7 @@ class dhl(Service):
 
 	def status(self,paramlist):
 		parampickup={
+			"shipment_id": "return_id_at_srb",
 			"origin": {
 			    "first_name": "Rikhil",
 			    "last_name":"Rikhil",
@@ -321,7 +331,7 @@ class dhl(Service):
 			    "company": "Saurabh",
 			    "line1": "123 Test Ave",
 			    "line2": "Test Bus Park",
-			    "package_location": "Reception",
+			    "package_location": "Back Room",
 			    "city": "PARIS",
 			    "zipcode": "75018",
 			    "country_code": "FR"
@@ -361,6 +371,7 @@ class dhl(Service):
 		paramdropoff={}
 		paramtraking="3618411160"
 		paramlabel ={
+			"shipment_id": "return_id_at_srb",
 			"origin": {
 		    "name": "Ithyvan Schreys",
 		    "first_name": "Ithyvan",
@@ -484,7 +495,7 @@ class dhl(Service):
 		s3key2=os.environ["S3_KEY2"]
 		
 		instance = Validator()
-		req_list=["destination/shipment_id","destination/company","destination/line1","destination/city","destination/state","destination/zipcode","destination/country_code",
+		req_list=["shipment_id","destination/company","destination/line1","destination/city","destination/zipcode","destination/country_code",
 		"destination/first_name","destination/last_name","origin/city","origin/line1","origin/country_code","origin/first_name","origin/last_name"]
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -511,6 +522,8 @@ class dhl(Service):
 			paramlist["destination"]["street_name"]  =street_info["street_name"]
 			if paramlist["destination"]["street_number"]=="":
 				paramlist["destination"]["street_number"]="0"
+
+			paramlist["destination"]["state"] = str(paramlist["destination"]["city"])
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -559,8 +572,8 @@ class dhl(Service):
 		root.find("Consignee/Contact/Email").text = paramlist["destination"]["email"]
 		root.find("Consignee/Contact/MobilePhoneNumber").text = paramlist["destination"]["phone"]
 
-		root.find("Commodity/CommodityCode").text = paramlist["destination"]["shipment_id"]
-		root.find("Reference/ReferenceID").text = paramlist["destination"]["shipment_id"]
+		root.find("Commodity/CommodityCode").text = paramlist["shipment_id"]
+		root.find("Reference/ReferenceID").text = paramlist["shipment_id"]
 		# root.find("ShipmentDetails/NumberOfPieces").text = destination_shipmentId
 		root.find("ShipmentDetails/Pieces/Piece/Weight").text = str(parcel_weight_in_grams)
 		root.find("ShipmentDetails/Pieces/Piece/Width").text = str(paramlist["parcel"]["width_in_cm"])
