@@ -67,133 +67,63 @@ class royalmail(Service):
 		}
 		return data
 	def status(self,paramlist):
-		allresponseTime=[]
-		paramlist=""
-
-		date = datetime.datetime.now()
-		datenow=re.sub(r'\s.*','',str(date))
-		tree = ET.parse('Assets/royalmail/requests/createshipment.txt')
-		root = tree.getroot()
 		
-		start=time.time()
-		available=True
-		response_time=0
-		xmlresult = ET.tostring(root, encoding='ascii', method='xml')
-		try:
-			xmlresponse = netw.sendRequest(ROYALMAIL_URL, xmlresult, "post", "xml", "xml")
-			xmlroot = ET.fromstring(xmlresponse)
-		except:
-			available=False
-			response_time=-1
+		paramlabel={
+			"origin": {
+				"name": "Test Type",
+				"first_name": "Ithyvan",
+				"last_name": "Schreys",
+				"phone": "0622889977",
+				"email": "eddy@shoprunback.com",
+				"company": "Company Origin",
+				"line1": "11 avenue de la habette",
+				"line2": "la habette",
+				"street_number": "212121",
+				"state": "",
+				"zipcode": "94000",
+				"country": "France",
+				"country_code": "FR",
+				"city": "CRETEIL",
+				"place_description": "At home"
+			},
+			"destination": {
+				"name": "Client Base fulfilment ltd",
+				"shipment_id": "return_id_at_srb",
+				"first_name": "Leo",
+				"last_name": "Martin",
+				"company": "Company Destination",
+				"street_number": "121212",
+				"line1": "Clientbase Fulfilment",
+				"line2": "Woodview Road",
+				"state": "IDF",
+				"zipcode": "TQ4 7SR",
+				"country": "France",
+				"country_code": "GB",
+				"phone": "07801123456",
+				"email": "tom.smith@royalmail.com",
+				"city": "PAIGNTON"
+			},
+			"parcel": {
+				"length_in_cm": 10,
+				"width_in_cm": 10,
+				"height_in_cm": 10,
+				"contents": "TESTS",
+				"weight_in_grams": 1950
+			},
+			"shipment_date": curdate,
 
-		if response_time==0:
-			response_time=time.time()-start
-
-		timeout=False
-
-		if response_time>30:
-			timeout=True
-
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		#Cal label
-		response_time_3=0
-		start_3 = time.time()
-		try:
-			dataparam={
-			  "origin": {
-			    "name": "Test Type",
-			    "first_name": "Ithyvan",
-			    "last_name": "Schreys",
-			    "phone": "0622889977",
-			    "email": "eddy@shoprunback.com",
-			    "company": "Company Origin",
-			    "line1": "11 avenue de la habette",
-			    "line2": "la habette",
-			    "street_number": "212121",
-			    "state": "",
-			    "zipcode": "94000",
-			    "country": "France",
-			    "country_code": "FR",
-			    "city": "CRETEIL",
-			    "place_description": "At home"
-			  },
-			  "destination": {
-			    "name": "Client Base fulfilment ltd",
-			    "shipment_id": "return_id_at_srb",
-			    "first_name": "Leo",
-			    "last_name": "Martin",
-			    "company": "Company Destination",
-			    "street_number": "121212",
-			    "line1": "Clientbase Fulfilment",
-			    "line2": "Woodview Road",
-			    "state": "IDF",
-			    "zipcode": "TQ4 7SR",
-			    "country": "France",
-			    "country_code": "GB",
-			    "phone": "07801123456",
-			    "email": "tom.smith@royalmail.com",
-			    "city": "PAIGNTON"
-			  },
-			  "parcel": {
-			    "length_in_cm": 10,
-			    "width_in_cm": 10,
-			    "height_in_cm": 10,
-			    "content": "TESTS",
-			    "weight_in_grams": 1950
-			  },
-			  "shipment_date": curdate,
-			  
-			  "shipment_id": "9999"
-			}
-			rootdata= self.label(dataparam)
-		except:
-			response_time_3=-1
-		if response_time_3 == 0:
-			response_time_3 = time.time() - start_3
-		allresponseTime.append(response_time_3)
-		
-		#Cal Tracking
-		response_time_4=0
-		start_4 = time.time()
-		try:
-			paramlist='FL067074022GB'
-			rootdata= self.tracking(paramlist)
-		except:
-			response_time_4=-1
-		if response_time_4 == 0:
-			response_time_4 = time.time() - start_4
-		allresponseTime.append(response_time_4)
-
-		final_responseTime=min(allresponseTime)
-		result = {
-		    "available": available,
-		    "response_time": final_responseTime,
-		    "timeout": timeout,
-		    "limit": 30000
+			"shipment_id": "9999"
 		}
-		return result
 
+		paramtracking='FL067074022GB'
+		objfunction=["root","type","label","dropoff/points","tracking"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		datadropoff={}
+		result = instance.get_all_status("royalmail",api_url_request,objfunction,paramlabel,"",datadropoff,paramtracking,"")
+		return result
+			
+		
 	def getAuth(self):
 		password = ROYALMAIL_AUTH_PWD
 		creationDate =  time.strftime('%Y-%m-%dT%H:%M:%SZ', time.localtime(time.time()))

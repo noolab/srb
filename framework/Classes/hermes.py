@@ -62,56 +62,9 @@ class hermes(Service):
 		return data
 
 	def status(self,paramlist):
-		allresponseTime=[]
-		paramlist=""
-		
-		start=time.time()
-		available=True
-		response_time=0
-		# xmlresult = ET.tostring(root, encoding='ascii', method='xml')
-		try:
-			# xmlresponse = netw.sendRequest(HERMES_URL_STATUS, "", "get", "", "")
-			xmlresponse=requests.get(HERMES_URL_STATUS)
-			if xmlresponse.status_code !=200:
-				available=False
-				response_time=-1
-		except:
-			available=False
-			response_time=-1
-
-		if response_time==0:
-			response_time=time.time()-start
-
-		timeout=False
-
-		if response_time>30:
-			timeout=True
-
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-		#Cal label
-		response_time_3=0
-		start_3 = time.time()
-		labelparamlist ={
+		paramtraking={}
+		parampickup={}
+		paramlabel ={
 			"origin": {
 		    "name": "Ithyvan Schreys",
 		    "first_name": "Ithyvan",
@@ -148,27 +101,37 @@ class hermes(Service):
 		    "width_in_cm": 10,
 		    "height_in_cm": 10,
 		    "weight_in_grams": 1700,
-		    "content": "This is a contents write by "
+		    "contents": "This is a contents write by "
 		  },
 		  "shipment_date": curdate
 		  
 		}
-		try:
-			rootdata= self.label(labelparamlist)
-		except:
-			response_time_3=-1
-		if response_time_3 == 0:
-			response_time_3 = time.time() - start_3
-		allresponseTime.append(response_time_3)
-		
-		final_responseTime=min(allresponseTime)
-		result = {
-		    "available": available,
-		    "response_time": response_time,
-		    "timeout": timeout,
-		    "limit": 30000
+		paramdropoff={
+			"name": "DDDD",
+			"first_name": "string",
+			"last_name": "string",
+			"company": "string",
+			"housenumber":"22",
+			"street_number": "string",
+			"street_name": "string",
+			"line1": "Hamburg, Freie und Hansestadt",
+			"line2": "string",
+			"state": "string",
+			"zipcode": "10587",
+			"city": "Berlin",
+			"country_code": "DE",
+			"phone": "string",
+			"email": "string",
+			"latitude":" 53.548",
+			"longitude":"10.019"
 		}
+		objfunction=["root","type","label","dropoff/points"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("hermes",api_url_request,objfunction,paramlabel,parampickup,paramdropoff,paramtraking,"")
 		return result
+			
+		
 
 	def label(self,userparamlist):
 

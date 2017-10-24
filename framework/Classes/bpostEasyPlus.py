@@ -27,12 +27,6 @@ class bposteasyplus(Service):
 		return data
 
 	def status(self, paramlist):
-		objfunction=["root","type","label"]
-		start = time.time()
-		available = True
-		allresponseTime=[]
-		response_time = 0
-		timeout = False
 		paramlabel={
 		  "origin": {
 		    "name": "Ithyvan Schreys",
@@ -77,54 +71,12 @@ class bposteasyplus(Service):
 		    "point_id": "C10G3"
 		  }
 		}
-		param=""
-		for service in objfunction:
-			try:
-				if service=="label":
-					data = self.label(paramlabel)
-				elif service =="pickup":
-					data =self.pickup(parampickup)
-				elif service =="dropoff":
-					data = self.dropoff(paramdropoff)
-				elif service =="root":
-				    data = self.root(param)
-				elif service =="type":
-					data=self.type(param)
-				if response_time == 0:
-			  		response_time = time.time() - start
-			  		allresponseTime.append(response_time)
-
-				if response_time > 30:
-					timeout = True
-					available = False
-					response_time = -1
-					result={
-						"available": available,
-						"response_time": response_time,
-						"timeout": timeout,
-						"service":service,
-						"limit": 30000
-					}
-					return result
-			except:
-				available = False
-				response_time = -1
-				result={
-			  		"available": available,
-			  		"response_time": response_time,
-			  		"timeout": timeout,
-			  		"service":service,
-			  		"limit": 30000
-			  	}
-				return result
-		final_responseTime=max(allresponseTime)
-		result={
-	  		"available": available,
-	  		"response_time": final_responseTime,
-	  		"timeout": timeout,
-	  		"limit": 30000
-	  	}
+		objfunction=["root","type","label"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("bposteasyplus",api_url_request,objfunction,paramlabel,"","","","")
 		return result
+	
 
 
 
@@ -138,7 +90,7 @@ class bposteasyplus(Service):
 			# event=userparamlist
 			reqEmpty=["destination/first_name","destination/last_name"]
 			event = instance.jsonCheckEmpty(reqEmpty,userparamlist)
-			event["origin"]["name"] = str(event["origin"]["first_name"])+str(event["origin"]["last_name"])
+			event["origin"]["name"] = str(event["origin"]["first_name"])+" "+str(event["origin"]["last_name"])
 			event["destination"]["name"] = str(event["destination"]["first_name"])+" "+str(event["destination"]["last_name"])
 
 			data_line1= str(event["origin"]["line1"])
@@ -150,7 +102,7 @@ class bposteasyplus(Service):
 
 			#destination line1
 			dest_line1= event["destination"]["line1"]
-			
+
 			street_info = instance.json_check_line1(dest_line1)
 			event["destination"]["street_number"]  = street_info["street_number"]
 			event["destination"]["street_name"]  =street_info["street_name"]

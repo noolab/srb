@@ -5,7 +5,7 @@ import sys
 # from BuiltInService 
 import re 
 import json
-
+import unicodedata
 
 # from flask import Flask
 # from flask import request
@@ -51,7 +51,8 @@ def lamda_function(event, context):
 	# dataparam  = re.sub(r'\bnil\b|\bnull\b',"",str(dataparam),flags=re.I)
 	dataparam  = re.sub(r'\"null\"|\"nil\"',"\"\"",str(dataparam),flags=re.I)
 	dataparam = re.sub(r"\\'","'",str(dataparam))
-	dataparam = re.sub(r"[^\x00-\x7F]+","",str(dataparam))
+	# dataparam = re.sub(r"[^\x00-\x7F]+","",str(dataparam))
+	dataparam= unicodedata.normalize('NFKD', str(dataparam)).encode('ascii', 'ignore')
 	paramlist=json.loads(dataparam)
 	# paramlist=json.loads(event["body"])
 	if company!="" and service=="":

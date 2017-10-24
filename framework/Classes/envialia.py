@@ -58,104 +58,40 @@ class envialia(Service):
 		}
 		return data
 	def status(self,paramlist):
-		allresponseTime=[]
-		paramlist=""
-
-		start=time.time()
-		available=True
-		response_time=0
-		try:
-			responese = netw.sendRequestHeaderConfig(ENVIALIA_URL,'','get','') #self.label(paramlist)
-		except:
-			available=False
-			response_time=-1
-
-		if response_time==0:
-			response_time=time.time()-start
-
-		timeout=False
-
-		if response_time>30:
-			timeout=True
-
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		#Cal pickupslots
-		response_time_3=0
-		start_3 = time.time()
-		try:
-			rootdata= self.pickupslots(paramlist)
-		except:
-			response_time_3=-1
-		if response_time_3 == 0:
-			response_time_3 = time.time() - start_3
-		allresponseTime.append(response_time_3)
-
-		#Call pickup
-		response_time_4=0
-		start_4 = time.time()
-		try:
-			dataparamlist={
-				"origin": {
-				    "first_name": "Rikhil",
-				    "last_name":"Rikhil",
-				    "phone": "23162",
-				    "company": "Saurabh",
-				    "line1": "123 Test Ave",
-				    "line2": "Test Bus Park",
-				    "package_location": "Reception",
-				    "city": "PARIS",
-				    "zipcode": "75018",
-				    "country_code": "FR"
-				  },
-				  "pickup": {
-					"date": "2017-08-21",
-				    "slot_id": "string",
-				    "slot_start_at": "10:20",
-				    "slot_end_at": "23:20",
-				    "number_of_pieces": 0,
-				    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
-				  },
-				  "parcel": {
-				    "number_of_pieces": 1,
-				    "weight_in_grams": 200
-				  }
-			}
-			rootdata= self.pickup(dataparamlist)
-		except:
-			response_time_4=-1
-		if response_time_4 == 0:
-			response_time_4 = time.time() - start_4
-		allresponseTime.append(response_time_4)
-		
-		final_responseTime=min(allresponseTime)
-		result = {
-		    "available": available,
-		    "response_time": final_responseTime,
-		    "timeout": timeout,
-		    "limit": 30000
+		paramlabel={}
+		paramtraking={}
+		parampickup={
+			"origin": {
+			    "first_name": "Rikhil",
+			    "last_name":"Rikhil",
+			    "phone": "23162",
+			    "company": "Saurabh",
+			    "line1": "123 Test Ave",
+			    "line2": "Test Bus Park",
+			    "package_location": "Reception",
+			    "city": "PARIS",
+			    "zipcode": "75018",
+			    "country_code": "FR"
+			  },
+			  "pickup": {
+				"date": "2017-08-21",
+			    "slot_id": "string",
+			    "slot_start_at": "10:20",
+			    "slot_end_at": "23:20",
+			    "number_of_pieces": 0,
+			    "special_instructions": "1 palett of 200 kgs - Vehicule avec hayon"
+			  },
+			  "parcel": {
+			    "number_of_pieces": 1,
+			    "weight_in_grams": 200
+			  }
 		}
+		objfunction=["root","type","pickup"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("envialia",api_url_request,objfunction,paramlabel,parampickup,"",paramtraking,"")
 		return result
+			
 	
 	def login(self,userparamlist):
 		xmlresult="""<?xml version="1.0" encoding="utf-8"?>

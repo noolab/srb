@@ -61,105 +61,40 @@ class relaiscolis(Service):
 
 
 	def status(self,paramlist):
-		allresponseTime=[]
-		paramlist=""
-
-		lat = '48.8640556'
-		lng = '2.3478669'
-		# CREATE URI
-		uri = RELAISCOLIS_URL_STATUS_DROPOFF + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
-		start = time.time()
-		available = True
-		response_time = 0
-		# CALL
-		try:
-			# response = requests.get(uri)
-			response = netw.sendRequestHeaderConfig(uri,'','get','')
-		except:
-			available = False
-			response_time = -1
-
-		if response_time == 0:
-	  		response_time = time.time() - start
-
-		timeout = False
-		if response_time > 30:
-	  		timeout = True
-	  	#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		#call dropoffpoint
-		response_time_3=0
-		start_3 = time.time()
-		try:
-			rootdata= self.dropoffpoints(paramlist)
-		except:
-			response_time_3=-1
-		if response_time_3 == 0:
-			response_time_3 = time.time() - start_3
-		allresponseTime.append(response_time_3)
-
-		#label
-		response_time_4=0
-		start_4 = time.time()
-		try:
-			dataparam={
+		datadropoff={
+			"line1": "6 Rue Française, 75001 Paris, France",
+			"city":"paris",
+			"zipcode": "75001",
+			"country": "France",
+			"country_code": "Fr"
+		}
+		paramlabel={
 			"shipment_id": "11111111",
-			  "return_id": "9898",
-			  "origin": {
-					"first_name": "Test",
-			    "last_name": "Test" ,
-			    "company": "withings",
-					"line1":"22",
-			    "street_number": "21 rue du bas",
-			    "zipcode": "92000",
-			    "city": "nanterre",
-			    "phone": "0677889988"
-			  },
-			   "destination":{
-					 "shipment_id": "11111111"
-				 },
-			   "parcel" : {
-					 
-				 },
-			   "dropoff":{
-					 "point_id": "C1193"
-				 }
+			"return_id": "9898",
+			"origin": {
+				"first_name": "Test",
+				"last_name": "Test" ,
+				"company": "withings",
+				"line1":"22",
+				"street_number": "21 rue du bas",
+				"zipcode": "92000",
+				"city": "nanterre",
+				"phone": "0677889988"
+			},
+			"destination":{
+				"shipment_id": "11111111"
+			},
+			"parcel" : {},
+			"dropoff":{
+				"point_id": "C1193"
 			}
-			rootdata= self.label(dataparam)
-		except:
-			response_time_4=-1
-		if response_time_4 == 0:
-			response_time_4 = time.time() - start_4
-		allresponseTime.append(response_time_4)		
-
-		final_responseTime=min(allresponseTime)
-		result={
-	  		"available": available,
-	  		"response_time": final_responseTime,
-	  		"timeout": timeout,
-	  		"limit": 30000
-	  	}
+		}
+		objfunction=["root","type","label","dropoff/points"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("relaiscolis",api_url_request,objfunction,paramlabel,"",datadropoff,"","")
 		return result
+			
 
 	def dropoff(self,userparamlist):
 		"""here is a dropoffpoints function """
@@ -168,6 +103,7 @@ class relaiscolis(Service):
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
+			paramlist["country"] = instance.getCountryName(str(paramlist["country_code"]))
 			address = str(paramlist["line1"])+" "+str(paramlist["city"])+" "+str(paramlist["zipcode"])+" "+str(paramlist["country"])
 			datalatlng = instance.getLatLng(address)
 		else:
@@ -176,8 +112,8 @@ class relaiscolis(Service):
 			raise Exception(responseErr)
 
 		# GET LAT + LNG
-		lng = str(datalatlng["lat"])	#paramlist["longitude"]
-		lat = str(datalatlng["lng"])		#paramlist["latitude"]
+		lng = str(datalatlng["lng"])	#paramlist["longitude"]
+		lat = str(datalatlng["lat"])		#paramlist["latitude"]
 		# CREATE URI
 		uri = RELAISCOLIS_URL_STATUS_DROPOFF + lng + ":" + lat + "&dist=30000&nb=5&ie=UTF-8&charset=UTF-8&authKey=JSBS20140827164219887761188235&lg=eng"
 		
@@ -185,8 +121,12 @@ class relaiscolis(Service):
 		data = xmltodict.parse(response.text)
 
 		relay_list = []
-
-		for relay in data["response"]["poiList"]["item"]:
+		try:
+			data_all = data["response"]["poiList"]["item"]
+		except:
+			data_all = []
+	
+		for relay in data_all:
 			sub_tab = []
 			for x in relay["poi"]["datasheet"]["descList"]["desc"]:
 					if int(x["idx"]) >= 6 and int(x["idx"]) <= 19:

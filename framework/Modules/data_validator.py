@@ -1,21 +1,5 @@
-# import sys
-# sys.path.insert(0, "../Classes")
-# from dhl import dhl
-# from relaiscolis import relaiscolis
-# from parcel import parcel
-# from bpostEasyPlus import bposteasyplus
-# from couriier import couriier
-# from royalmail import royalmail
-# from hermes import hermes
-# from envialia import envialia
-# from pvs import pvs
-# from swisspost import swisspost
-# from ups import ups
-# from colissimo import colissimo
-# from gophr import gophr
-# from postnord import postnord
-
-
+import time
+import datetime
 import re
 import json
 from BuiltInService import requests
@@ -110,28 +94,38 @@ class Validator(object):
 		api_url ='https://maps.googleapis.com/maps/api/geocode/json?address='+str(location)+'&key=AIzaSyD-LxdE3GSzycdq_AQodgokDu7nlqfT5ek'
 		data = requests.get(api_url)
 		data = json.loads(data.content)
-		latlng = data["results"][0]["geometry"]["location"]
+		try:
+			latlng = data["results"][0]["geometry"]["location"]
+		except:
+			responseErr = {"status": 400,"errors": [{"detail": "address not found on googleapis"}]}
+			raise Exception(responseErr)
 		return  latlng
-
-	def check_status(self,company,objfunction,paramlabel,parampickup,paramdropoff):
+	def get_all_status(self,company,api_url,objfunction,paramlabel,parampickup,paramdropoff,paramtracking,paramprice):
+		
 		start = time.time()
 		available = True
 		allresponseTime=[]
 		response_time = 0
 		timeout = False
 		for service in objfunction:
-			selected_class = globals()[company]
-			instance = selected_class()
-			method = getattr(instance, service)
+			full_url = str(api_url)+str(company)+"/"+str(service)
 			try:
 				if service=="label":
-					data = method(paramlabel)
+					data = requests.post(full_url,data=paramlabel, headers = {'Content-Type': 'application/json'})
 				elif service =="pickup":
-					data =method(parampickup)
-				elif service =="dropoff":
-					data = method(paramdropoff)
+					data =requests.post(full_url,data=parampickup, headers = {'Content-Type': 'application/json'})
+				elif service =="dropoff/points":
+					data = requests.post(full_url,data=paramdropoff, headers = {'Content-Type': 'application/json'})
+				elif service == "price":
+					data = requests.post(full_url,data=paramprice, headers = {'Content-Type': 'application/json'})
+				elif service =="tracking":
+					track_url = str(api_url)+str(company)+"/"+str(service)+"/"+str(paramtracking)
+					data =  requests.get(track_url)
+				elif service == "root":
+					root_url = str(api_url)+str(company)
+					data =  requests.get(root_url)
 				else:
-				    data = method(param="")
+				    data =  requests.get(full_url)
 				if response_time == 0:
 			  		response_time = time.time() - start
 			  		allresponseTime.append(response_time)
@@ -159,7 +153,6 @@ class Validator(object):
 			  		"limit": 30000
 			  	}
 				return result
-
 		final_responseTime=max(allresponseTime)
 		result={
 	  		"available": available,
@@ -168,6 +161,7 @@ class Validator(object):
 	  		"limit": 30000
 	  	}
 		return result
+	    	
 
 
 

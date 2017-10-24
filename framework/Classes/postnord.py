@@ -2,7 +2,8 @@
 from Classes.AbstractService import Service
 from Modules.data_converter import data_converter as converter
 from Modules.network import networking as netw
-from Modules.data_validator import Validator 
+from Modules.data_validator import Validator
+# from Modules.check_status import CheckStatus 
 from BuiltInService import requests
 import os
 import time
@@ -81,18 +82,18 @@ class postnord(Service):
 		  },
 		  "shipment_id": "9999"
 		}
-		# instance = Validator()
-		# result = instance.check_status("postnord",objfunction,paramlabel,"","")
-		# return result
-		
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"] #"https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/"
+		result = instance.get_all_status("postnord",api_url_request,objfunction,paramlabel,"","","","")
+		return result
 
 	def label(self,userparamlist):
-		req_list=["destination/first_name","destination/last_name","destination/phone","destination/line1","destination/zipcode","destination/city","destination/country_code","destination/phone","parcel/weight_in_grams","parcel/contents"]
+		req_list=["destination/first_name","destination/last_name","destination/phone","destination/line1","destination/zipcode","destination/city","destination/country_code","destination/phone","parcel/weight_in_grams"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			paramlist=userparamlist
-			reqEmpty=["destination/last_name"]
+			reqEmpty=["destination/last_name","parcel/contents"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 			paramlist["destination"]["name"]= str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
 		else:

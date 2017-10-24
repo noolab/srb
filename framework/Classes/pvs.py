@@ -64,59 +64,11 @@ class pvs(Service):
 		return data
 
 	def status(self,paramlist):
-		allresponseTime=[]
-		paramlist=""
-		start=time.time()
-		available=True
-		response_time=0
-		try:
-			paramlist={
-				"origin":"",
-				"destination":"",
-				"parcel":""
-			}
-			responese = self.label(paramlist)
-		except:
-			available=False
-			response_time=-1
-
-		if response_time==0:
-			response_time=time.time()-start
-
-		timeout=False
-
-		if response_time>30:
-			timeout=True
-
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_1 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-		final_responseTime=min(allresponseTime)
-		result = {
-		    "available": available,
-		    "response_time": final_responseTime,
-		    "timeout": timeout,
-		    "limit": 30000
-		}
+		objfunction=["root","type","label"]
+		paramlabel={}
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("pvs",api_url_request,objfunction,paramlabel,"","","","")
 		return result
 	
 	

@@ -69,70 +69,26 @@ class swisspost(Service):
 		return data
 
 	def status(self,paramlist):
-		allresponseTime=[]
-		paramlist=""
-
-		start=time.time()
-		available=True
-		response_time=0
-		try:
-			# xmlresponse=netw.sendRequest(SWISSPOST_URL,"","get","","")
-			paramlist = {
-		      "shipment_id" : "4444" ,
-		      "origin": {"first_name": "Walter",
-		               "last_name": "Wechlin" ,
-		               "street_number": "25",
-		               "line1": "avenue du temple",
-		               "zipcode": "10012",
-		               "city": "lausanne",
-		               "country_code": "CH"
-		               },
-		       "destination":{"company": "WITHINGS"},
-		       "parcel":{}
-		    }
-			xmlresponse= self.label(paramlist)
-		except:
-			available=False
-			response_time=-1
-
-		if response_time==0:
-			response_time=time.time()-start
-
-		timeout=False
-
-		if response_time>30:
-			timeout=True
-		#Call Rooot =======
-		response_time_1=0
-		start_1 = time.time()
-		try:
-			rootdata= self.root(paramlist)
-		except:
-			response_time_1=-1
-		if response_time_1 == 0:
-			response_time_1 = time.time() - start_1
-		allresponseTime.append(response_time_1)
-
-		#Cal type
-		response_time_2=0
-		start_2 = time.time()
-		try:
-			rootdata= self.type(paramlist)
-		except:
-			response_time_2=-1
-		if response_time_2 == 0:
-			response_time_2 = time.time() - start_2
-		allresponseTime.append(response_time_2)
-
-
-		final_responseTime=min(allresponseTime)
-		result = {
-		    "available": available,
-		    "response_time": final_responseTime,
-		    "timeout": timeout,
-		    "limit": 30000
+		paramlabel = {
+			"shipment_id" : "4444" ,
+			"origin": {"first_name": "Walter",
+			"last_name": "Wechlin" ,
+			"street_number": "25",
+			"line1": "avenue du temple",
+			"zipcode": "10012",
+			"city": "lausanne",
+			"country_code": "CH"
+		},
+		"destination":{"company": "WITHINGS"},
+		"parcel":{}
 		}
+		objfunction=["root","type","label"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("swisspost",api_url_request,objfunction,paramlabel,"","","","")
 		return result
+	
+			
 
 	def label(self,userparamlist):
 		req_list=["shipment_id","origin/first_name","origin/last_name","origin/city","origin/line1","origin/zipcode","origin/country_code","destination/company",]

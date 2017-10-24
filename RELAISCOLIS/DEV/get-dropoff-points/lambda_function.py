@@ -48,3 +48,9 @@ def getDropoffPoints(event,context):
         'saturday': { 'am': sub_tab[10]["value"], 'pm': sub_tab[11]["value"]},
         'sunday': { 'am': sub_tab[12]["value"], 'pm': sub_tab[13]["value"]}}})
   return relay_list
+event={
+  "longitude":"2.3478669",
+  "latitude":"48.8640556"
+}
+context=""
+print(getDropoffPoints(event,context))

@@ -41,12 +41,8 @@ class couriier(Service):
 		return data
 
 	def status(self,paramlist):
-		objfunction=["root","type","pickup","pickupslots"]
-		start = time.time()
-		available = True
-		allresponseTime=[]
-		response_time = 0
-		timeout = False
+		
+		paramlabel ={}
 		parampickup={
 			"origin": {
 			    "first_name": "Test ",
@@ -76,53 +72,11 @@ class couriier(Service):
 			    "date": "2017-07-05 15:00:00",
 			}
 		}
-		param=""
-		for service in objfunction:
-			try:
-				if service=="pickupslots":
-					data = self.label(param)
-				elif service =="pickup":
-					data =self.pickup(parampickup)
-				elif service =="dropoff":
-					data = self.dropoff(paramdropoff)
-				elif service =="root":
-				    data = self.root(param)
-				elif service =="type":
-					data=self.type(param)
-				if response_time == 0:
-			  		response_time = time.time() - start
-			  		allresponseTime.append(response_time)
-
-				if response_time > 30:
-					timeout = True
-					available = False
-					response_time = -1
-					result={
-						"available": available,
-						"response_time": response_time,
-						"timeout": timeout,
-						"service":service,
-						"limit": 30000
-					}
-					return result
-			except:
-				available = False
-				response_time = -1
-				result={
-			  		"available": available,
-			  		"response_time": response_time,
-			  		"timeout": timeout,
-			  		"service":service,
-			  		"limit": 30000
-			  	}
-				return result
-		final_responseTime=max(allresponseTime)
-		result={
-	  		"available": available,
-	  		"response_time": final_responseTime,
-	  		"timeout": timeout,
-	  		"limit": 30000
-	  	}
+		paramtraking={}
+		objfunction=["root","type","pickup","pickup/slots"]
+		instance = Validator()
+		api_url_request = os.environ["API_DEVEVELOPER_URL"]
+		result = instance.get_all_status("couriier",api_url_request,objfunction,paramlabel,parampickup,"",paramtraking,"")
 		return result
 
 	def pickupslots(self ,paramlist):
