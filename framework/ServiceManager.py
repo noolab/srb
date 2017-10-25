@@ -14,6 +14,7 @@ from Classes.ups import ups
 from Classes.colissimo import colissimo
 from Classes.gophr import gophr
 from Classes.postnord import postnord
+from Classes.shoprunback import shoprunback
 class ServiceManager(object):
 		
 	def call_service(self, company, service, paramlist):
