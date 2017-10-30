@@ -42,6 +42,9 @@ https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/pvs/<br/>
 UPS (tracking not implemented)  <br/>
 https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/ups/ <br/>
 
+SHOPRUNBACK (tracking not implemented)  <br/>
+https://i9iwpq67fd.execute-api.eu-central-1.amazonaws.com/v1/shoprunback/ <br/>
+
 NEW ENDPOINT PRODUCTION <br/>
 
 URL BASE : https://cy8l4775oe.execute-api.eu-central-1.amazonaws.com/

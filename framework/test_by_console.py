@@ -60,7 +60,7 @@ paramdhl={
     "special_instructions": ""
   }
 }
-myservice.call_service("bposteasyplus","label", paramdhl)
+myservice.call_service("shoprunback","pickup", paramdhl)
 
 print ("\n")
 # test parcel pickup service

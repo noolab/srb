@@ -155,17 +155,26 @@ class couriier(Service):
 		print("pickup fucntion")
 		url = COURIIER_PICKUP_URL
 		headers={"apiKey": COURIIER_HEADERS_APIKEY,"Content-Type": "application/json"}
-		req_list=["origin/first_name","origin/last_name","origin/latitude","origin/longitude","origin/line1","origin/zipcode","origin/city","origin/phone","destination/first_name","destination/last_name","destination/longitude","destination/latitude","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/date"]
+		req_list=["origin/first_name","origin/last_name","origin/line1","origin/zipcode","origin/city","origin/phone","destination/first_name","destination/last_name","destination/line1","destination/zipcode","destination/city","destination/phone","pickup/date"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
-			paramlist=userparamlist
+			# paramlist=userparamlist
+			reqEmpty=["origin/line2","destination/line2","parcel/number_of_pieces"]
+			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 			paramlist["origin"]["name"]= str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
 			paramlist["destination"]["name"]=str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])
-			if "line2" not in paramlist["origin"]:
-				paramlist["origin"]["line2"]=""
-			if "line2" not in paramlist["destination"]:
-				paramlist["destination"]["line2"]=""
+
+			address1 = str(paramlist["origin"]["line1"])+" "+str(paramlist["origin"]["city"])+" "+str(paramlist["origin"]["zipcode"])
+			datalatlng = instance.getLatLng(address1)
+			paramlist["origin"]["longitude"] = str(datalatlng["lng"])	#paramlist["longitude"]
+			paramlist["origin"]["latitude"] = str(datalatlng["lat"])		#paramlist["latitude"]
+
+			address2 = str(paramlist["destination"]["line1"])+" "+str(paramlist["destination"]["city"])+" "+str(paramlist["destination"]["zipcode"])
+			datalatlng2 = instance.getLatLng(address2)
+			paramlist["destination"]["longitude"] = str(datalatlng2["lng"])	#paramlist["longitude"]
+			paramlist["destination"]["latitude"] = str(datalatlng2["lat"])		#paramlist["latitude"]
+
 		else:
 			# return checkparamlist["message"]
 			responseErr = {"status": 400,"errors": [{"detail": str(checkparamlist["message"])}]}
@@ -178,5 +187,11 @@ class couriier(Service):
 		response = netw.sendRequestHeaderConfig(url, data_sender, "post", headers)
 		newresp= re.sub(r'\"\\\"\\\\n','',str(response))
 		final_data=re.sub(r'\\','',newresp)
-		return json.loads(final_data)
-		
+		final_data  =  json.loads(final_data)
+		try:
+			paramlist["pickup_id"] = final_data[0]["id"]
+		except:
+			paramlist["pickup_id"]=""
+		paramlist["shipment_details"] = paramlist["parcel"]
+		del paramlist["parcel"]
+		return paramlist

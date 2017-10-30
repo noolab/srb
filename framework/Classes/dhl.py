@@ -500,7 +500,7 @@ class dhl(Service):
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
 			# paramlist=userparamlist
-			reqEmpty=["destination/phone","destination/email","destination/line2","parcel/width_in_cm","parcel/height_in_cm","parcel/length_in_cm","parcel/contents","origin/company","origin/line2","origin/zipcode","origin/phone","origin/state"]
+			reqEmpty=["destination/phone","destination/email","destination/line2","parcel/width_in_cm","parcel/height_in_cm","parcel/length_in_cm","parcel/contents","origin/company","origin/line2","origin/zipcode","origin/phone","origin/email","origin/state"]
 			paramlist = instance.jsonCheckEmpty(reqEmpty,userparamlist)
 			paramlist["origin"]["name"] = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
 			paramlist["destination"]["name"] = str(paramlist["destination"]["first_name"])+" "+str(paramlist["destination"]["last_name"])

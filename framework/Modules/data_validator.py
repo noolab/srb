@@ -84,10 +84,14 @@ class Validator(object):
 		return data
 
 	def getCountryName(self,countrycode):
-	 	url ='https://restcountries.eu/rest/v2/alpha/'+countrycode
-	 	data = requests.get(url)
-	 	country = json.loads(data.content)
-	 	return country["name"]
+		url ='https://restcountries.eu/rest/v2/alpha/'+countrycode
+		data = requests.get(url)
+		country = json.loads(data.content)
+		try:
+			country = country["name"]
+		except:
+			country = ""
+		return country
 
 	def getLatLng(self,location):
 		api_key='AIzaSyD-LxdE3GSzycdq_AQodgokDu7nlqfT5ek'
