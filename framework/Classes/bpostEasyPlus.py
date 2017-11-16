@@ -82,7 +82,7 @@ class bposteasyplus(Service):
 
 	def label(sef,userparamlist):
 		
-		req_list=["destination/line1","destination/zipcode","destination/city","destination/country_code","origin/line1",
+		req_list=["destination/first_name","destination/last_name","destination/line1","destination/zipcode","destination/city","destination/country_code","origin/line1",
 		"origin/first_name","origin/last_name","origin/zipcode","origin/city","origin/country_code","shipment_id"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
@@ -146,8 +146,12 @@ class bposteasyplus(Service):
 	    </soapenv:Envelope>"""
 
 		headersConfig={'Content-Type': 'text/xml', 'Authorization': ("Basic " + os.environ["BPOST_BASIC_AUTH"]), 'SOAPAction': "http://schema.bpost.be/services/service/postal/ExternalLabelServiceCS/v001/getReturnLabel"}
-		
-		xmlresponse = netw.sendRequestHeaderConfig(BPOST_EASY_PLUS_URL, xmlresult, "post", headersConfig)
+		try:
+			xmlresponse = netw.sendRequestHeaderConfig(BPOST_EASY_PLUS_URL, xmlresult, "post", headersConfig)
+		except:
+			responseErr = {"status": 500,"errors": [{"detail": str(xmlresponse)}]}
+			raise Exception(responseErr)
+
 		data = xmltodict.parse(xmlresponse)
 
 		c = boto.connect_s3(os.environ["AWS_S3_KEY1"], os.environ["AWS_S3_KEY2"])
@@ -158,7 +162,12 @@ class bposteasyplus(Service):
 		k.contentType="application/pdf"
 		k.ContentDisposition="inline"
 		# k.set_contents_from_string(data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF'].decode('base64'))
-		img_data=data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF']
+		try:
+			img_data=data['soapenv:Envelope']['soapenv:Body']['msg:getReturnLabelResponse']['msg:ReturnLabelInfo']['msg:ReturnLabel_PDF']
+		except:
+			responseErr = {"status": 500,"errors": [{"detail": str(xmlresponse)}]}
+			raise Exception(responseErr)
+
 		k.set_contents_from_string(base64.b64decode(img_data.encode('ascii')))	
 	
 		try:

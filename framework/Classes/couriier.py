@@ -70,7 +70,8 @@ class couriier(Service):
 			},
 			"pickup": {
 			    "date": "2017-07-05 15:00:00",
-			}
+			},
+			"parcel":{}
 		}
 		paramtraking={}
 		objfunction=["root","type","pickup","pickup/slots"]
@@ -185,9 +186,9 @@ class couriier(Service):
         })
         # data_sender = json.dumps(data)
 		response = netw.sendRequestHeaderConfig(url, data_sender, "post", headers)
-		newresp= re.sub(r'\"\\\"\\\\n','',str(response))
-		final_data=re.sub(r'\\','',newresp)
-		final_data  =  json.loads(final_data)
+		# newresp= re.sub(r'\"\\\"\\\\n','',str(response))
+		# final_data=re.sub(r'\\','',newresp)
+		final_data  =  json.loads(response)
 		try:
 			paramlist["pickup_id"] = final_data[0]["id"]
 		except:

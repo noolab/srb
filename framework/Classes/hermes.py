@@ -296,10 +296,12 @@ class hermes(Service):
 				}
 				openning.append(optime)
 
+			address = str(da["address"]["street"])+" "+str(da["address"]["postCode"])+" "+str(da["address"]["city"])
+			datalatlng = instance.getLatLng(address)
 			res = {
 			    "name": da["shopOwner"],
-			    "latitude": 0,
-			    "longitude": 0,
+			    "latitude": str(datalatlng["lat"]),
+			    "longitude": str(datalatlng["lng"]),
 			    "street_number": "",
 			    "street_name": da["address"]["street"],
 			    "line1":  da["address"]["street"],

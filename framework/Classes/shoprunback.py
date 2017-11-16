@@ -40,7 +40,17 @@ class shoprunback(Service):
 		result = instance.get_all_status("shoprunback",api_url_request,objfunction,paramlabel,parampickup,"",paramtraking,"")
 		return result
 	def pickup(self,userparamlist):
-		req_list=["destination/company","destination/email","origin/first_name","origin/last_name","origin/line1","origin/zipcode","origin/city","pickup/date","pickup/slot_start_at","pickup/slot_end_at"]
+		all_emails =[]
+		shoprunbackMails = os.environ["SHOPRUNBACK_EMAILS"]
+		shoprunbackMails = shoprunbackMails.split(';')
+		for em in shoprunbackMails:
+			dt= {
+				"email":em,
+				"type":"to"
+			}
+			all_emails.append(dt)
+			
+		req_list=["destination/company","origin/first_name","origin/last_name","origin/line1","origin/zipcode","origin/city","pickup/date","pickup/slot_start_at","pickup/slot_end_at"]
 		instance = Validator()
 		checkparamlist = instance.json_check_required(req_list, userparamlist)
 		if checkparamlist["status"]:
@@ -53,16 +63,27 @@ class shoprunback(Service):
 
 		full_name = str(paramlist["origin"]["first_name"])+" "+str(paramlist["origin"]["last_name"])
 		pickup_time_window = str(paramlist["pickup"]["slot_start_at"])+" To "+str(paramlist["pickup"]["slot_end_at"])
-		merge_vars=[{
-			"brand_name":paramlist["destination"]["company"],
-			"full_name": full_name,
-			"pickup_date": paramlist["pickup"]["date"],
-			"pickup_time_window":pickup_time_window ,
-			"return_address1_from": paramlist["origin"]["line1"],
-			"return_zip_code_from": paramlist["origin"]["zipcode"],
-			"return_address2_from": paramlist["origin"]["line2"],
-			"return_city_from": paramlist["origin"]["city"],
-		}]
+		# merge_vars=[{
+		# 	"brand_name":paramlist["destination"]["company"],
+		# 	"full_name": full_name,
+		# 	"pickup_date": paramlist["pickup"]["date"],
+		# 	"pickup_time_window":pickup_time_window ,
+		# 	"return_address1_from": paramlist["origin"]["line1"],
+		# 	"return_zip_code_from": paramlist["origin"]["zipcode"],
+		# 	"return_address2_from": paramlist["origin"]["line2"],
+		# 	"return_city_from": paramlist["origin"]["city"],
+		# }]
+		merge_vars = [
+			{'name':'brand_name' , 'content':paramlist["destination"]["company"] },
+			{'name':'full_name' , 'content':full_name },
+			{'name':'pickup_date' , 'content': paramlist["pickup"]["date"] },
+			{'name':'pickup_time_window' , 'content':pickup_time_window },
+			{'name':'return_address1_from' , 'content':paramlist["origin"]["line1"] },
+			{'name':'return_zip_code_from' , 'content':paramlist["origin"]["zipcode"] },
+			{'name':'return_address2_from' , 'content':paramlist["origin"]["line2"] },
+			{'name':'return_city_from' , 'content': paramlist["origin"]["city"] }
+
+		]
 
 	# def sendemail(self,paramlist):
 		mandrill_client = mandrill.Mandrill(os.environ["MANDRILL_TOKEN"])
@@ -70,10 +91,7 @@ class shoprunback(Service):
 		message = { 
 			'from_email': 'hello@shoprunback.eu',
 			'from_name': 'ShopRunBack',
-			'to': [{
-			'email': paramlist["destination"]["email"],
-			'type': 'to'
-		}],
+			'to': all_emails,
 		# 'subject': "Testing out Mandrill",
 		# 'text': 'This is a message from Mandrill',
 			"headers": { "Reply-To":"hello@shoprunback.eu" },

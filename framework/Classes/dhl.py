@@ -508,6 +508,16 @@ class dhl(Service):
 			paramlist["origin"]["country"] = instance.getCountryName(str(paramlist["origin"]["country_code"]))
 			paramlist["destination"]["country"] = instance.getCountryName(str(paramlist["destination"]["country_code"]))
 
+			paramlist["origin"]["phone"] =re.sub(r'\D','',str(paramlist["origin"]["phone"]))
+			paramlist["destination"]["phone"] =re.sub(r'\D','',str(paramlist["destination"]["phone"]))
+
+			#check shipment_id  (DHL required max 20 character)
+			count_shipmentid= str(paramlist["shipment_id"])
+			if  count_shipmentid.isdigit() and len(count_shipmentid)<=10:
+				print("good ")
+			else:
+				paramlist["shipment_id"] = str(datetime.datetime.now().timestamp())[:10]
+
 			data_line1= str(paramlist["origin"]["line1"])
 			street_info = instance.json_check_line1(data_line1)
 			paramlist["origin"]["street_number"]  = street_info["street_number"]

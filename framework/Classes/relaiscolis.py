@@ -7,6 +7,7 @@ from BuiltInService import xmltodict
 import xml.etree.ElementTree as ET
 import base64
 import boto
+import re
 from Modules.data_validator import Validator 
 
 from boto.s3.key import Key
@@ -210,7 +211,8 @@ class relaiscolis(Service):
 		city = event['origin']['city']
 		# shipment_id = event['destination']['shipment_id']
 		shipment_id = event['shipment_id']
-		phone = event['origin']['phone']
+		phone = re.sub(r'\D','',str(event['origin']['phone']))
+		event['origin']['phone'] = phone 
 		dropoff_point_id = event['dropoff']['point_id']
 
 		name=firstName+' '+lastName
@@ -226,6 +228,11 @@ class relaiscolis(Service):
 		#root.find("soap:Envelope/soap:Body/EnregistrerRetours/listRetourRequest/RetourRequest/NomClient4Lettre").text = name4letters
 
 		numid=str(shipment_id)
+		if  numid.isdigit() and len(numid)<=10:
+			print("good ")
+		else:
+			numid = str(datetime.datetime.now().timestamp())[:10]
+
 		#root.find("soap:Envelope/soap:Body/EnregistrerRetours/listRetourRequest/RetourRequest/NumCommande").text = str(numid)
 		#root.find("soap:Envelope/soap:Body/EnregistrerRetours/listRetourRequest/RetourRequest/NumClient").text = str(numid)
 
@@ -268,9 +275,13 @@ class relaiscolis(Service):
 		#return str(xmlresponse.text)
 		# xmlroot = ET.fromstring(xmlresponse)
 		data_response = xmltodict.parse(xmlresponse.content)
-		date_limite_depot = datetime.datetime.strptime(data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['DateLimite'], "%Y-%m-%dT%H:%M:%S.%f")
-		transport_return_number = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['NumRetour']
-		cab_number = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['NumCAB']
+		try:
+			date_limite_depot = datetime.datetime.strptime(data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['DateLimite'], "%Y-%m-%dT%H:%M:%S.%f")
+			transport_return_number = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['NumRetour']
+			cab_number = data_response['soap:Envelope']['soap:Body']['EnregistrerRetoursResponse']['EnregistrerRetoursResult']['ListRetourResponse']['RetourResponse']['RetourInfos']['NumCAB']
+		except:
+			responseErr = {"status": 400,"errors": [{"detail": str(xmlresponse.content)}]}
+			raise Exception(responseErr)
 
 		name_file = str(time.time()) + ".pdf"
 		pathToFile='/tmp/'+name_file
