@@ -205,8 +205,8 @@ class Mandrill(object):
         return '<Mandrill %s>' % self.apikey
 
 class Templates(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def add(self, name, from_email=None, from_name=None, subject=None, code=None, text=None, publish=True, labels=[]):
         """Add a new template
@@ -250,7 +250,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name, 'from_email': from_email, 'from_name': from_name, 'subject': subject, 'code': code, 'text': text, 'publish': publish, 'labels': labels}
-        return self.master.call('templates/add', _params)
+        return self.main.call('templates/add', _params)
 
     def info(self, name):
         """Get the information for an existing template
@@ -286,7 +286,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name}
-        return self.master.call('templates/info', _params)
+        return self.main.call('templates/info', _params)
 
     def update(self, name, from_email=None, from_name=None, subject=None, code=None, text=None, publish=True, labels=None):
         """Update the code for an existing template. If null is provided for any fields, the values will remain unchanged.
@@ -330,7 +330,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name, 'from_email': from_email, 'from_name': from_name, 'subject': subject, 'code': code, 'text': text, 'publish': publish, 'labels': labels}
-        return self.master.call('templates/update', _params)
+        return self.main.call('templates/update', _params)
 
     def publish(self, name):
         """Publish the content for the template. Any new messages sent using this template will start using the content that was previously in draft.
@@ -366,7 +366,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name}
-        return self.master.call('templates/publish', _params)
+        return self.main.call('templates/publish', _params)
 
     def delete(self, name):
         """Delete a template
@@ -402,7 +402,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name}
-        return self.master.call('templates/delete', _params)
+        return self.main.call('templates/delete', _params)
 
     def list(self, label=None):
         """Return a list of all the templates available to this user
@@ -439,7 +439,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'label': label}
-        return self.master.call('templates/list', _params)
+        return self.main.call('templates/list', _params)
 
     def time_series(self, name):
         """Return the recent history (hourly stats for the last 30 days) for a template
@@ -468,7 +468,7 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name}
-        return self.master.call('templates/time-series', _params)
+        return self.main.call('templates/time-series', _params)
 
     def render(self, template_name, template_content, merge_vars=None):
         """Inject content and optionally merge fields into a template, returning the HTML that results
@@ -496,12 +496,12 @@ class Templates(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'template_name': template_name, 'template_content': template_content, 'merge_vars': merge_vars}
-        return self.master.call('templates/render', _params)
+        return self.main.call('templates/render', _params)
 
 
 class Exports(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def info(self, id):
         """Returns information about an export job. If the export job's state is 'complete',
@@ -528,7 +528,7 @@ for that job type.
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('exports/info', _params)
+        return self.main.call('exports/info', _params)
 
     def list(self, ):
         """Returns a list of your exports.
@@ -549,7 +549,7 @@ for that job type.
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('exports/list', _params)
+        return self.main.call('exports/list', _params)
 
     def rejects(self, notify_email=None):
         """Begins an export of your rejection blacklist. The blacklist will be exported to a zip archive
@@ -573,7 +573,7 @@ reason, detail, created_at, expires_at, last_event_at, expires_at.
            Error: A general Mandrill error has occurred
         """
         _params = {'notify_email': notify_email}
-        return self.master.call('exports/rejects', _params)
+        return self.main.call('exports/rejects', _params)
 
     def whitelist(self, notify_email=None):
         """Begins an export of your rejection whitelist. The whitelist will be exported to a zip archive
@@ -597,7 +597,7 @@ email, detail, created_at.
            Error: A general Mandrill error has occurred
         """
         _params = {'notify_email': notify_email}
-        return self.master.call('exports/whitelist', _params)
+        return self.main.call('exports/whitelist', _params)
 
     def activity(self, notify_email=None, date_from=None, date_to=None, tags=None, senders=None, states=None, api_keys=None):
         """Begins an export of your activity history. The activity will be exported to a zip archive
@@ -633,12 +633,12 @@ metadata fields, they will be included in the exported data.
            Error: A general Mandrill error has occurred
         """
         _params = {'notify_email': notify_email, 'date_from': date_from, 'date_to': date_to, 'tags': tags, 'senders': senders, 'states': states, 'api_keys': api_keys}
-        return self.master.call('exports/activity', _params)
+        return self.main.call('exports/activity', _params)
 
 
 class Users(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def info(self, ):
         """Return the information about the API-connected user
@@ -731,7 +731,7 @@ class Users(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('users/info', _params)
+        return self.main.call('users/info', _params)
 
     def ping(self, ):
         """Validate an API key and respond to a ping
@@ -744,7 +744,7 @@ class Users(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('users/ping', _params)
+        return self.main.call('users/ping', _params)
 
     def ping2(self, ):
         """Validate an API key and respond to a ping (anal JSON parser version)
@@ -757,7 +757,7 @@ class Users(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('users/ping2', _params)
+        return self.main.call('users/ping2', _params)
 
     def senders(self, ):
         """Return the senders that have tried to use this account, both verified and unverified
@@ -784,12 +784,12 @@ class Users(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('users/senders', _params)
+        return self.main.call('users/senders', _params)
 
 
 class Rejects(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def add(self, email, comment=None, subaccount=None):
         """Adds an email to your email rejection blacklist. Addresses that you
@@ -813,7 +813,7 @@ address that has been whitelisted will have no effect.
            Error: A general Mandrill error has occurred
         """
         _params = {'email': email, 'comment': comment, 'subaccount': subaccount}
-        return self.master.call('rejects/add', _params)
+        return self.main.call('rejects/add', _params)
 
     def list(self, email=None, include_expired=False, subaccount=None):
         """Retrieves your email rejection blacklist. You can provide an email
@@ -860,7 +860,7 @@ include_expired to true to include them.
            Error: A general Mandrill error has occurred
         """
         _params = {'email': email, 'include_expired': include_expired, 'subaccount': subaccount}
-        return self.master.call('rejects/list', _params)
+        return self.main.call('rejects/list', _params)
 
     def delete(self, email, subaccount=None):
         """Deletes an email rejection. There is no limit to how many rejections
@@ -884,12 +884,12 @@ has an affect on your reputation.
            Error: A general Mandrill error has occurred
         """
         _params = {'email': email, 'subaccount': subaccount}
-        return self.master.call('rejects/delete', _params)
+        return self.main.call('rejects/delete', _params)
 
 
 class Inbound(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def domains(self, ):
         """List the domains that have been configured for inbound delivery
@@ -907,7 +907,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('inbound/domains', _params)
+        return self.main.call('inbound/domains', _params)
 
     def add_domain(self, domain):
         """Add an inbound domain to your account
@@ -926,7 +926,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('inbound/add-domain', _params)
+        return self.main.call('inbound/add-domain', _params)
 
     def check_domain(self, domain):
         """Check the MX settings for an inbound domain. The domain must have already been added with the add-domain call
@@ -946,7 +946,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('inbound/check-domain', _params)
+        return self.main.call('inbound/check-domain', _params)
 
     def delete_domain(self, domain):
         """Delete an inbound domain from the account. All mail will stop routing for this domain immediately.
@@ -966,7 +966,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('inbound/delete-domain', _params)
+        return self.main.call('inbound/delete-domain', _params)
 
     def routes(self, domain):
         """List the mailbox routes defined for an inbound domain
@@ -988,7 +988,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('inbound/routes', _params)
+        return self.main.call('inbound/routes', _params)
 
     def add_route(self, domain, pattern, url):
         """Add a new mailbox route to an inbound domain
@@ -1010,7 +1010,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain, 'pattern': pattern, 'url': url}
-        return self.master.call('inbound/add-route', _params)
+        return self.main.call('inbound/add-route', _params)
 
     def update_route(self, id, pattern=None, url=None):
         """Update the pattern or webhook of an existing inbound mailbox route. If null is provided for any fields, the values will remain unchanged.
@@ -1032,7 +1032,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id, 'pattern': pattern, 'url': url}
-        return self.master.call('inbound/update-route', _params)
+        return self.main.call('inbound/update-route', _params)
 
     def delete_route(self, id):
         """Delete an existing inbound mailbox route
@@ -1052,7 +1052,7 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('inbound/delete-route', _params)
+        return self.main.call('inbound/delete-route', _params)
 
     def send_raw(self, raw_message, to=None, mail_from=None, helo=None, client_address=None):
         """Take a raw MIME document destined for a domain with inbound domains set up, and send it to the inbound hook exactly as if it had been sent over SMTP
@@ -1078,12 +1078,12 @@ class Inbound(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'raw_message': raw_message, 'to': to, 'mail_from': mail_from, 'helo': helo, 'client_address': client_address}
-        return self.master.call('inbound/send-raw', _params)
+        return self.main.call('inbound/send-raw', _params)
 
 
 class Tags(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, ):
         """Return all of the user-defined tag information
@@ -1110,7 +1110,7 @@ class Tags(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('tags/list', _params)
+        return self.main.call('tags/list', _params)
 
     def delete(self, tag):
         """Deletes a tag permanently. Deleting a tag removes the tag from any messages
@@ -1141,7 +1141,7 @@ undo this operation, so use it carefully.
            Error: A general Mandrill error has occurred
         """
         _params = {'tag': tag}
-        return self.master.call('tags/delete', _params)
+        return self.main.call('tags/delete', _params)
 
     def info(self, tag):
         """Return more detailed information about a single tag, including aggregates of recent stats
@@ -1229,7 +1229,7 @@ undo this operation, so use it carefully.
            Error: A general Mandrill error has occurred
         """
         _params = {'tag': tag}
-        return self.master.call('tags/info', _params)
+        return self.main.call('tags/info', _params)
 
     def time_series(self, tag):
         """Return the recent history (hourly stats for the last 30 days) for a tag
@@ -1259,7 +1259,7 @@ undo this operation, so use it carefully.
            Error: A general Mandrill error has occurred
         """
         _params = {'tag': tag}
-        return self.master.call('tags/time-series', _params)
+        return self.main.call('tags/time-series', _params)
 
     def all_time_series(self, ):
         """Return the recent history (hourly stats for the last 30 days) for all tags
@@ -1285,12 +1285,12 @@ undo this operation, so use it carefully.
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('tags/all-time-series', _params)
+        return self.main.call('tags/all-time-series', _params)
 
 
 class Messages(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def send(self, message, async=False, ip_pool=None, send_at=None):
         """Send a new transactional message through Mandrill
@@ -1389,7 +1389,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'message': message, 'async': async, 'ip_pool': ip_pool, 'send_at': send_at}
-        return self.master.call('messages/send', _params)
+        return self.main.call('messages/send', _params)
 
     def send_template(self, template_name, template_content, message, async=False, ip_pool=None, send_at=None):
         """Send a new transactional message through Mandrill using a template
@@ -1495,7 +1495,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'template_name': template_name, 'template_content': template_content, 'message': message, 'async': async, 'ip_pool': ip_pool, 'send_at': send_at}
-        return self.master.call('messages/send-template', _params)
+        return self.main.call('messages/send-template', _params)
 
     def search(self, query='*', date_from=None, date_to=None, tags=None, senders=None, api_keys=None, limit=100):
         """Search recently sent messages and optionally narrow by date range, tags, senders, and API keys. If no date range is specified, results within the last 7 days are returned. This method may be called up to 20 times per minute. If you need the data more often, you can use <a href="/api/docs/messages.html#method=info">/messages/info.json</a> to get the information for a single message, or <a href="http://help.mandrill.com/entries/21738186-Introduction-to-Webhooks">webhooks</a> to push activity to your own application for querying.
@@ -1557,7 +1557,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'query': query, 'date_from': date_from, 'date_to': date_to, 'tags': tags, 'senders': senders, 'api_keys': api_keys, 'limit': limit}
-        return self.master.call('messages/search', _params)
+        return self.main.call('messages/search', _params)
 
     def search_time_series(self, query='*', date_from=None, date_to=None, tags=None, senders=None):
         """Search the content of recently sent messages and return the aggregated hourly stats for matching messages
@@ -1591,7 +1591,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'query': query, 'date_from': date_from, 'date_to': date_to, 'tags': tags, 'senders': senders}
-        return self.master.call('messages/search-time-series', _params)
+        return self.main.call('messages/search-time-series', _params)
 
     def info(self, id):
         """Get the information for a single recently sent message
@@ -1645,7 +1645,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('messages/info', _params)
+        return self.main.call('messages/info', _params)
 
     def content(self, id):
         """Get the full content of a recently sent message
@@ -1684,7 +1684,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('messages/content', _params)
+        return self.main.call('messages/content', _params)
 
     def parse(self, raw_message):
         """Parse the full MIME document for an email message, returning the content of the message broken into its constituent pieces
@@ -1727,7 +1727,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'raw_message': raw_message}
-        return self.master.call('messages/parse', _params)
+        return self.main.call('messages/parse', _params)
 
     def send_raw(self, raw_message, from_email=None, from_name=None, to=None, async=False, ip_pool=None, send_at=None, return_path_domain=None):
         """Take a raw MIME document for a message, and send it exactly as if it were sent through Mandrill's SMTP servers
@@ -1760,7 +1760,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'raw_message': raw_message, 'from_email': from_email, 'from_name': from_name, 'to': to, 'async': async, 'ip_pool': ip_pool, 'send_at': send_at, 'return_path_domain': return_path_domain}
-        return self.master.call('messages/send-raw', _params)
+        return self.main.call('messages/send-raw', _params)
 
     def list_scheduled(self, to=None):
         """Queries your scheduled emails by sender or recipient, or both.
@@ -1784,7 +1784,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'to': to}
-        return self.master.call('messages/list-scheduled', _params)
+        return self.main.call('messages/list-scheduled', _params)
 
     def cancel_scheduled(self, id):
         """Cancels a scheduled email.
@@ -1807,7 +1807,7 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('messages/cancel-scheduled', _params)
+        return self.main.call('messages/cancel-scheduled', _params)
 
     def reschedule(self, id, send_at):
         """Reschedules a scheduled email.
@@ -1831,12 +1831,12 @@ class Messages(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id, 'send_at': send_at}
-        return self.master.call('messages/reschedule', _params)
+        return self.main.call('messages/reschedule', _params)
 
 
 class Whitelists(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def add(self, email, comment=None):
         """Adds an email to your email rejection whitelist. If the address is
@@ -1857,7 +1857,7 @@ automatically.
            Error: A general Mandrill error has occurred
         """
         _params = {'email': email, 'comment': comment}
-        return self.master.call('whitelists/add', _params)
+        return self.main.call('whitelists/add', _params)
 
     def list(self, email=None):
         """Retrieves your email rejection whitelist. You can provide an email
@@ -1879,7 +1879,7 @@ address or search prefix to limit the results. Returns up to 1000 results.
            Error: A general Mandrill error has occurred
         """
         _params = {'email': email}
-        return self.master.call('whitelists/list', _params)
+        return self.main.call('whitelists/list', _params)
 
     def delete(self, email):
         """Removes an email address from the whitelist.
@@ -1897,12 +1897,12 @@ address or search prefix to limit the results. Returns up to 1000 results.
            Error: A general Mandrill error has occurred
         """
         _params = {'email': email}
-        return self.master.call('whitelists/delete', _params)
+        return self.main.call('whitelists/delete', _params)
 
 
 class Ips(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, ):
         """Lists your dedicated IPs.
@@ -1931,7 +1931,7 @@ class Ips(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('ips/list', _params)
+        return self.main.call('ips/list', _params)
 
     def info(self, ip):
         """Retrieves information about a single dedicated ip.
@@ -1961,7 +1961,7 @@ class Ips(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip}
-        return self.master.call('ips/info', _params)
+        return self.main.call('ips/info', _params)
 
     def provision(self, warmup=False, pool=None):
         """Requests an additional dedicated IP for your account. Accounts may
@@ -1986,7 +1986,7 @@ are processed within 24 hours.
            Error: A general Mandrill error has occurred
         """
         _params = {'warmup': warmup, 'pool': pool}
-        return self.master.call('ips/provision', _params)
+        return self.main.call('ips/provision', _params)
 
     def start_warmup(self, ip):
         """Begins the warmup process for a dedicated IP. During the warmup process,
@@ -2020,7 +2020,7 @@ will be sent over shared IPs or other dedicated IPs in the same pool.
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip}
-        return self.master.call('ips/start-warmup', _params)
+        return self.main.call('ips/start-warmup', _params)
 
     def cancel_warmup(self, ip):
         """Cancels the warmup process for a dedicated IP.
@@ -2051,7 +2051,7 @@ will be sent over shared IPs or other dedicated IPs in the same pool.
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip}
-        return self.master.call('ips/cancel-warmup', _params)
+        return self.main.call('ips/cancel-warmup', _params)
 
     def set_pool(self, ip, pool, create_pool=False):
         """Moves a dedicated IP to a different pool.
@@ -2086,7 +2086,7 @@ will be sent over shared IPs or other dedicated IPs in the same pool.
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip, 'pool': pool, 'create_pool': create_pool}
-        return self.master.call('ips/set-pool', _params)
+        return self.main.call('ips/set-pool', _params)
 
     def delete(self, ip):
         """Deletes a dedicated IP. This is permanent and cannot be undone.
@@ -2104,7 +2104,7 @@ will be sent over shared IPs or other dedicated IPs in the same pool.
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip}
-        return self.master.call('ips/delete', _params)
+        return self.main.call('ips/delete', _params)
 
     def list_pools(self, ):
         """Lists your dedicated IP pools.
@@ -2139,7 +2139,7 @@ will be sent over shared IPs or other dedicated IPs in the same pool.
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('ips/list-pools', _params)
+        return self.main.call('ips/list-pools', _params)
 
     def pool_info(self, pool):
         """Describes a single dedicated IP pool.
@@ -2176,7 +2176,7 @@ will be sent over shared IPs or other dedicated IPs in the same pool.
            Error: A general Mandrill error has occurred
         """
         _params = {'pool': pool}
-        return self.master.call('ips/pool-info', _params)
+        return self.main.call('ips/pool-info', _params)
 
     def create_pool(self, pool):
         """Creates a pool and returns it. If a pool already exists with this
@@ -2213,7 +2213,7 @@ name, no action will be performed.
            Error: A general Mandrill error has occurred
         """
         _params = {'pool': pool}
-        return self.master.call('ips/create-pool', _params)
+        return self.main.call('ips/create-pool', _params)
 
     def delete_pool(self, pool):
         """Deletes a pool. A pool must be empty before you can delete it, and you cannot delete your default pool.
@@ -2234,7 +2234,7 @@ name, no action will be performed.
            Error: A general Mandrill error has occurred
         """
         _params = {'pool': pool}
-        return self.master.call('ips/delete-pool', _params)
+        return self.main.call('ips/delete-pool', _params)
 
     def check_custom_dns(self, ip, domain):
         """Tests whether a domain name is valid for use as the custom reverse
@@ -2255,7 +2255,7 @@ DNS for a dedicated IP.
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip, 'domain': domain}
-        return self.master.call('ips/check-custom-dns', _params)
+        return self.main.call('ips/check-custom-dns', _params)
 
     def set_custom_dns(self, ip, domain):
         """Configures the custom DNS name for a dedicated IP.
@@ -2289,17 +2289,17 @@ DNS for a dedicated IP.
            Error: A general Mandrill error has occurred
         """
         _params = {'ip': ip, 'domain': domain}
-        return self.master.call('ips/set-custom-dns', _params)
+        return self.main.call('ips/set-custom-dns', _params)
 
 
 class Internal(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
 
 class Subaccounts(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, q=None):
         """Get the list of subaccounts defined for the account, optionally filtered by a prefix
@@ -2327,7 +2327,7 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'q': q}
-        return self.master.call('subaccounts/list', _params)
+        return self.main.call('subaccounts/list', _params)
 
     def add(self, id, name=None, notes=None, custom_quota=None):
         """Add a new subaccount
@@ -2356,7 +2356,7 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id, 'name': name, 'notes': notes, 'custom_quota': custom_quota}
-        return self.master.call('subaccounts/add', _params)
+        return self.main.call('subaccounts/add', _params)
 
     def info(self, id):
         """Given the ID of an existing subaccount, return the data about it
@@ -2398,7 +2398,7 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('subaccounts/info', _params)
+        return self.main.call('subaccounts/info', _params)
 
     def update(self, id, name=None, notes=None, custom_quota=None):
         """Update an existing subaccount
@@ -2428,7 +2428,7 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id, 'name': name, 'notes': notes, 'custom_quota': custom_quota}
-        return self.master.call('subaccounts/update', _params)
+        return self.main.call('subaccounts/update', _params)
 
     def delete(self, id):
         """Delete an existing subaccount. Any email related to the subaccount will be saved, but stats will be removed and any future sending calls to this subaccount will fail.
@@ -2455,7 +2455,7 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('subaccounts/delete', _params)
+        return self.main.call('subaccounts/delete', _params)
 
     def pause(self, id):
         """Pause a subaccount's sending. Any future emails delivered to this subaccount will be queued for a maximum of 3 days until the subaccount is resumed.
@@ -2482,7 +2482,7 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('subaccounts/pause', _params)
+        return self.main.call('subaccounts/pause', _params)
 
     def resume(self, id):
         """Resume a paused subaccount's sending
@@ -2509,12 +2509,12 @@ class Subaccounts(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('subaccounts/resume', _params)
+        return self.main.call('subaccounts/resume', _params)
 
 
 class Urls(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, ):
         """Get the 100 most clicked URLs
@@ -2533,7 +2533,7 @@ class Urls(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('urls/list', _params)
+        return self.main.call('urls/list', _params)
 
     def search(self, q):
         """Return the 100 most clicked URLs that match the search query given
@@ -2555,7 +2555,7 @@ class Urls(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'q': q}
-        return self.master.call('urls/search', _params)
+        return self.main.call('urls/search', _params)
 
     def time_series(self, url):
         """Return the recent history (hourly stats for the last 30 days) for a url
@@ -2578,7 +2578,7 @@ class Urls(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'url': url}
-        return self.master.call('urls/time-series', _params)
+        return self.main.call('urls/time-series', _params)
 
     def tracking_domains(self, ):
         """Get the list of tracking domains set up for this account
@@ -2602,7 +2602,7 @@ class Urls(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('urls/tracking-domains', _params)
+        return self.main.call('urls/tracking-domains', _params)
 
     def add_tracking_domain(self, domain):
         """Add a tracking domain to your account
@@ -2627,7 +2627,7 @@ class Urls(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('urls/add-tracking-domain', _params)
+        return self.main.call('urls/add-tracking-domain', _params)
 
     def check_tracking_domain(self, domain):
         """Checks the CNAME settings for a tracking domain. The domain must have been added already with the add-tracking-domain call
@@ -2653,12 +2653,12 @@ class Urls(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('urls/check-tracking-domain', _params)
+        return self.main.call('urls/check-tracking-domain', _params)
 
 
 class Webhooks(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, ):
         """Get the list of all webhooks defined on the account
@@ -2685,7 +2685,7 @@ class Webhooks(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('webhooks/list', _params)
+        return self.main.call('webhooks/list', _params)
 
     def add(self, url, description=None, events=[]):
         """Add a new webhook
@@ -2716,7 +2716,7 @@ class Webhooks(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'url': url, 'description': description, 'events': events}
-        return self.master.call('webhooks/add', _params)
+        return self.main.call('webhooks/add', _params)
 
     def info(self, id):
         """Given the ID of an existing webhook, return the data about it
@@ -2745,7 +2745,7 @@ class Webhooks(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('webhooks/info', _params)
+        return self.main.call('webhooks/info', _params)
 
     def update(self, id, url, description=None, events=[]):
         """Update an existing webhook
@@ -2778,7 +2778,7 @@ class Webhooks(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id, 'url': url, 'description': description, 'events': events}
-        return self.master.call('webhooks/update', _params)
+        return self.main.call('webhooks/update', _params)
 
     def delete(self, id):
         """Delete an existing webhook
@@ -2807,12 +2807,12 @@ class Webhooks(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'id': id}
-        return self.master.call('webhooks/delete', _params)
+        return self.main.call('webhooks/delete', _params)
 
 
 class Senders(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, ):
         """Return the senders that have tried to use this account.
@@ -2839,7 +2839,7 @@ class Senders(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('senders/list', _params)
+        return self.main.call('senders/list', _params)
 
     def domains(self, ):
         """Returns the sender domains that have been added to this account.
@@ -2869,7 +2869,7 @@ class Senders(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('senders/domains', _params)
+        return self.main.call('senders/domains', _params)
 
     def add_domain(self, domain):
         """Adds a sender domain to your account. Sender domains are added automatically as you
@@ -2901,7 +2901,7 @@ send, but you can use this call to add them ahead of time.
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('senders/add-domain', _params)
+        return self.main.call('senders/add-domain', _params)
 
     def check_domain(self, domain):
         """Checks the SPF and DKIM settings for a domain. If you haven't already added this domain to your
@@ -2933,7 +2933,7 @@ account, it will be added automatically.
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain}
-        return self.master.call('senders/check-domain', _params)
+        return self.main.call('senders/check-domain', _params)
 
     def verify_domain(self, domain, mailbox):
         """Sends a verification email in order to verify ownership of a domain.
@@ -2957,7 +2957,7 @@ other Mandrill accounts from sending mail signed by your domain.
            Error: A general Mandrill error has occurred
         """
         _params = {'domain': domain, 'mailbox': mailbox}
-        return self.master.call('senders/verify-domain', _params)
+        return self.main.call('senders/verify-domain', _params)
 
     def info(self, address):
         """Return more detailed information about a single sender, including aggregates of recent stats
@@ -3046,7 +3046,7 @@ other Mandrill accounts from sending mail signed by your domain.
            Error: A general Mandrill error has occurred
         """
         _params = {'address': address}
-        return self.master.call('senders/info', _params)
+        return self.main.call('senders/info', _params)
 
     def time_series(self, address):
         """Return the recent history (hourly stats for the last 30 days) for a sender
@@ -3075,12 +3075,12 @@ other Mandrill accounts from sending mail signed by your domain.
            Error: A general Mandrill error has occurred
         """
         _params = {'address': address}
-        return self.master.call('senders/time-series', _params)
+        return self.main.call('senders/time-series', _params)
 
 
 class Metadata(object):
-    def __init__(self, master):
-        self.master = master
+    def __init__(self, main):
+        self.main = main
 
     def list(self, ):
         """Get the list of custom metadata fields indexed for the account.
@@ -3098,7 +3098,7 @@ class Metadata(object):
            Error: A general Mandrill error has occurred
         """
         _params = {}
-        return self.master.call('metadata/list', _params)
+        return self.main.call('metadata/list', _params)
 
     def add(self, name, view_template=None):
         """Add a new custom metadata field to be indexed for the account.
@@ -3119,7 +3119,7 @@ class Metadata(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name, 'view_template': view_template}
-        return self.master.call('metadata/add', _params)
+        return self.main.call('metadata/add', _params)
 
     def update(self, name, view_template):
         """Update an existing custom metadata field.
@@ -3140,7 +3140,7 @@ class Metadata(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name, 'view_template': view_template}
-        return self.master.call('metadata/update', _params)
+        return self.main.call('metadata/update', _params)
 
     def delete(self, name):
         """Delete an existing custom metadata field. Deletion isn't instataneous, and /metadata/list will continue to return the field until the asynchronous deletion process is complete.
@@ -3160,7 +3160,7 @@ class Metadata(object):
            Error: A general Mandrill error has occurred
         """
         _params = {'name': name}
-        return self.master.call('metadata/delete', _params)
+        return self.main.call('metadata/delete', _params)
 
 
 
